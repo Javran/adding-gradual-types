@@ -48,7 +48,6 @@ boolean-valued functions can be treated as defining a type, which is the subset 
 - first-class polymorphic functions (impredicative polymorphism)
 - explicitly specify recursive types
 
-
 ### S-expression
 
 ?
@@ -99,4 +98,15 @@ boolean-valued functions can be treated as defining a type, which is the subset 
 ### Preliminaries
 
 - support for assigning distinct types to distinct occurrences of variable
-  based on control flow criteria
+  based on control flow criteria.
+
+  My note: in other words, a variable can have different type depending on its
+  context, different occurrence might result in different types.
+  This captures the notion of flow-sensitive typing.
+
+Visible Predicates: (TODO) not sure what it means
+
+Latent Predicates: seems like an extension of arrow type (function type),
+which can be recognized as a discriminator for a specific type.
+
+(TODO) does contract works better since that provides runtime checks?

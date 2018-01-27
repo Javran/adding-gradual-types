@@ -55,3 +55,15 @@ allow assigning dynamic value to static ones, with runtime checks
 - coercive subtyping: generate coercions when determining subtyping
 
 - one do not need to forgo transitivity as said
+
+## Source Language: Featherweight CS4.0
+
+FCS4 = CS4 simplified while retaining being a valid subset of it.
+
+Simplification:
+
+- `public` only, no static method, all are `virtual` or `override`.
+- `bool`, `int` and `byte` as value types
+- class type (with `object` and `dynamic`) and delegate are reference types
+
+Ordinary expression & Statement expression

@@ -46,3 +46,9 @@
         - dynamic object to add / remove property at runtime
 
 - Smalltalk (TODO)
+
+- Other topics:
+
+    - Object identity: some strategy of tagging / proxying break Object identity.
+
+    - Subtyping: there seems to be discussions all about transitivity of subtyping.

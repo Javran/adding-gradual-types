@@ -35,3 +35,15 @@
 - Brianna M.Ren The Ruby Type Checker
 
   related
+
+# Bibliography
+
+[gradual-typing-bib](http://github.com/samth/gradual-typing-bib)
+
+- Advanced Macrology and the Implementation of Typed Scheme
+
+- Combining Static and Dynamic Typing in Ruby
+
+- Towards Gradual Typing in Jython
+
+- The Ruby Type Checker

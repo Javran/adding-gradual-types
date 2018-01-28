@@ -52,7 +52,17 @@
 
     - Liquid Haskell (Logically Qualified Data Types)
 
+- Gradual typing for Featherweight Java (?)
+
+- Gradual typing for functional languages (original work)
+
+- Gradual typing for objects. (?)
+
+- Plan: original papers, understand the problem with object identity and subtyping
+
 # Other type systems
 
-- Liquid type
-- Dependent type
+- Liquid type (static)
+- Dependent type (static)
+- Soft typing
+- Contracts

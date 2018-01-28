@@ -47,3 +47,12 @@
 - Towards Gradual Typing in Jython
 
 - The Ruby Type Checker
+
+- Gradual Liquid Type Inference
+
+    - Liquid Haskell (Logically Qualified Data Types)
+
+# Other type systems
+
+- Liquid type
+- Dependent type

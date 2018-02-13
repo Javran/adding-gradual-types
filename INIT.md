@@ -52,7 +52,7 @@
 
     - Liquid Haskell (Logically Qualified Data Types)
 
-- Gradual typing for Featherweight Java (?)
+- Gradual typing for Featherweight Java (in JP)
 
 - Gradual typing for functional languages (original work)
 
@@ -66,3 +66,16 @@
 - Dependent type (static)
 - Soft typing
 - Contracts
+
+- Refinement type: type with predicates (does this suggest limited expressiveness?)
+
+- idea: if we were to discuss about intergrating dynamic and static type systems, or features of both, then are we restricted to
+  discuss only about gradual types?
+
+# Misc
+
+- Gradual typing is morally incorrect slides
+
+- Sound Gradual Typing is Nominally Alive and Well
+
+- What are the downside of gradual typing and solutions?

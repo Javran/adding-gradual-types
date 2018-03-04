@@ -226,3 +226,5 @@ TSWLatexianTemp*
 *.sta
 
 *.pdf
+
+template/

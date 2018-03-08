@@ -2,15 +2,64 @@
 
 \renewcommand{\thechapter}{2}
 
-\chapter{Programming languages that grow}
+\chapter{Extending existing languages}
 
-Extending existing programming language requires designers to understand not only features
-provided by the language, but also idioms and practice commonly used among its community.
+It is not a trivial work to extend existing languages to support gradual typing,
+as it involves understanding not just language features,
+but also idiom and practice commonly used among its community to allow
+a smooth and non-intrusive experience.
 
 In these chapter we will go through some works that extend existing programming
 language to support gradual typing.
 
-\section{Safe TypeScript}
+\section{From JavaScript to Safe TypeScript}
+
+JavaScript is a dynamically typed language widely used in web techniques.
+One noticeable work of JavaScript extension is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris.
+It features a sound type system and efficient runtime type information(RTTI)-based
+gradual typing.
+
+\subsection{Type Checking for Free}
+
+In JavaScript, one cannot declare a variables to have a specific type,
+which usually leads to the style in which function checks its argument type at runtime
+before proceeding with actual implementation:
+
+\begin{verbatim}
+function f(x) {
+    if (typeof x !== 'string') {
+        // throw error
+    }
+    return x + '!';
+}
+\end{verbatim}
+
+By extending the language with an optional type annotation,
+the code is cleaner in Safe TypeScript: 
+
+\begin{verbatim}
+function f(x : string) {
+    return x + '!';
+}
+\end{verbatim}
+
+Here the logic for checking whether $x$ is a string is removed,
+instead, Safe TypeScript compiles it to insert code for type checking,
+and throws with error messages upon failure.
+
+By introducing type annotations, programmers get not just dynamic type checking without
+much effort, but also enables static type checking. Consider the following code with $f$
+above in scope:
+
+\begin{verbatim}
+f('one'); // good
+f(1); // bad
+\end{verbatim}
+
+While manual type checking in function bodies throws when the bad call is invoked,
+Safe TypeScript is capable of capturing the error ahead of execution.
+
+\subsection{Nominal class and structural interfaces}
 
 
 NOTES
@@ -21,7 +70,7 @@ Object as map
 
 Object in the sense of OOP
 
-
+\subsection{RTTI and Performance}
 
 \section{Typed Scheme}
 
@@ -31,12 +80,16 @@ simple macros
 
 \section{Reticulated Python}
 
+
 structural typing to match for Python's duck typing
 
 CSharp (this being the only static language that wants interaction with dynamic ones)
 
 syntactic improvement
 dynamic Object ("Expando Object")
+
+\section{C$^\sharp$ 4.0}
+
 
 \section{Gradualtalk}
 

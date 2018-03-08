@@ -156,7 +156,7 @@ statically to reject the program.
 Gradual typing enables static and dynamic typing within one type system,
 but what more important is that it creates a middle ground in which programs
 can be partially typed: all type annotations are not required for a gradual type system,
-but when programmers do annotation terms with types,
+but when programmers do annotate terms with types,
 the type system will be responsible to make sure that type annotations are consistent
 within programs.
 
@@ -177,14 +177,14 @@ More generally, programmer only pays for what they want from a type system.
 
 \subsubsection{Runtime Checks and Cast Insertion}
 
-It is insufficient for a gradual type system to just detect type errors detectable
-by a static type system. Runtime checks must be performed to decide
+%TODO: should also have other things to be discussed: subtyping, higher-order types
 
-%TODO
+When dynamic types are present, it is not always possible to type check the whole
+program statically: applying a variable $x : \dyn$ to a function $f : number \rightarrow \dyn$ is consistent, but at runtime $x$ might turn out to be a function, which becomes inconsistent
+with $f$. Therefore, gradual typing inserts type casts into the program to allow
+more type errors to be detected at runtime.
 
-For a gradual type system to be sound, runtime type checking must be done as well.
-
-When type cast cannot be done statically, cast must be inserted.
+%TODO: from Gradual Typing for Functional Languages
 
 \subsection{Alternatives}
 
@@ -203,7 +203,18 @@ Dependent type
 
 \subsection{Discussion}
 
-Why gradual typing
+Despite that there are various research works that combines
+benefit of static and dynamic type checking
+gradual typing remains one of the most popular approach:
+thanks to gradual guarantee, an existing language can be extended to
+support gradual typing while all existing programs written in it is still valid
+with no difference in semantics. In addition, the cost of gradual typing pays
+as programmers need.
 
-Sections:
+%TODO: more to say
+
+However, it is not a straightforward work to support gradual typing for existing languages.
+In chapter 2, we will explore some research works that extends existing popular languages.
+Common challenges and solutions while extending an existing language is discussed in chapter 3.
+Open questions in chapter 4.
 

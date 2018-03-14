@@ -12,17 +12,24 @@ a smooth and non-intrusive experience.
 In these chapter we will go through some works that extend existing programming
 language to support gradual typing.
 
-\section{From JavaScript to Safe TypeScript}
+\section{From JavaScript to TypeScript}
 
 JavaScript is a dynamically typed language widely used in web techniques.
-One noticeable work of JavaScript extension is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris.
-It features a sound type system and efficient runtime type information(RTTI)-based
+
+%TODO: what's bad about JavaScript and why need gradual typing
+
+One popular extension to it is TypeScript, in which variables are allowed to
+have types. TypeScript compiler then type checks the program and compile it to JavaScript
+in return.
+
+One noticeable work of JavaScript extension is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
+but features a sound type system and efficient runtime type information(RTTI)-based
 gradual typing.
 
 \subsection{Type Checking for Free}
 
 In JavaScript, one cannot declare a variables to have a specific type,
-which usually leads to the style in which function checks its argument type at runtime
+which often leads to the style in which function checks its argument type at runtime
 before proceeding with actual implementation:
 
 \begin{verbatim}
@@ -35,7 +42,7 @@ function f(x) {
 \end{verbatim}
 
 By extending the language with an optional type annotation,
-the code is cleaner in Safe TypeScript: 
+the code is improved to have less verbosity in Safe TypeScript: 
 
 \begin{verbatim}
 function f(x : string) {
@@ -61,7 +68,6 @@ Safe TypeScript is capable of capturing the error ahead of execution.
 
 \subsection{Nominal class and structural interfaces}
 
-
 NOTES
 
 (probably showcasing)
@@ -70,13 +76,24 @@ Object as map
 
 Object in the sense of OOP
 
+\subsection{Type-safety and encapsulation}
+
 \subsection{RTTI and Performance}
 
-\section{Typed Scheme}
+
+\section{From Scheme to Typed Scheme}
+
+
+
+\begin{verbatim}
+(define (creal x)
+  (cond [(number? x) x]
+        [else (car x)]))
+\end{verbatim}
 
 occurrence typing
 
-simple macros
+simple macros?
 
 \section{Reticulated Python}
 

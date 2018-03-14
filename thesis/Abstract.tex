@@ -26,34 +26,44 @@
 
 Type system defines sets of rules, which is checked against programs to
 detect certain kind of errors and bugs. Type checking happens either
-statically at compile time, or dynamically at runtime. Programming languages
-make different choices about type system.
+statically ahead of execution, or dynamically at runtime.
+Programming languages make different choices regarding type system to
+accommodate their specific needs.
 
 Dynamically typed languages stand out when it comes to scripting and fast prototyping:
 programs can be easily modified and executed without need of enforcing consistency and correctness throughout the program.
-But as the program grows over time to handle more complicated tasks,
+But as programs grow over time to handle more complicated tasks,
 it becomes harder to maintain.
+% DUE TO?
 
 Statically typed languages are more reliable and efficient.
 Because type errors are caught ahead of execution,
 programs are free of these errors at runtime.
-Also due to type information are available statically,
-more opportunities of optimization can be discovered.
+In addition, having type information available statically also helps
+development in many other ways beyond type system, such as
+type-specialized optimization and improved development tools.
 However, a new feature or design change in such program could introduce
 great refactoring efforts to not just implementation but also a redesign
 of types.
 
-It is only natural that we start to think about a middle ground
-between two.
-One prevailing approach is gradual typing: in such system,
-all type annotations are optional. Programmers can choose to
-give types to some values or procedures and later remove them or vice versa.
-And the type system will only check portions that are type-annotated,
-therefore allows gradual and smoother evolution of programs.
+It is only natural that we start looking for a middle ground between them.
+One of these approaches is gradual typing: in such system,
+all type annotations are optional.
+Programmers can choose to give types to some values or procedures and later remove them or vice versa, and the type system will be responsible of completely checking only portions
+that are type-annotated in both static and dynamic manner.
+Gradual typing gives programmer fine grained control over whether type checking should occur,
+and guarantees the semantics to be consistent when adding or removing type annotations,
+therefore allowing gradual and smoother evolution of programs.
 
-Nonetheless, theoretical works on a gradual typing is far from sufficient
-to prove its usefulness: a practical language needs a user base for its community to grow,
-efforts are required to develop packages for commonly used data structures, algorithms, etc. Fortunately this problem can be solved by extending existing lanugages,
-thus taking advantage of their communities and large amount of libraries.
-Several works has done in this regard. And this survey walks through some of them,
-discussing challenges and solutions of extending a language to support gradual typing.
+One crucial advantage of gradual typing is that it can be implemented
+by extending an existing statically or dynamically typed language:
+syntactically, the extension often results in a superset of the original
+language that allows more expressiveness in types, which means
+the effort of migrating existing code and language users
+to take advantage of gradual typing is minimized.
+% TODO: and in terms of semantics?
+
+In this survey, we will walk through some research works that
+extends existing languages to support gradual types,
+discuss challenges and solutions about making these extensions,
+and look into related works and the future of gradual typing.

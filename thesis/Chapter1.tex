@@ -5,12 +5,18 @@
 \chapter{Introduction}
 
 Type system defines sets of rules about programs, which can be checked by a machine.
-Using a type system, we can assign types to various language concepts like variables, functions and classes and describe how they interact with each other.
+Using a type system, we can assign types to appropriate language concepts like variables, functions and classes to describe how they interact with each other.
 This is important for programming languages, as this allows rule violations
 to be detected by machines and prevents erroneous part of the program from execution.
 
+
 The process of checking programs against type rules is called type checking.
 It happens either statically ahead of program execution, or dynamically at runtime.
+For a statically typed language, ill-typed programs are rejected by compiler and
+no executable can be produced until all type errors are fixed. For a dynamically
+typed language, type information is examined at runtime and type errors result
+in abortion of the program or exceptions being raised
+instead of causing segmentation faults or other worse consequences.
 They both have their advantages and disadvantages.
 For programming languages, different design choices are made to
 accommodate their needs.

@@ -4,39 +4,115 @@
 
 \chapter{Introduction}
 
-Type system defines sets of rules about programs, which can be checked by a machine.
-Using a type system, we can assign types to appropriate language concepts like variables, functions and classes to describe how they interact with each other.
-This is important for programming languages, as this allows rule violations
-to be detected by machines and prevents erroneous part of the program from execution.
+Type system defines sets of rules about programs, which can be checked by a machine
+in a systematic way.
+With a type system, one can assign types to appropriate language concepts like variables, functions and classes to describe expected behaviors and how they interact with each other.
+Then type system takes the responsibility of ensuring that types are respected and
+type errors prevent erroneous part of a program from execution.
 
+There are other benefits of type systems besides automated checking:
+types can be used to reveal optimization opportunities,
+can serve as simple documentation to programmers or
+provide hints to development tools to automate navigation, documentation lookup
+or auto-completion.
 
-The process of checking programs against type rules is called type checking.
-It happens either statically ahead of program execution, or dynamically at runtime.
-For a statically typed language, ill-typed programs are rejected by compiler and
-no executable can be produced until all type errors are fixed. For a dynamically
-typed language, type information is examined at runtime and type errors result
+All these benefits make type system an important part of programming languages,
+and there are different ways of accommodating languages with type systems.
+The most noticeable difference is the process of checking programs again type rules,
+which is also known as type checking.
+It occurs either statically ahead of program execution, or dynamically at runtime.
+For a static type system, ill-typed programs are rejected by compiler and
+no executable can be produced until all type errors are fixed.
+For a dynamic type system, type information is examined at runtime and type errors result
 in abortion of the program or exceptions being raised
 instead of causing segmentation faults or other worse consequences.
-They both have their advantages and disadvantages.
-For programming languages, different design choices are made to
-accommodate their needs.
+Static and dynamic type system both have their advantages and disadvantages,
+and languages make different choices depending on their needs.
 
-\section{Strength and Weakness of Both}
+In this chapter, we start off by discussing static and dynamic type systems,
+which motivates research works that attempted to combine both within one system
+in order to take benefits from two,
+which in return gives birth to gradual typing.
 
-In this section we will discuss pros and cons of
-statically and dynamically typed languages,
-which leads to the motivation of gradual typing - an approach that takes the benefits from two.
+\section{Strength and Weakness of Static and Dynamic Typing}
 
-\subsection{Dynamically Typed Languages}
+The difference between static and dynamic typing is the difference
+between whether type checking occurs ahead of execution or at runtime.
+This section discusses advantages and disadvantages of both.
 
-A dynamically typed language checks type at runtime, which is best suited for scripting and fast prototyping.
-For example, a shell script runs other executables and feeds one's output to another, effectively gluing programs together.
-In this case, we have little to no knowledge about the executables ahead of time, making statically type checking impractical.
-On the other hand, when it comes to prototyping, it is more important for programmers to execute the code and make modifications accordingly
+\newcommand{\tnum}{\textbf{num}}
+\newcommand{\tstr}{\textbf{str}}
+\newcommand{\tarr}[2]{#1 \rightarrow #2}
+
+In this section we use $T_0, T_1, \ldots$ for type variables.
+$\tnum$ and $\tstr$ are types of fixed point numbers and strings respectively.
+And the type notation for functions that takes as input $T_0, T_1, \ldots$
+and returns a value of $T_2$ is $\tarr{(T_0, T_1, \ldots)}{T_2}$.
+We use $o : T$ to mean that a language object $o$ is assigned a type $T$.
+For example $f : \tarr{(\tnum, \tnum)}{\tnum}$ is a function that
+takes two numbers as input and returns a number.
+In addition, tuple types are notated as $(T_0, T_1, \ldots)$
+
+\subsection{Static Type Systems}
+
+%TODO: type system or language?
+
+A static type system is preferred if robustness and performance
+is the main goal of a language.
+Because type checking occurs ahead of execution,
+ill-typed programs are rejected before it can start, and
+when a program typechecks,
+one can therefore expect no type error to occur and
+no extra cost is paid for typechecking at runtime.
+
+% TODO: could have more to say about type inference
+
+For a static type system to work, all variables, functions, etc. in a program
+will need to be assigned types. This is usually done by programmers or through the
+means of type inference, which is a technique that infers types using
+available type information. This is both an advantage and a disadvantage
+of a static type system: having type annotations improves readability
+and since programmers are required to keep the consistency between type and code,
+type also serves as simple, faithful documentation. But on the other hand,
+adding and maintaining type annotations can also considered a burden.
+
+Having static known type information also helps in terms of performance in other ways.
+For example, In many programming languages, arithmetic functions are polymorphic.
+It is allowed for \textbf{a} and \textbf{b} to have different numeric types in \textbf{a + b}, a cast will be inserted to ensure arithmetic primitives only deals with addition of compatible types: if we are adding integer \textbf{b} to a floating number \textbf{a}, then \textbf{b} will be casted so we can call addition primitive that expected floating numbers on both sides.
+A dynamic language would have to figure out types of \textbf{a} and \textbf{b} at runtime, make decision about whether casting is required or which primitive addition to call all at runtime. But with type information statically available,
+these decisions can be made ahead of execution,
+resulting in improved performance at runtime.
+
+Besides extra effort of maintaining type annotations,
+the disadvantage of a statically type language often lies in the lack of flexibility:
+if a program need to deal with data whose structure is unknown at compile time,
+while a dynamically typed language allows inspecting data of unknown type,
+it requires more work for a statically typed language to accept such a program:
+because it is impossible to make a precise type about unknown data,
+programmers will have to use an imprecise type
+and keep extra information at runtime,
+effectively creating a dynamic type system of their own.
+
+In addition, it is often less convenient for programmers to prototype
+in statically typed languages: it involves trial and error to find the best implementation
+to solve a problem, which means the ability to write partial programs,
+make frequent changes to structure of variables and functions, but these features are not easily available for a statically typed language.
+
+%TODO: this might not be related
+%less accessible: end-user sees compiled code, won't normally have compiler, build system and toolchain available.
+
+\subsection{Dynamic Type System}
+
+Dynamic type system does typechecking at runtime, which is best suited for
+languages designed for scripting and fast prototyping.
+A shell script, for example, runs other executables and feeds one's output to another, effectively gluing programs together.
+In such a case, we have little to no knowledge about these executables ahead of time,
+making statically type checking impractical.
+And when it comes to prototyping,
+it is more important for programmers to execute the code and make modifications accordingly
 than to enforce correctness and consistency through whole program.
 In such scenario, it is more convenient to delay type checking until
 it is required at runtime.
-
 
 %TODO (commented out due to have no relation to what we are talking)
 %These languages also find their presence everywhere: a standard UNIX release usually ships
@@ -44,87 +120,84 @@ it is required at runtime.
 %are carried with JavaScript engine which powered most of the nowadays web techniques.
 %This also gives normal user an accessible way to program for themselves.
 
-However, a dynamically typed language is not without weakness.
+However, it is also easy to spot weaknesses of dynamic type systems.
 Despite that type checking does not happen ahead of execution,
 programmers usually have facts about behaviors of programs,
 which is often described in comments or through naming of variables and functions without a systematic way of verifying them.
 As program develops, it is easy to make changes and forget updating these descriptions accordingly, which forces future maintainers to go back and rediscover these facts, causing maintenance difficulties.
 
-Furthermore, without type information statically available,
-dynamically typed languages have to maintain runtime information and rely on it to implement expected semantics. For example, if it is allowed for a language to condition on non-boolean values, its type has to be available at runtime in order to determine how to cast it into a boolean value.
+%TODO: throw error at runtime
 
-Optimization opportunities could also be missed for a dynamically type language: 
+Furthermore, without type information statically available,
+dynamic type system needs to maintain runtime information
+and rely on it to implement expected semantics.
+For example, if it is allowed for a language to condition on non-boolean values,
+its type has to be available at runtime in order to
+determine how to cast it into a boolean value at runtime.
+
+Optimization could also be hindered for a dynamically type language: 
 array cloning can be implemented efficiently as memory copy instructions knowing the array in question contains only primitive values but no reference or pointers, whereas without prior knowledge like this, every element of the array has to be traversed and even recursively cloned.
 
-\subsection{Statically Typed Languages}
-
-Statically typed languages, on the other hand, are better alternatives
-when reliability and performance are important for a program.
-These languages type checks during compilation, and ill-typed programs are prevented from execution.
-With expected behavior described in terms of types, type checking not only ensures that certain kind of errors cannot happen at runtime, but also improves maintainability: it is required for programmers to keep the consistency between type and code, because programs will not compile otherwise.
-
-Having static known type information also helps in terms of efficiency.
-For example, In many programming languages, arithmetic functions are polymorphic.
-It is allowed for \textbf{a} and \textbf{b} to have different numeric types in \textbf{a + b}, a cast will be inserted to ensure arithmetic primitives only deals with addition of compatible types: if we are adding integer \textbf{b} to a floating number \textbf{a}, then \textbf{b} will be casted so we can call addition primitive that expected floating numbers on both sides.
-A dynamic language would have to figure out types of \textbf{a} and \textbf{b} at runtime, make decision about whether casting is required or which primitive addition to call all at runtime. But with type information statically available, these decisions can be made at compile time, resulting in improved efficiency.
-
-%TODO: lack of example
-
-The disadvantage of a statically type language often lies in the lack of flexibility:
-if a program need to deal with data whose structure is unknown at compile time,
-while a dynamically typed language allows inspecting data of unknown type,
-it requires more work for a statically typed language to accept such a program:
-because it is impossible to make a precise type about unknown data,
-programmers will need extra bookkeeping at runtime to convince the type checker,
-effectively creating a type system of their own.
-
-In addition, it is often less convenient for programmers to prototype
-in statically typed languages: it involves trial and error to find the best solution
-to a problem, which means the ability to write partial programs, make frequent changes to
-structure of variables and functions, but these features are not available for a statically
-typed language.
-
-%TODO: this might not be related
-%less accessible: end-user sees compiled code, won't normally have compiler, build system and toolchain available.
 
 \section{Combining benefits of two}
 
 %TODO could have more to say.
 
 One might have noticed that static type checking and dynamic one
-are not mutually exclusive: it is possible to have a program type checked
+are not mutually exclusive: it is possible to have a program typechecked
 statically, while allowing runtime type checking.
-Indeed, several attempts are motivated to put these two type systems in one,
-in hope of bringing in the benefit of both.
-In this section, we will discuss about these works.
+While static type system does typechecking ahead of time
+and avoids runtime overhead,
+it lacks the ability of using runtime type information;
+dynamic type system does typechecking at runtime,
+but it requires sophisticated work to reduce the amount of
+unnecessarily repeated runtime checks.
+In hope of bringing in benefits of both,
+several attempts are motivated to put these two type systems in one.
+In this section, we will discuss about these research works.
 
 \subsection{Design Goal}
+
 
 Summarizing pros and cons of static and dynamic typed languages,
 we now have a picture of an ideal type system, it should have following features:
 
 \begin{itemize}
-	\item \textbf{Detect and rule out errors ahead of program execution.} This is one main purpose of having a static type system.
-	\item \textbf{Delay type checking until needed at runtime.}
-	This allows ill-typed or partially written programs to execute.
-	Note that this also implies that it should be possible for type checking
-	at runtime for this type system.
+	\item \textbf{Detect and rule out errors ahead of program execution.} This is one main purpose of having a static type system. When a program starts running,
+	type errors should already be eliminated and runtime overhead should be minimized
+	to keep its performance close to that of a static type system.
+	\item \textbf{Delay typechecking until needed at runtime.}
+	This is the crucial feature of a dynamic type system,
+	it allows ill-typed or partially written programs to execute,
+	which makes it suitable in situations where static type information
+	is limited or fast prototyping is preferred over robustness or runtime performance.
 \end{itemize}
 
-Aside from these two goals within type system, it should be possible for a language equipped with such a type system to make use of the type information available.
-As this allows better optimization and type safety both statically and dynamically.
-%TODO: more words to say about type safety?
+Aside from these two goals, type annotations can also be used for
+other purposes like optimization and providing hints to development tools.
+For a language with this new type system, it should also be possible.
 
 \subsection{A Introduction to Gradual Typing}
 
-\newcommand{\dyn}{\textbf{Dyn}}
+\newcommand{\dyn}{\textbf{dyn}}
 
 Gradual typing is one possible approach that meets our design goal.
-It is an extension to static type system.
-By introducing a special type, it allows static and dynamic typing to coexist
-in one type system.
+It captures the fact that type information might be partially known or unknown
+ahead of execution by introducing a special type that indicates partial types.
+It attempts to typecheck programs like a static type system does, but delays
+typechecking on partial types until sufficient type information is available
+at runtime.
+
+It is originally introduced as an extension to static type system.
+But it is also possible and practical to support gradual typing by
+extending a dynamic type system.
+
+In the following sections, notation $\dyn$ will be used for
+special types mentioned above, which is also known as dynamic types.
 
 \subsubsection{Dynamic Type and Type Consistency}
+
+%TODO: adjust
 
 Gradual typing introduces a special type, which is usually called a ``dynamic'' type
 (we will use notation \dyn).

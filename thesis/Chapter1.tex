@@ -182,13 +182,14 @@ For a language with this new type system, it should also be possible.
 \newcommand{\dyn}{\textbf{dyn}}
 
 Gradual typing is one possible approach that meets our design goal.
-It captures the fact that type information might be partially known or unknown
+It captures the fact that type information might only be partially known
 ahead of execution by introducing a special type that indicates partial types.
 It attempts to typecheck programs like a static type system does, but delays
 typechecking on partial types until sufficient type information is available
 at runtime.
 
-It is originally introduced as an extension to static type system.
+In the following sections, we will introduce it
+as an extension to static type system.
 But it is also possible and practical to support gradual typing by
 extending a dynamic type system.
 
@@ -197,18 +198,14 @@ special types mentioned above, which is also known as dynamic types.
 
 \subsubsection{Dynamic Type and Type Consistency}
 
-%TODO: adjust
+Gradual type system introduces a dynamic type on top of a static type system
+to capture the idea that type information might only be partially known
+ahead of execution.
 
-Gradual typing introduces a special type, which is usually called a ``dynamic'' type
-(we will use notation \dyn).
-Such type captures the idea that type information might be partially known or
-unknown at compile time.
+To deal with dynamic types, we introduce type consistency
+to accommodate type judgments for gradual typing.
 
-With this dynamic type introduced, it is possible for type system to work
-even if type information is only partial. In such a case,
-the type system only rejects programs that have inconsistencies in known parts of types.
-
-(TODO: type consistency rules here)
+(TODO: type consistency rules here, lambda calculus without data type)
 
 For example, type $\dyn \times \textbf{number}$ is consistent with type $\dyn$;
 $\textbf{boolean} \rightarrow \dyn$ is consistent with type $\dyn$ and $\dyn \rightarrow \textbf{number}$. But $\dyn \rightarrow \dyn$ is never consistent with $\dyn \times \dyn$, because the former is a function type while the latter a pair.

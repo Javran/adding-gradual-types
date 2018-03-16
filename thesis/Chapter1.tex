@@ -210,10 +210,12 @@ to accommodate type judgments for gradual typing.
 For example, type $\dyn \times \textbf{number}$ is consistent with type $\dyn$;
 $\textbf{boolean} \rightarrow \dyn$ is consistent with type $\dyn$ and $\dyn \rightarrow \textbf{number}$. But $\dyn \rightarrow \dyn$ is never consistent with $\dyn \times \dyn$, because the former is a function type while the latter a pair.
 
-This extension also allows programs without any type information to pass static 
-type checking: when a type is expected for a term but no type information is available,
-the term is assumed to have a dynamic type. Therefore no inconsistency can be detected
-statically to reject the program.
+As we can see, when no dynamic type is involved, typechecking proceeds in the
+exactly same way as that of a static type system.
+To mimic dynamic type system, which does nothing ahead of execution,
+we just assume that all terms have dynamic types.
+With type consistency being a reflexive relation, no type error can be detected
+during this phase.
 
 %\subsubsection{Gradually Typed Lambda Calculus}
 

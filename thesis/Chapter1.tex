@@ -208,7 +208,7 @@ To deal with dynamic types, we introduce type consistency
 to accommodate type judgments for gradual typing.
 Figure ? shows rules for type consistency relation.
 
-(TODO: type consistency rules here, lambda calculus without data type)
+(TODO: type consistency rules here, lambda calculus and with some ground types)
 
 In general, two types are consistent when
 their type structures do not conflict with each other.
@@ -258,16 +258,16 @@ with type allows some effort of ensuring correctness being shifted to typechecki
 
 For example, one might wish to implement a function $f$ that expects a string value
 as input. There are two approaches: we can either give $f$ a type annotation:
-$f : \textbf{string} \rightarrow \dyn$. By doing so, type system takes the responsibility
+$f : \tarr{\textbf{str}}{\dyn}$. By doing so, type system takes the responsibility
 of making sure that the input type is indeed a string. Alternatively,
 we can inspect type of the input value at runtime ourselves.
-
 A static type system allows us to do the former, but a return type must either
 be given explicitly or inferred. And a dynamic type system does the later, but
 we cannot statically detect any mistake like applying a number literal to $f$.
-However, a gradual type system allows us to give input value a type
-without worrying about giving a return type if not needed.
-More generally, programmer only pays for what they want from a type system.
+However, a gradual type system finds the balance between two,
+it allows us to give input value a type without worrying about
+giving a return type if not needed,
+therefore programmer only pays for what they want from a type system.
 
 %TODO more to say
 

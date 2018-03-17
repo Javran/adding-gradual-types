@@ -204,17 +204,26 @@ ahead of execution.
 
 To deal with dynamic types, we introduce type consistency
 to accommodate type judgments for gradual typing.
+Figure ? shows rules for type consistency relation.
 
 (TODO: type consistency rules here, lambda calculus without data type)
 
-For example, type $\dyn \times \textbf{number}$ is consistent with type $\dyn$;
-$\textbf{boolean} \rightarrow \dyn$ is consistent with type $\dyn$ and $\dyn \rightarrow \textbf{number}$. But $\dyn \rightarrow \dyn$ is never consistent with $\dyn \times \dyn$, because the former is a function type while the latter a pair.
+In general, two types are consistent when
+their type structures do not conflict with each other.
+For example, $(\dyn, \tnum)$ is consistent with type $\dyn$
+despite that the latter is less precise;
+$\tarr{\tnum}{\dyn}$ is consistent with $\tarr{\dyn}{\tnum}$ and $\tarr{\dyn}{\dyn}$,
+because all these types are functions that accepts one value and returns another and
+$\tnum$ and $\dyn$ are consistent with each other.
+However $\tarr{\dyn}{\dyn}$ is never consistent with $(\dyn, \dyn)$,
+because the former is a function type while the latter a pair,
+whose type structures do not match.
 
 As we can see, when no dynamic type is involved, typechecking proceeds in the
 exactly same way as that of a static type system.
 To mimic dynamic type system, which does nothing ahead of execution,
 we just assume that all terms have dynamic types.
-With type consistency being a reflexive relation, no type error can be detected
+With type consistency being a reflexive relation, no type error will be detected
 during this phase.
 
 %\subsubsection{Gradually Typed Lambda Calculus}

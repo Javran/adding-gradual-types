@@ -219,12 +219,13 @@ However $\tarr{\dyn}{\dyn}$ is never consistent with $(\dyn, \dyn)$,
 because the former is a function type while the latter a pair,
 whose type structures do not match.
 
-As we can see, when no dynamic type is involved, typechecking proceeds in the
+By introducing dynamic type, gradual typing provides
+typechecking ahead of execution that accepts both statically and dynamically typed programs: 
+when no dynamic type is involved, typechecking proceeds in the
 exactly same way as that of a static type system.
-To mimic dynamic type system, which does nothing ahead of execution,
-we just assume that all terms have dynamic types.
-With type consistency being a reflexive relation, no type error will be detected
-during this phase.
+There might be no type annotation in dynamically typed programs,
+in which case types of terms are default to $\dyn$, which allows
+then to typecheck, without raising type errors.
 
 %\subsubsection{Gradually Typed Lambda Calculus}
 
@@ -240,13 +241,18 @@ during this phase.
 
 \subsubsection{Optional Type Annotation and ``pay-as-you-go''}
 
-So far we have seen that gradual type system attempts to accept
-both statically and dynamically typed programs during static typechecking,
-but what more important is that it creates a middle ground in which programs
-can be partially typed: all type annotations are not required for a gradual type system,
-but when programmers do annotate terms with types,
-the type system will be responsible to make sure that type annotations are consistent
-within programs.
+So far we have seen that gradual type system introduces a dynamic type,
+which allows accepting both statically and dynamically typed programs during static typechecking.
+But what is more important is that it creates a middle ground in which programs
+can be partially annotated with types:
+in a gradual type system, terms are either explicitly given a type,
+or, when type annotation is missing, given $\dyn$ type.
+This renders all type annotations to be optional and allows programmers
+to have more control over what they need from typechecking:
+for an originally statically typed program, we can now write terms without giving a type,
+this allows easy prototyping; for an originally dynamically typed program,
+some parts of it might already been stable and robust enough, annotating these parts
+with type allows some effort of ensuring correctness being shifted to typechecking.
 
 For example, one might wish to implement a function $f$ that expects a string value
 as input. There are two approaches: we can either give $f$ a type annotation:

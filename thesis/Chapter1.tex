@@ -42,10 +42,12 @@ This section discusses advantages and disadvantages of both.
 
 \newcommand{\tnum}{\textbf{num}}
 \newcommand{\tstr}{\textbf{str}}
+\newcommand{\tbool}{\textbf{bool}}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
 
 In this section we use $T_0, T_1, \ldots$ for type variables.
-$\tnum$ and $\tstr$ are types of fixed point numbers and strings respectively.
+$\tbool$, $\tnum$ and $\tstr$ are types of
+boolean values, fixed point numbers and strings respectively.
 And the type notation for functions that takes as input $T_0, T_1, \ldots$
 and returns a value of $T_2$ is $\tarr{(T_0, T_1, \ldots)}{T_2}$.
 We use $o : T$ to mean that a language object $o$ is assigned a type $T$.
@@ -210,13 +212,13 @@ Figure ? shows rules for type consistency relation.
 
 In general, two types are consistent when
 their type structures do not conflict with each other.
-For example, $(\dyn, \tnum)$ is consistent with type $\dyn$
+For example, $\tbool$ is consistent with type $\dyn$
 despite that the latter is less precise;
 $\tarr{\tnum}{\dyn}$ is consistent with $\tarr{\dyn}{\tnum}$ and $\tarr{\dyn}{\dyn}$,
 because all these types are functions that accepts one value and returns another and
 $\tnum$ and $\dyn$ are consistent with each other.
-However $\tarr{\dyn}{\dyn}$ is never consistent with $(\dyn, \dyn)$,
-because the former is a function type while the latter a pair,
+However $\tarr{\dyn}{\dyn}$ is never consistent with $\tbool$,
+because the former is a function type while the latter a boolean value,
 whose type structures do not match.
 
 By introducing dynamic type, gradual typing provides

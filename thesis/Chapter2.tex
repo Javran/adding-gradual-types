@@ -4,13 +4,18 @@
 
 \chapter{Extending existing languages}
 
-It is not a trivial work to extend existing languages to support gradual typing,
-as it involves understanding not just language features,
-but also idiom and practice commonly used among its community to allow
-a smooth and non-intrusive experience.
+Gradual type system features optional type annotations,
+which is compatible with both statically and dynamically typed programs,
+type safety are preserved and semantics are kept consistent.
+This makes it an ideal type system that
+existing languages can be extended to support.
 
-In these chapter we will go through some works that extend existing programming
-language to support gradual typing.
+In this chapter, we will explore some research works that extends existing languages
+to support gradual typing. As we will see, this is not a trivial task:
+since it requires the extended language to still support existing programs written
+in the original language with little to none modification,
+language features, idiom and practice commonly used among its community
+needs to be carefully understood to allow a smooth and non-intrusive experience.
 
 \section{From JavaScript to TypeScript}
 

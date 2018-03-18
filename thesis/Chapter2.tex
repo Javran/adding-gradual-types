@@ -31,14 +31,9 @@ it is a superset of JavaScript that supports optional type annotations,
 a compiler typechecks TypeScript code ahead of execution and compile code
 into plain JavaScript source code, making it ready to be executed out of box
 for JavaScript engines.
-
-%TODO: what's bad about JavaScript and why need gradual typing
-
-One popular extension to it is TypeScript, in which variables are allowed to
-have types. TypeScript compiler then type checks the program and compile it to JavaScript
-in return.
-
-One noticeable work of JavaScript extension is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
+However, TypeScript is intentionally unsound: only static typechecking is performed,
+which does not prevent runtime type errors.
+One noticeable improvement to TypeScript is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
 but features a sound type system and efficient runtime type information(RTTI)-based
 gradual typing.
 

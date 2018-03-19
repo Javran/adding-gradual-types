@@ -41,7 +41,6 @@ In this section we will visit some language features of Safe TypeScript and see 
 
 \subsection{Type Checking for Free}
 
-
 Despite JavaScript is capable of examining type of values at runtime,
 it does not have support for type annotations.
 This leads to a common practice in which function bodies will have code
@@ -57,27 +56,66 @@ function f(x) {
 }
 \end{verbatim}
 
-By extending the language with an optional type annotation,
-the code is improved to have less verbosity in Safe TypeScript: 
+As a toy example, the function accepts a string value,
+then returns another with exclamation sign concatenated to it. 
+But imagine in real projects there will be multiple arguments to a function
+and some of them have to go through this process of checking,
+it will soon become less maintainable.
+
+By extending the language with type annotations,
+we can do something better in Safe TypeScript:
 
 \begin{verbatim}
-function f(x : string) {
+function f(x : string) : string {
+    // now this check becomes unnecessary
+    if (typeof x !== 'string') {
+        // throw error
+    }
     return x + '!';
 }
 \end{verbatim}
 
-Here the logic for checking whether $x$ is a string is removed,
-instead, Safe TypeScript compiles it to insert code for type checking,
-and throws with error messages upon failure.
+In the code above, we just declared a function $\textbf{f}$ that accepts
+one variable $x$ of $\textbf{string}$ type, and returns a value of $\textbf{string}$ type.
+The code for runtime checking is removed, instead, Safe TypeScript performs typechecking
+and insert casts when needed to ensure that,
+when $\textbf{f}$ is called, its argument is indeed a $\textbf{string}$.
+This renders the  $\textbf{typeof}$ check at the beginning useless:
+when we enter the function body $\textbf{x}$ is guaranteed to be a $\textbf{string}$,
+therefore the body of the $\textbf{if}$ statement cannot possibly be entered.
+This allows us to get rid of the check totally:
+
+
+\begin{verbatim}
+function f(x : string) : string {
+    return x + '!';
+}
+\end{verbatim}
+
+The use site of $\textbf{f}$ might look like the following:
+
+\begin{verbatim}
+f('one'); // good
+f(1); // bad
+function g(x) {
+    return f(x); // might be unsafe
+}
+\end{verbatim}
+
+Here Safe TypeScript is able to tell that: calling $\textbf{f}$ with a string literal
+is safe, and no extra cast is needed; the second call is immediately rejected
+because number literal is clearly not a $\textbf{string}$;
+and for the third case where $\textbf{x}$
+is not explicitly given a type, Safe TypeScript compiler will insert runtime type cast
+and either allow it to proceed to the body $\textbf{f}$ when $\textbf{x}$ is indeed a string,
+or throw an error before even calling $\textbf{f}$.
+
+Notice that 
 
 By introducing type annotations, programmers get not just dynamic type checking without
 much effort, but also enables static type checking. Consider the following code with $f$
 above in scope:
 
-\begin{verbatim}
-f('one'); // good
-f(1); // bad
-\end{verbatim}
 
 While manual type checking in function bodies throws when the bad call is invoked,
 Safe TypeScript is capable of capturing the error ahead of execution.

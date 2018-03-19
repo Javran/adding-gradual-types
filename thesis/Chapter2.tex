@@ -110,15 +110,12 @@ is not explicitly given a type, Safe TypeScript compiler will insert runtime typ
 and either allow it to proceed to the body $\textbf{f}$ when $\textbf{x}$ is indeed a string,
 or throw an error before even calling $\textbf{f}$.
 
-Notice that 
-
-By introducing type annotations, programmers get not just dynamic type checking without
-much effort, but also enables static type checking. Consider the following code with $f$
-above in scope:
-
-
-While manual type checking in function bodies throws when the bad call is invoked,
-Safe TypeScript is capable of capturing the error ahead of execution.
+Notice that by making use of type annotations, Safe TypeScript not only allows
+clearer code, but also able to spot some type errors ahead of execution:
+imagine the call $\textbf{f(1)}$, when its written in plain JavaScript,
+we have to wait for the check in function body to throw an error,
+while Safe TypeScript allows annotating $\textbf{x}$ with a type
+therefore spots the error even before execution.
 
 \subsection{Nominal class and structural interfaces}
 

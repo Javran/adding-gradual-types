@@ -4,7 +4,7 @@
 
 \chapter{Extending existing languages}
 
-Gradual type system features optional type annotations,
+Gradual type system features optional type annotations with soundness,
 which is compatible with both statically and dynamically typed programs,
 type safety are preserved and semantics are kept consistent.
 This makes it an ideal type system that
@@ -34,14 +34,19 @@ for JavaScript engines.
 However, TypeScript is intentionally unsound: only static typechecking is performed,
 which does not prevent runtime type errors.
 One noticeable improvement to TypeScript is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
-but features a sound type system and efficient runtime type information(RTTI)-based
+but features a sound type system and efficient runtime type information (RTTI)-based
 gradual typing.
+
+In this section we will visit some language features of Safe TypeScript and see how it improves JavaScript.
 
 \subsection{Type Checking for Free}
 
-In JavaScript, one cannot declare a variables to have a specific type,
-which often leads to the style in which function checks its argument type at runtime
-before proceeding with actual implementation:
+
+Despite JavaScript is capable of examining type of values at runtime,
+it does not have support for type annotations.
+This leads to a common practice in which function bodies will have code
+just for checking its argument types and throw errors before
+proceeding with actual implementation:
 
 \begin{verbatim}
 function f(x) {

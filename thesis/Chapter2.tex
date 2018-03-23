@@ -134,20 +134,41 @@ Object in the sense of OOP
 
 \section{From Scheme to Typed Scheme}
 
+Scheme is a dynamically typed language.
+It is used for casual scripting as well as industrial applications.
+Like other dynamic typed languages, programmers are not attached to using any
+type discipline but rely on various kind of reasoning on their needs.
+This makes the language flexible but challenging to assign proper and precise types to terms.
+%TODO: type discipline vs type system?
 
+\subsection{Occurrence Typing}
+
+The following code shows a function definition as typical style of programming in this language:
 
 \begin{verbatim}
+;; a Complex is either
+;; - a number
+;; - (cons number number)
 (define (creal x)
   (cond [(number? x) x]
         [else (car x)]))
 \end{verbatim}
 
-occurrence typing
+The code above defines a function $\textbf{creal}$, which takes as argument
+a complex number: a real number is simply a value satisfying $\textbf{number?}$,
+while an imaginary number is a pair of $\textbf{number}$.
+Function $\textbf{number?}$ distinguishes two different representation of numbers:
+in the the first branch of $\textbf{cond}$, $\textbf{x}$ is treated like a number
+while in the second branch $\textbf{x}$ is a pair and $\textbf{car}$ is used
+to extract its real part.
 
-simple macros?
+%TODO
+
+Flow of values
 
 \section{Reticulated Python}
 
+Python 3 is another dynamically typed language.
 
 structural typing to match for Python's duck typing
 

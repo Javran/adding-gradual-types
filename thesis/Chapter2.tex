@@ -17,7 +17,7 @@ in the original language with little to none modification,
 language features, idiom and practice commonly used among its community
 needs to be carefully understood to allow a smooth and non-intrusive experience.
 
-\section{From JavaScript to TypeScript}
+\section{From JavaScript to Safe TypeScript}
 
 Starting as a scripting language, JavaScript has grown into a language
 that powers many large web applications.
@@ -30,14 +30,14 @@ TypeScript is one closely related to gradual typing:
 it is a superset of JavaScript that supports optional type annotations,
 a compiler typechecks TypeScript code ahead of execution and compile code
 into plain JavaScript source code, making it ready to be executed out of box
-for JavaScript engines.
+for JavaScript interpreters.
 However, TypeScript is intentionally unsound: only static typechecking is performed,
 which does not prevent runtime type errors.
 One noticeable improvement to TypeScript is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
 but features a sound type system and efficient runtime type information (RTTI)-based
 gradual typing.
 
-In this section we will visit some language features of Safe TypeScript and see how it improves JavaScript.
+In this section we will visit some language features of Safe TypeScript and see how it improves JavaScript. Note that TypeScript uses $\textbf{any}$ for dynamic type.
 
 \subsection{Type Checking for Free}
 
@@ -112,24 +112,70 @@ or throw an error before even calling $\textbf{f}$.
 
 Notice that by making use of type annotations, Safe TypeScript not only allows
 clearer code, but also able to spot some type errors ahead of execution:
-imagine the call $\textbf{f(1)}$, when its written in plain JavaScript,
+imagine the function application $\textbf{f(1)}$, when its written in plain JavaScript,
 we have to wait for the check in function body to throw an error,
-while Safe TypeScript allows annotating $\textbf{x}$ with a type
-therefore spots the error even before execution.
+while annotating $\textbf{x}$ with a type allows Safe TypeScript
+to spot the error even before execution.
 
-\subsection{Nominal class and structural interfaces}
+\subsection{Object-Oriented Programming in Safe TypeScript}
 
-NOTES
+%TODO: what technique allos JS to simulate OO?
+JavaScript is a prototype-based language.
+This means runtime objects form a chain in which one object
+can be a prototype of other objects and
+to perform method invocation, method names are searched
+first in object itself and then along the chain,
+and the first one with matching method name is used for the invocation.
+Using well-known techniques allows JavaScript to simulate objected-oriented programming.
+Designed to be a superset of JavaScript, Safe TypeScript must accommodate such programming
+style as well.
 
-(probably showcasing)
+TypeScript introduces the concept of interface to allow representing the structure
+of runtime objects.
 
-Object as map
+\begin{verbatim}
+interface Point { x: number; y: number }
+\end{verbatim}
 
-Object in the sense of OOP
+This defines $\textbf{Point}$ type to be an object that has two fields $\textbf{x}$
+and $\textbf{y}$ whose types are all $\textbf{number}$s.
+For example, the invocation with object literal $f(\textbf{\{x: 1, y: 0\})}$ typechecks
+with $f : Point \Rightarrow any$.
+An interface can be implemented by classes:
 
-\subsection{Type-safety and encapsulation}
+\begin{verbatim}
+class MovablePoint implements Point {
+  constructor(public x: number, public y: number) {this.x = x; this.y = y;}
+  public move(dx: number, dy: number} { this.x += dx; this.y += dy; }
+}
+\end{verbatim}
 
-\subsection{RTTI and Performance}
+While in TypeScript, all classes are viewed structurally, this does not match
+with JavaScript semantics. Consider the following function:
+
+\begin{verbatim}
+function mustBeTrue(x : MovablePoint) {
+  return !x || x instanceof MovablePoint;
+}
+\end{verbatim}
+
+One might expect this function to always return $\textbf{true}$.
+However, a structural view will consider object literal
+$v$ = \textbf{\{x: 0, y: 0, move(dx: number, dy:number) {}\}}
+to match with $\textbf{MovablePoint}$, but $\textbf{mustBeTrue(v)}$
+will return $\textbf{false}$ because JavaScript will expect $v$ to have
+$\textbf{MovablePoint}$ somewhere along its prototype chain.
+
+To solve this problem, Safe TypeScript takes a different approach:
+it treats class types nominally but can be viewed structurally.
+Namely, $\textbf{MovablePoint}$ is still a subtype of
+$t_m$ = \textbf{\{x: number, y: number, move(dx: number, dy:number): any\}}
+and \textbf{\{x: number, y: number\}}.
+But $t_m$ is no longer a subtype of \textbf{MovablePoint}.
+
+%TODO: method & field
+
+%TODO: put this in ch3 \subsection{Type Erasure, information hiding and performance}
 
 
 \section{From Scheme to Typed Scheme}
@@ -139,9 +185,14 @@ It is used for casual scripting as well as industrial applications.
 Like other dynamic typed languages, programmers are not attached to using any
 type discipline but rely on various kind of reasoning on their needs.
 This makes the language flexible but challenging to assign proper and precise types to terms.
+
+Tobin-Hochstadt and Felleisen's work on Typed Scheme
+introduces the notion of occurrence typing, which
+extends Scheme with gradual typing.
+
 %TODO: type discipline vs type system?
 
-\subsection{Occurrence Typing}
+\subsection{Support Informal Reasoning}
 
 The following code shows a function definition as typical style of programming in this language:
 
@@ -162,9 +213,62 @@ in the the first branch of $\textbf{cond}$, $\textbf{x}$ is treated like a numbe
 while in the second branch $\textbf{x}$ is a pair and $\textbf{car}$ is used
 to extract its real part.
 
-%TODO
+One might have noticed that
+while input value \textbf{x} could be either a number or a pair of numbers,
+predicate \textbf{number?} distinguishes between them and
+in difference branches of the \textbf{cond} expression, \textbf{x} gets different types.
 
-Flow of values
+It is important that type system should be able to assign same variable with different
+types depending on the context where variable occurs, this is exactly the notion of
+occurrence typing.
+
+The Typed Scheme version begins with definition of complex number:
+
+\begin{verbatim}
+;; a Complex is either
+;; - a number
+;; - (cons number number)
+(define-type-alias Cplx (Union Number (cons Number Number)))
+\end{verbatim}
+
+While \textbf{Cplx} is just an alias for the union type, it improves readability
+and allows other parts of the program to refer to it by name.
+The body of the function looks like:
+
+\begin{verbatim}
+(define: (creal [x: Cplx]) : Number
+  (cond [(number? x) x]
+        [else (car x)]))
+\end{verbatim}
+
+Note that we are explicitly giving the return type \textbf{Number},
+and the type system is capable of inferencing that
+both branch of \textbf{cond} expression returns a number
+so it will still typecheck.
+
+Another different kind of reasoning is also being used among Scheme programmers:
+Suppose we have stored a list of various types of values in \textbf{xs}
+and the following code will compute the sum of all numbers from \textbf{xs}:
+
+\begin{verbatim}
+(foldl + 0 (filter number? xs))
+\end{verbatim}
+
+Note that despite \textbf{xs} is a list that contains not just numbers,
+it is guaranteed that \textbf{(filter number? xs)} will return a list of numbers
+so \textbf{foldl} will work properly to produce the desired result.
+
+The expression requires no modification at all to typecheck in Typed Scheme
+and it receives type system benefits: suppose \textbf{map} is mistakenly
+used instead of \textbf{filter} or \textbf{number?} is replaced by
+other predicates insufficient to test whether a value in question is indeed a value,
+the type system is able to recognize such errors and give warnings.
+
+\subsection{Refinement Type}
+
+Note that \textbf{number?} distinguishes numbers from other types,
+we can use this idea to any function that returns boolean values.
+This allows using occurrence typing to implemenet refinement types
 
 \section{Reticulated Python}
 

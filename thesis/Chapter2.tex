@@ -266,9 +266,41 @@ the type system is able to recognize such errors and give warnings.
 
 \subsection{Refinement Type}
 
-Note that \textbf{number?} distinguishes numbers from other types,
-we can use this idea to any function that returns boolean values.
-This allows using occurrence typing to implemenet refinement types
+Note that in Scheme, we use \textbf{number?} to distinguish numbers
+from other type of values.
+In general, given a boolean-valued unary function
+we can define the set of values that produces \textbf{true} when fed to this function.
+This allows Typed Scheme to support refinement type.
+
+\begin{verbatim}
+(: just-even (Number -> (Refinement even?)))
+(define (just-even n)
+  (if (even? n) n (error 'not-even)))
+\end{verbatim}
+
+The code above uses boolean-valued function \textbf{even?}
+and its corresponding refinement type \textbf{Refinement even?},
+so we can expect a value of such type to be not just numbers, but also only even ones.
+
+More practical examples include use refinement types to distinguish raw input
+from validated ones:
+
+\begin{verbatim}
+(: sql-safe? (String -> Boolean))
+(define (sql-safe? s) ...)
+(declare-refinement sql-safe?)
+\end{verbatim}
+
+In this example, user defines function \textbf{sql-safe?} to verify
+that a raw string contains no SQL injection or other contents of malicious attempt.
+Then a refinement type is declared using this very function.
+This makes available type \textbf{(Refinement sql-safe?)} to rest part of the program
+to avoid mistakenly using raw input rather than verified safe ones.
+
+As we can see occurrence typing not just enables
+gradual typing, but also allows refinement type,
+which provides us a powerful tool to use user-defined functions
+to define custom types of better precision.
 
 \section{Reticulated Python}
 

@@ -302,19 +302,59 @@ gradual typing, but also allows refinement type,
 which provides us a powerful tool to use user-defined functions
 to define custom types of better precision.
 
-\section{Reticulated Python}
+\section{From Python 3 to Reticulated Python}
 
-Python 3 is another dynamically typed language.
+Python 3 is another popular dynamic typed language.
+M. Vitousek, M. Kent and Baker's work on Reticulated Python
+explored extending Python 3 with gradual typing.
+
+Python 3 comes with annotation syntax.
+This syntax allows expressions to be optionally attached to
+function definitions and their arguments,
+which makes it suitable for type annotation.
+
+Given proper definition of \textbf{Int}, we can write annotated
+function \textbf{distance} like below:
+
+\begin{verbatim}
+def distance(x: Int, y: Int)-> Int:
+  return abs(x - y)
+\end{verbatim}
+
+While annotation allows arbitrary expressions, Reticulated Python
+only uses types built from several type constructors.
+
+\subsection{Function Types}
+
+Python 3 has different ways of calling the same function.
+Suppose we want to use \textbf{distance} defined above,
+we can use positional arguments like \textbf{distance(3,4)},
+or use keywords like \textbf{distance(y=4, x=3)} and the result should be the same.
+
+To support keyword calls, \textbf{Named} constructor is used to give
+\textbf{distance} type \textbf{Function(Named(x: Int, y: Int), Int)}.
+To support traditional positional arguments, \textbf{Pos} is used instead.
+The type system also allows \textbf{Named} to be used as if it is constructed by \textbf{Pos}
+when their length and element types correspond. So functions can be called in both
+ways without problem. Additionally \textbf{Arb} is another constructor
+that allows functions of arbitrary parameters.
+
+\subsection{Class and Object Types}
+
+
 
 structural typing to match for Python's duck typing
+
+\subsection{Dynamic Semantics}
+
+\subsection{Other Features}
+
+\section{C$^\sharp$ 4.0}
 
 CSharp (this being the only static language that wants interaction with dynamic ones)
 
 syntactic improvement
 dynamic Object ("Expando Object")
-
-\section{C$^\sharp$ 4.0}
-
 
 \section{Gradualtalk}
 

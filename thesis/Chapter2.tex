@@ -349,13 +349,21 @@ and Reticulated provides corresponding types for both.
 Consider the following example:
 
 \begin{verbatim}
+@fields({'x': Int})
 class 1DPoint:
+  def __init__(self: 1DPoint):
+    self.x = 0
   def move(self: 1DPoint, x: Int)->1DPoint:
     self.x += x
     return self
 
 p = 1DPoint()
 \end{verbatim}
+
+It defines a class \textbf{1DPoint} with one field \textbf{x} of \textbf{Int} type.
+And an object is created from it through the constructor
+and is bound to variable \textbf{p}.
+
 
 
 structural typing to match for Python's duck typing

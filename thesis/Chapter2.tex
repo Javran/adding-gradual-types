@@ -304,11 +304,11 @@ to define custom types of better precision.
 
 \section{From Python 3 to Reticulated Python}
 
-Python 3 is another popular dynamic typed language.
-M. Vitousek, M. Kent and Baker's work on Reticulated Python
-explored extending Python 3 with gradual typing.
+Python 3 (Python for short) is another popular dynamic typed language.
+M. Vitousek, M. Kent and Baker's work on Reticulated Python (Reticulated for short)
+explored extending Python with gradual typing.
 
-Python 3 comes with annotation syntax.
+Python comes with annotation syntax.
 This syntax allows expressions to be optionally attached to
 function definitions and their arguments,
 which makes it suitable for type annotation.
@@ -341,6 +341,21 @@ that allows functions of arbitrary parameters.
 
 \subsection{Class and Object Types}
 
+Python is an object-oriented programming language.
+Programmers define classes and create objects from them.
+Both classes and objects are runtime values in Python
+and Reticulated provides corresponding types for both.
+
+Consider the following example:
+
+\begin{verbatim}
+class 1DPoint:
+  def move(self: 1DPoint, x: Int)->1DPoint:
+    self.x += x
+    return self
+
+p = 1DPoint()
+\end{verbatim}
 
 
 structural typing to match for Python's duck typing

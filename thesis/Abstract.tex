@@ -67,12 +67,15 @@ occur, one does not commit to either static or dynamic typing
 while losing the benefit of the other.
 
 One crucial advantage of gradual typing is that it can be implemented
-by extending an existing statically or dynamically typed language:
-syntactically, the extension often results in a superset of the original
+by extending an existing statically or dynamically typed language.
+Syntactically, the extension often results in a superset of the original
 language that allows more expressiveness in types, which means
 the effort of migrating existing code and language users
 to take advantage of gradual typing is minimized.
-% TODO: and in terms of semantics?
+Semantically, adding or removing type annotation does not
+change the result of programs aside from type errors,
+which grants gradual and smooth transition between
+static and dynamic type disciplines.
 
 In this survey, we will walk through the relevant research literature on extending
 existing languages to support gradual types,

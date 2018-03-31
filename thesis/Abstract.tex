@@ -50,14 +50,21 @@ But a program grows over time to handle more complicated tasks,
 the interaction between different portions of the program becomes harder
 to track and maintain.
 
-It is only natural that we start exploring the spectrum between them.
-One of these approaches is gradual typing: in such a system,
-all type annotations are optional.
-Programmers can choose to give types to some values or procedures and later remove them or vice versa, and the type system will be responsible of completely checking only portions
-that are type-annotated in both static and dynamic manner.
-Gradual typing gives programmer fine grained control over whether type checking should occur,
-and guarantees the semantics to be consistent when adding or removing type annotations,
-therefore allowing gradual and smoother evolution of programs.
+It is only natural that we start exploring the spectrum between them:
+type systems that enjoy benefits of both.
+Among one of these is gradual typing, which features a type system
+that provides optional type checking.
+In such a system, programmer can
+give types to only portion of the program.
+For the portion that has type information,
+static and dynamic typechecking will work together
+to ensure type consistency, whereas
+the untyped portion of the program is left unchecked,
+which might be desirable
+when performance or flexibility is concerned.
+By giving programmers control over when and where should typechecking
+occur, one does not commit to either static or dynamic typing
+while losing the benefit of the other.
 
 One crucial advantage of gradual typing is that it can be implemented
 by extending an existing statically or dynamically typed language:

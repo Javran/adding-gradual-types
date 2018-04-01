@@ -364,13 +364,40 @@ It defines a class \textbf{1DPoint} with one field \textbf{x} of \textbf{Int} ty
 And an object is created from it through the constructor
 and is bound to variable \textbf{p}.
 
+Reticulated derives class type from this definition:
 
+\begin{verbatim}
+Class(1DPoint){
+  move: Function(Named(self: 1DPoint, x: Int), 1DPoint)
+}
+\end{verbatim}
 
-structural typing to match for Python's duck typing
+And object types are similar:
+
+\begin{verbatim}
+Object(1DPoint){
+  move: Function(Named(x: Int), 1DPoint)
+}
+\end{verbatim}
+
+While object can access methods of its class, it is also possible
+to assign methods and fields to objects to change its behavior.
+Therefore Reticulated makes object type open with respect to consistency.
 
 \subsection{Dynamic Semantics}
 
+Reticulated Python is not only a practical gradual type extension,
+but serves as an experiment of exploring different dynamic semantics
+
 \subsection{Other Features}
+
+There are other features of Reticulate.
+In particular, since it is not always possible to know what module would be loaded
+at runtime, static typechecking sometimes occurs right after module is loaded.
+
+Despite Python syntax supports annotation at function definition,
+it does not provide a way of annotating local variables with tyoe.
+Instead, Reticulated takes a step further and perform dataflow-based type inference.
 
 \section{C$^\sharp$ 4.0}
 

@@ -32,7 +32,8 @@ and languages make different choices depending on their needs.
 In this chapter, we start off by discussing static and dynamic type systems,
 which motivates research works that attempted to combine both within one system
 in order to take benefits from two,
-which in return gives birth to gradual typing.
+which in return gives birth to many type systems,
+one among which is gradual typing.
 
 \section{Strengths and Weaknesses of Static and Dynamic Typing}
 
@@ -45,15 +46,15 @@ This section discusses advantages and disadvantages of both.
 \newcommand{\tbool}{\textbf{bool}}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
 
-In this section we use $T_0, T_1, \ldots$ for type variables.
+In this section we use $\tau_0, \tau_1, \ldots$ for type variables.
 $\tbool$, $\tnum$ and $\tstr$ are types of
-boolean values, fixed point numbers and strings respectively.
-And the type notation for functions that takes as input $T_0, T_1, \ldots$
-and returns a value of $T_2$ is $\tarr{(T_0, T_1, \ldots)}{T_2}$.
-We use $o : T$ to mean that a language object $o$ is assigned a type $T$.
+boolean values, numbers and strings respectively.\
+Tuple types are notated as $(\tau_0, \tau_1, \ldots)$,
+and the type notation for functions that takes as input a value of type $\tau_0$
+and returns a value of $\tau_1$ is $\tarr{\tau_0}{\tau_1}$.
+We use $o : \tau$ to mean that a term $o$ is assigned type $\tau$.
 For example $f : \tarr{(\tnum, \tnum)}{\tnum}$ is a function that
-takes two numbers as input and returns a number.
-In addition, tuple types are notated as $(T_0, T_1, \ldots)$
+takes a tuple of two numbers as input and returns a number.
 
 \subsection{Static Type Systems}
 
@@ -85,6 +86,7 @@ A dynamic language would have to figure out types of \textbf{a} and \textbf{b} a
 these decisions can be made ahead of execution,
 resulting in improved performance at runtime.
 
+%TODO run-on
 Besides extra effort of maintaining type annotations,
 the disadvantage of a statically type language often lies in the lack of flexibility:
 if a program need to deal with data whose structure is unknown at compile time,
@@ -105,7 +107,7 @@ make frequent changes to structure of variables and functions, but these feature
 
 \subsection{Dynamic Type Systems}
 
-Dynamic type system does typechecking at runtime, which is best suited for
+Dynamic type systems do typechecking at runtime, which is best suited for
 languages designed for scripting and fast prototyping.
 A shell script, for example, runs other executables and feeds one's output to another, effectively gluing programs together.
 In such a case, we have little to no knowledge about these executables ahead of time,

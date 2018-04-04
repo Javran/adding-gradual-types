@@ -402,14 +402,55 @@ Instead, Reticulated takes a step further and perform dataflow-based type infere
 \section{C$^\sharp$ 4.0}
 
 While we have seen many examples that a dynamically typed language gets
-gradual type extensions, C$^\sharp$ is a statically typed language
-that extends towards gradual typing.
+gradual type extensions, Bierman, Meijer and Torgersen's work on
+C$^\sharp$ 4.0 shows us a practical example of statically typed language
+extends towards gradual typing.
+This extension makes interoperation between statically and dynamically typed code
+more convenient and brings in features meant for dynamically typed languages.
 
 \subsection{Interaction with Dynamic Objects}
 
-syntactic improvement
+The following code snippet shows how C$^\sharp$ 3.0 interact with JavaScript:
+
+\begin{verbatim}
+...
+ScriptObject map = win.CreateInstance("VEMap", "myMap");
+map.Invoke("LoadMap");
+...
+string latitude, longtitude;
+...
+var x = win.CreateInstance("VELatLong", latitude, longitude)
+var pin = map.Invoke("AddPushpin", x);
+pin.Invoke("SetTitle", name);
+...
+\end{verbatim}
+
+In order to interact with JavaScript, method calls
+are made using string-based interface, which is verbose, fragile to maintain.
+
+With C$^\sharp$ 4.0, the source code can be simplified to:
+
+\begin{verbatim}
+...
+dynamic map = win.CreateInstance("VEMap", "myMap");
+map.LoadMap();
+...
+string latitude, longtitude;
+...
+var x = win.CreateInstance("VELatLong", latitude, longitude)
+var pin = map.AddPushpin(x);
+pin.SetTitle(name);
+...
+\end{verbatim}
+
+Notice how types are changed to \textbf{dynamic} and methods are called
+as if there are regular objects.
+These improvements are more than just syntactic: gradual typing is implemented
+so that typechecking can be involved and this part of code can benefit from it.
 
 \subsection{Using Features Intended For Dynamic Languages}
+
+
 
 dynamic Object ("Expando Object")
 

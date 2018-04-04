@@ -450,9 +450,26 @@ so that typechecking can be involved and this part of code can benefit from it.
 
 \subsection{Using Features Intended For Dynamic Languages}
 
+The extension also makes available some features meant for dynamic languages
+directly in C$^\sharp$, one example is the use of \textbf{ExpandoObject}
 
+\begin{verbatim}
+...
+dynamic contact = new ExpandoObject();
+contact.Name = "Erik"
+contact.Address = new ExpandoObject();
+contact.Address.State = "WA";
+...
+\end{verbatim}
 
-dynamic Object ("Expando Object")
+For a statically typed language, to maintain structured object,
+one either needs to declare a record type with matching structure,
+or use a dictionary in which one key and one value type should be declared.
+However, with the introduction of \textbf{ExpandoObject},
+by simply assigning values to properties of it,
+they are brought into existence without boilerplate about type casts.
+This helps in terms of fast prototyping, in which programmers cares more about
+having a working implementation than maintain type precision.
 
 \section{From Smalltalk to Gradualtalk}
 

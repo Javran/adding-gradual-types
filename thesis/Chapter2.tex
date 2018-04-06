@@ -477,12 +477,47 @@ Smalltalk is a language of highly dynamic nature:
 it supports live programming, which means programs with incomplete
 methods should be accepted, and programmers in Smalltalk relies on
 idioms that are tricky to type properly.
-Despite not having many extensions in terms of type system,
 Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk shows
 us a well combination of various features in order to extend Smalltalk
 into a gradual typed language.
 
-\subsection{Annotate Programs with Types}
+\subsection{Annotating Programs with Types}
+
+In Smalltalk there are objects that receives and processes messages.
+The following example computes euclidean distance for points:
+
+\begin{verbatim}
+Point >> distanceTo: p
+  | dx dy |
+  dx := self x - p x.
+  dy := self y - p y.
+  ^ (dx squared + dy squared) sqrt
+\end{verbatim}
+
+Gradualtalk extends this syntax that allows
+type annotation on parameter, return value and local variables.
+
+\begin{verbatim}
+Point >> (Number) distanceTo: (Point) p
+  | dx dy |
+  dx := self x - p x
+  dy := self y - p y
+  ^ (dx squared + dy squared) sqrt
+\end{verbatim}
+
+Since local variable \textbf{dx} and \textbf{dy} does not explicit type-annotated,
+they receive \textbf{Dyn} as default type.
+
+Blocks are basic features in Smalltalk,
+whose corresponding types are available in Gradualtalk in the form of normal function types.
+
+\begin{verbatim}
+Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
+  ...
+\end{verbatim}
+
+This definition expects \textbf{metricBlock} to be block
+that takes as argument two points, and returns a number.
 
 \subsection{Self Types}
 

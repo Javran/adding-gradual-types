@@ -521,6 +521,24 @@ that takes as argument two points, and returns a number.
 
 \subsection{Self Types}
 
+One practice in Smalltalk is to return object itself for setters
+to allow chained calls:
+
+\begin{verbatim}
+Point >> (Point) y: (Number) aNumber
+  y := aNumber.
+\end{verbatim}
+
+Notice that if we want to extend this class in future,
+its setter with be tagged with type \textbf{Point} and some
+type information will be lost in the way.
+To deal with this problem, Gradualtalk introduces self type:
+
+\begin{verbatim}
+Point >> (Self) y: (Number) aNumber
+y := aNumber.
+\end{verbatim}
+
 \subsection{Nominal and Structural Types}
 
 TODO

@@ -4,28 +4,17 @@
 
 \chapter{Extending existing languages}
 
-(Alternative opening) Despite that gradual type systems are well-studied topic
-in theoretical world, extending existing languages to support it
-is far from trivial task: practical languages deal with
-various kinds of primitive data type, structured data,
-and successful extension requires understanding of 
-language features, idiom and practice commonly used among its community
-needs to be carefully understood to allow a smooth and non-intrusive experience.
-This chapter shows us the syntactic aspect of research works:
-namely how these extensions make improvements to programming experiences.
+Despite that gradual type systems are well-studied research topics,
+extending existing languages to support them is far from trivial task.
+To name few differences, while theoretical type systems assume primitive types as simple as just numbers and booleans,
+a practical language have various kinds of them including integers, floating numbers, strings and arrays,
+which have not been addressed much.
+In addition, language-specific features, idioms and common practice needs
+to be carefully studied to allow existing code and language users to transit smoothly into
+the extended language.
 
-Gradual type system features optional type annotations with soundness,
-which is compatible with both statically and dynamically typed programs,
-type safety are preserved and semantics are kept consistent.
-This makes it an ideal type system that
-existing languages can be extended to support.
-
-In this chapter, we will explore some research works that extends existing languages
-to support gradual typing. As we will see, this is not a trivial task:
-since it requires the extended language to still support existing programs written
-in the original language with little to none modification,
-language features, idiom and practice commonly used among its community
-needs to be carefully understood to allow a smooth and non-intrusive experience.
+In this chapter, we will explore some research works and focus on the syntactic aspects of them
+to show improvements to programming experience with the introduction of gradual typing.
 
 \section{From JavaScript to Safe TypeScript}
 

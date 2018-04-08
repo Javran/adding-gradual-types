@@ -267,9 +267,16 @@ more type errors to be detected at runtime.
 There are other type systems that bring benefits of the two together.
 Cartwright and Fagan's introduced soft typing, which is a type system
 that programers do not write type annotations but use type inference to
-assign appropriate types to terms, and runtime checks are inserted as needed. 
-
-%TODO
+assign appropriate types to terms, and runtime checks are inserted as needed.
+The drawback of this design is that programmers do not have control over types.
+%TODO probably more drawbacks
+Quasi-static typing is another attempt, with the idea of dynamic type in use,
+it chooses to use a subtyping relation and allows both up-casts and down-casts.
+A second pass of plausibility checking detects incompatible casts and signals the program
+in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
+in the process of attempting the proof, Siek and Taha finds a better solution, 
+which results in gradual typing that we have seen today.
+%TODO? 
 
 \subsection{Discussion}
 

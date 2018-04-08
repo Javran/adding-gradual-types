@@ -221,18 +221,6 @@ There might be no type annotation in dynamically typed programs,
 in which case types of terms are default to $\dyn$, which allows
 then to typecheck, without raising type errors.
 
-%\subsubsection{Gradually Typed Lambda Calculus}
-
-%vs. simply typed and untyped
-
-%\subsubsection{Blame Calculus}
-
-%For providing a means to track down source of violation correctly.
-
-%\subsubsection{Gradual Guarantee}
-
-%What does it mean to be gradually typed (formally)
-
 \subsubsection{Optional Type Annotation and ``pay-as-you-go''}
 
 So far we have seen that gradual type system introduces a dynamic type,
@@ -276,18 +264,12 @@ more type errors to be detected at runtime.
 
 \subsection{Alternatives}
 
-There are other alternatives to gradual typing.
+There are other type systems that bring benefits of the two together.
+Cartwright and Fagan's introduced soft typing, which is a type system
+that programers do not write type annotations but use type inference to
+assign appropriate types to terms, and runtime checks are inserted as needed. 
 
-Soft typing: introduces type inference for dynamically-typed languages.
-
-Contracts: is a runtime system.
-
-Liquid type: uses logic terms and verify them through a solver.
-
-Refinement type: works similarly?
-
-Dependent type
-%TODO lambda calculus all the way down?
+%TODO
 
 \subsection{Discussion}
 

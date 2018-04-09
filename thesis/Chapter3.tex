@@ -8,17 +8,17 @@ Having explored syntactic improvements to gradual type extensions,
 this chapter discusses how there are implemented to unveil common and language-specific
 challenges and solutions about them.
 
-\section{Extension to Type Systems}
+\section{Extensions to Type Systems}
 
 Supporting Gradual type system consists of two parts.
 First, it requires traditional static types including basic type, function type and types for structural data.
 Second, it is necessary to introduce a dynamic type to allow incomplete type information to present in programs.
 
-\subsection{Extending Static Type Systems}
+\subsection{Extending From Static Type Systems}
 
-\subsection{Extending Dynamic Type Systems}
+\subsection{Extending From Dynamic Type Systems}
 
-\subsection{Deal with Subtyping}
+\section{Dealing with Structural Data}
 
 (Need to be re-organized)
 
@@ -36,8 +36,6 @@ typing structural data
 nominal
 - structural
 
-\section{Object-Oriented Programming}
-
 object identity
 
 giving `this` / `self` special type treatment
@@ -46,7 +44,7 @@ inheritance (could merge with subtyping)
 
 variable / member mutation
 
-\section{Improving Performance}
+\section{Other Performance Concerns}
 
 cast insertion
 
@@ -54,9 +52,7 @@ Large array
 
 runtime check overhead
 
-language-specific challenges
-
-
+\section{Language-specific Challenges}
 
 %Chapter 4
 \renewcommand{\thechapter}{4}

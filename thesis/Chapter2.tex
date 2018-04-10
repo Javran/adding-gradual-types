@@ -560,4 +560,35 @@ is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
 
 \subsection{Structural and Nominal Types}
 
-TODO
+A structural type describes the shape of an object.
+
+\begin{verbatim}
+RBParser >> bracketsOfNode: ({left (-> Integer) . right (->Integer)}) node
+\end{verbatim}
+
+The method above defines the argument type of \texttt{node} to have 2 methods:
+\texttt{left} and \texttt{right} and both of them will return an integer when invoked.
+
+A nominal type, on the other hand, is induced by classes
+(for example an instance of \texttt{String} will have \texttt{String} type).
+In addition, subtyping relations of them are formed from existing inheritance relation.
+
+Gradual type managed to unify them in an interesting way.
+
+\begin{verbatim}
+RBParser >> bracketsOfNode: (RBNode {left (-> Integer) . right (->Integer)}) node
+\end{verbatim}
+
+Note that in addition to the structural type we have seen,
+\texttt{RBNode} is a nominal type, the type of \texttt{node} above
+limits the value to be not just an instance that understands certain methods,
+but also requires it to be an instance of \texttt{RBNode}.
+
+\subsection{Type Aliases}
+
+Gradualtalk supports type aliases. This does not expand expressiveness of type itself,
+but it make reusing existing types convenient.
+
+With type aliases comes the concepts of protocols, which are just type aliases
+for structural and nominal types.
+

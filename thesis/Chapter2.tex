@@ -538,6 +538,26 @@ Point >> (Self) y: (Number) aNumber
 y := aNumber.
 \end{verbatim}
 
-\subsection{Nominal and Structural Types}
+If any other class inherits from it, the self type will make sure
+to point to that class instead of sticking with \textbf{Point},
+this allows type information to be preserved.
+
+\subsection{Union Types}
+
+Gradualtalk supports union types, which is useful when
+source code contains different branches and each of them might return different types.
+
+\begin{verbatim}
+Boolean >> (a | b) ifTrue: (-> a) trueBlock ifFalse: (-> b) falseBlock
+\end{verbatim}
+
+Note that \textbf{trueBlock} and \textbf{falseBlock} might return
+different types, allowing this method to have \texttt{a} or \texttt{b}
+will not be satisfactory, and simply using \texttt{Dyn} type
+returns in a lose of information.
+Gradualtalk solves this problem by introducing union types: \texttt{a | b}
+is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
+
+\subsection{Structural and Nominal Types}
 
 TODO

@@ -262,6 +262,22 @@ more type errors to be detected at runtime.
 
 %TODO: from Gradual Typing for Functional Languages
 
+
+\subsubsection{Gradual Guarantee}
+
+Regarding the term gradual typing itself,
+Siek, Vitousek, Cimini and Boyland's work gives a detailed explanation of
+the original intention.
+Several works we are going to discuss in the following few chapters respects
+such idea:
+
+\begin{itemize}
+	\item Gradual typing includes both fully static and fully dynamic
+	\item Gradual typing provides sound interoperability
+	\item Gradual typing enables gradual evolution
+\end{itemize}
+
+
 \subsection{Alternatives}
 
 There are other type systems that bring benefits of the two together.
@@ -274,6 +290,7 @@ Quasi-static typing is another attempt, with the idea of dynamic type in use,
 it chooses to use a subtyping relation and allows both up-casts and down-casts.
 A second pass of plausibility checking detects incompatible casts and signals the program
 in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
+and it does not statically catch all type errors (TODO: ref)
 in the process of attempting the proof, Siek and Taha finds a better solution, 
 which results in gradual typing that we have seen today.
 %TODO? 

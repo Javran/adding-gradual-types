@@ -12,17 +12,22 @@ and their solutions.
 
 \section{Extensions to Type Systems}
 
-Supporting Gradual type system consists of two parts.
-First, it requires traditional static types: basic type, function type and types for structural data.
-Second, it is necessary to introduce a dynamic type to allow incomplete type information to present in programs.
+Gradual type system supports both fully static and fully dynamic typing,
+which requires support for traditional static types including
+basic type, function type and types for structural data
+and a notion of dynamic type to allow presence of partial type information
+in the system. And static typechecking and runtime checks should work together
+to establish soundness for the extended languages.
 
-\subsection{Extending From Static Type Systems}
+In addition to this, interesting extensions have been made
+for several languages we have discussed so far to provide better gradual
+typing support.
 
-%TODO: example: adjustment to type system, insert runtime casts
+\subsection{Differential Typing}
 
-\subsection{Extending From Dynamic Type Systems}
+\subsection{Occurrence Typing}
 
-%TODO: need to introduce types and implement static type checking
+\subsection{Bidirectional Typing}
 
 \section{Dealing with Structural Data}
 

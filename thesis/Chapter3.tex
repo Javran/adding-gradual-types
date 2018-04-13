@@ -23,11 +23,31 @@ In addition to this, interesting extensions have been made
 for several languages we have discussed so far to provide better gradual
 typing support.
 
+\subsection{Towards Full Coverage}
+
+The common target for making an extension of gradual typing is to
+have support for typechecking both ahead of time and during runtime.
+
+For an existing statically typed language, it needs runtime checks,
+the extension is made through insertion of runtime casts.
+
+Dynamically typed languages on the other hand, faces more challenges:
+because of their highly dynamic nature, sometime it is difficult
+to tell which module will be loaded at runtime.
+
 \subsection{Differential Typing}
+
+The purpose of combining static and dynamic typing is to reduce
+runtime checks when checks could have been performed once ahead of execution.
 
 \subsection{Occurrence Typing}
 
+For a language that makes heavy  se of control flow to dispatch actions,
+occurrence typing looks nature.
+
 \subsection{Bidirectional Typing}
+
+A carefully implemented 2-phase typechecking preserves transitivity of subtyping.
 
 \section{Dealing with Structural Data}
 

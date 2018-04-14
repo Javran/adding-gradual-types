@@ -297,19 +297,23 @@ which results in gradual typing that we have seen today.
 
 \subsection{Discussion}
 
-Despite that there are various research works that combines
+Among various research works that combines
 benefit of static and dynamic type checking
-gradual typing remains one of the most popular approach:
-thanks to gradual guarantee, an existing language can be extended to
-support gradual typing while all existing programs written in it is still valid
-with no difference in semantics. In addition, the cost of gradual typing pays
-as programmers need.
+gradual typing remains one of the most popular approach.
+In the sprite of gradual guarantee, gradual typing extensions aim at
+making all existing programs written in the original one still valid with little difference in semantics.
+In addition, unlike other approaches, programmers have better control over should and should not be typechecked.
 
-%TODO: more to say
+Despite that gradual type systems are well-studied research topics,
+extending existing languages to support them is far from trivial task.
+To name few differences, while theoretical type systems assume primitive types as simple as just numbers and booleans,
+a practical language have various kinds of them including integers, floating numbers, strings and arrays,
+which have not been addressed much.
+In addition, language-specific features, idioms and common practice needs
+to be carefully studied to allow existing code and language users to transit smoothly into
+the extended language. In this survey we will explore literatures that extends existing languages to support gradual typing.
+In chapter 2, we will focus on benefits of making these extensions. Chapter 3 discusses and categorizes common and language-specific
+challenges researchers have to face and solutions to them.
+Some of these challenges, however, still remains as open questions, which will be covered in chapter 4.
 
-
-However, it is not a straightforward work to support gradual typing for existing languages.
-In chapter 2, we will explore some research works that extends existing popular languages.
-Common challenges and solutions while extending an existing language is discussed in chapter 3.
-Open questions in chapter 4.
 

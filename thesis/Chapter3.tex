@@ -23,17 +23,18 @@ In addition to this, interesting extensions have been made
 for several languages we have discussed so far to provide better gradual
 typing support.
 
-\subsection{Towards Full Coverage}
+\subsection{Extra Runtime for Dynamic Languages}
 
-The common target for making an extension of gradual typing is to
-have support for typechecking both ahead of time and during runtime.
+For dynamically typed languages to have typechecking abilities at runtime,
+several languages implements external libraries.
 
-For an existing statically typed language, it needs runtime checks,
-the extension is made through insertion of runtime casts.
+Safe TypeScript is implemented as a compiler pass of TypeScript,
+which does static typechecking to further detect potential errors,
+and type casts are inserted to several locations. These casts are calls
+to Safe TypeScript runtime that performs typechecking logic and maintains
+potential runtime type information on its own.
 
-Dynamically typed languages on the other hand, faces more challenges:
-because of their highly dynamic nature, sometime it is difficult
-to tell which module will be loaded at runtime.
+
 
 \subsection{Differential Typing}
 
@@ -42,7 +43,7 @@ runtime checks when checks could have been performed once ahead of execution.
 
 \subsection{Occurrence Typing}
 
-For a language that makes heavy  se of control flow to dispatch actions,
+For a language that makes heavy use of control flow to dispatch actions,
 occurrence typing looks nature.
 
 \subsection{Bidirectional Typing}

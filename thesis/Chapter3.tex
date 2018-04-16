@@ -58,13 +58,21 @@ or a working source code in PLT Scheme ready for execution.
 \subsection{Occurrence Typing}
 
 Supporting gradual typing requires having matching types for values and functions in the languages.
-
-Instead of using classes or objects like other languages do,
+Most extensions we have discussed have concepts of classes and objects, they are typed either
+structurally or nominally.
+However, instead of using classes or objects like other languages do,
 typical Scheme programs prefers using composed data structures as simple as just pairs, vectors
 and they are distinguished through testing the shape of the value or
 symbol comparison.
-
-Typed Scheme introduces occurrence typing to allow using predicates as types.
+To solve this potential mismatch between values and types, occurrence typing is introduced.
+The idea is that the difference occurrence of the same variable would have different types
+depending on the context where it occurs.
+Types are defined by specifying some boolean-returning unary functions as type discriminators.
+When such a function \texttt{p?} in question returns non-falsy value for a value \texttt{v},
+the type system will consider \texttt{v} to have value \texttt{p}.
+This way, a \texttt{if}-expression that depends of value of \texttt{(p? v)},
+will have its two branches with different types of \texttt{v}, one with type \texttt{p}
+and another with non-\texttt{p} type.
 
 \subsection{Bidirectional Typing}
 

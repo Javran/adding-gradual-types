@@ -55,6 +55,14 @@ or a working source code in PLT Scheme ready for execution.
 
 \subsection{Union Types}
 
+Practical languages utilize control flows to have different behaviors for different situations.
+For a dynamic language, an expression can usually return values of various possible types.
+While simply assigning $\dyn$ as the type of the whole expression will work,
+it is less useful as type information is lost in the process.
+The solution is to represent the sum of these types.
+
+% TODO
+
 \subsection{Occurrence Typing}
 
 %TODO: to be clear about what to say in ch2
@@ -75,10 +83,6 @@ the type system will consider \texttt{v} to have value \texttt{p}.
 This way, a \texttt{if}-expression that depends of value of \texttt{(p? v)},
 will have its two branches with different types of \texttt{v}, one with type \texttt{p}
 and another with non-\texttt{p} type.
-
-\subsection{Bidirectional Typing}
-
-A carefully implemented 2-phase typechecking preserves transitivity of subtyping.
 
 \section{Dealing with Structural Data}
 

@@ -85,9 +85,10 @@ and another with non-\texttt{p} type.
 \section{Dealing with Structural Data}
 
 Practical languages come with support for structural data in which multiple values
-can be combined together to construct one single object, and these values
-can be retrieved later using a key or index into that object.
-This allows programmers to organize related data together for further processing.
+can be combined together to construct one single value, which is usually called an object.
+These values can be retrieved later using a key or index into that object.
+Imperative languages would even allow values in an object to be removed or updated at runtime,
+which complicates some support towards gradual typing.
 It is such an important concept that all languages we have discussed so far study
 it to some extent.
 
@@ -102,10 +103,19 @@ it to some extent.
 
 The purpose of combining static and dynamic typing is to reduce
 runtime checks when checks could have been performed once ahead of execution.
+Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
 
 \subsection{Object-Oriented Programming}
 
+The idea of structural data goes further: object-oriented programming adds methods to objects,
+and them to be shared by inheritance.
+This increase flexibility as different runtime behavior are enabled even if method of the same name and type signature is called.
+
 \subsection{Nominal or Structural}
+
+Structural type can be useful for languages that uses the practice of duck typing, as only the shape of types are required to be checked.
+However, nominal types can also find its uses when it comes to object-oriented programming,
+as structural type does not account for inheritance that object-oriented programming relies heavily on.
 
 \subsection{Recursive Data Types}
 
@@ -127,11 +137,10 @@ variable / member mutation
 
 \section{Other Performance Concerns}
 
-cast insertion
+\subsection{Large Arrays}
 
-Large array
-
-runtime check overhead
+For programs that need runtime typechecks on large arrays,
+the overhead could be wasteful but significant.
 
 \section{Language-specific Challenges}
 

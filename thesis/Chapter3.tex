@@ -34,13 +34,29 @@ explicit types are optional for gradual typing.
 
 \subsection{Essential Extensions}
 
-\subsubsection{Extension from Dynamic Languages}
+We are looking at research works that falls into two different type disciplines:
+JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages.
+And $\csharp$ 3.0 is statically typed language.
+While dynamically typed languages share some similarity in their implementations.
+The one from $\csharp$ 3.0 is quite a different story.
+
+\subsubsection{Extension from Dynamically Typed Languages}
 
 The common approach for dynamic languages to make the extension
-is to first perform static typechecking in the presence of dynamic types,
-then if it is successful, translate programs into original language.
-This ensures maximum compatibility with original language, and
-the implementation should work across different implementations of the same language.
+is to first perform static typechecking in the presence of dynamic types.
+If it is successful, programs written in extended languages are then translated into original languages.
+The translated program could contain runtime checks, these checks are either implemented in place or
+make calls to external libraries (which is usually called runtime in short) shipped with
+the extended languages.
+
+This ensures a high compatibility with original languages: source code written in extended language
+can be compiled and then used as if it is written in the original language, and thanks to the fact
+that all existing dynamically typed languages
+we are discussing have decent supports for modern package managers,
+including runtime support is as simple as making a dependency declaration to package metadata.
+Besides, by compiling to the original languages,
+we can ensure that the language implementations
+ are independent of specific implementations of the original languages.
 
 Safe TypeScript is implemented as a compiler pass of TypeScript.
 In addition to the first pass that performs static typecheck and erases all type infomation

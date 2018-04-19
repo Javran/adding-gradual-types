@@ -391,6 +391,146 @@ Despite Python syntax supports annotation at function definition,
 it does not provide a way of annotating local variables with tyoe.
 Instead, Reticulated takes a step further and perform dataflow-based type inference.
 
+
+\section{From Smalltalk to Gradualtalk}
+
+Smalltalk is a language of highly dynamic nature:
+it supports live programming, which means programs with incomplete
+methods should be accepted, and programmers in Smalltalk relies on
+idioms that are tricky to type properly.
+Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk shows
+us a well combination of various features in order to extend Smalltalk
+into a gradual typed language.
+
+\subsection{Annotating Programs with Types}
+
+In Smalltalk there are objects that receives and processes messages.
+The following example computes euclidean distance for points:
+
+\begin{verbatim}
+Point >> distanceTo: p
+| dx dy |
+dx := self x - p x.
+dy := self y - p y.
+^ (dx squared + dy squared) sqrt
+\end{verbatim}
+
+Gradualtalk extends this syntax that allows
+type annotation on parameter, return value and local variables.
+
+\begin{verbatim}
+Point >> (Number) distanceTo: (Point) p
+| dx dy |
+dx := self x - p x
+dy := self y - p y
+^ (dx squared + dy squared) sqrt
+\end{verbatim}
+
+Since local variable \textbf{dx} and \textbf{dy} does not explicit type-annotated,
+they receive \textbf{Dyn} as default type.
+
+Blocks are basic features in Smalltalk,
+whose corresponding types are available in Gradualtalk in the form of normal function types.
+
+\begin{verbatim}
+Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
+...
+\end{verbatim}
+
+This definition expects \textbf{metricBlock} to be block
+that takes as argument two points, and returns a number.
+
+\subsection{Self Types}
+
+One practice in Smalltalk is to return object itself for setters
+to allow chained calls:
+
+\begin{verbatim}
+Point >> (Point) y: (Number) aNumber
+y := aNumber.
+\end{verbatim}
+
+Notice that if we want to extend this class in future,
+its setter with be tagged with type \textbf{Point} and some
+type information will be lost in the way.
+To deal with this problem, Gradualtalk introduces self type:
+
+\begin{verbatim}
+Point >> (Self) y: (Number) aNumber
+y := aNumber.
+\end{verbatim}
+
+If any other class inherits from it, the self type will make sure
+to point to that class instead of sticking with \textbf{Point},
+this allows type information to be preserved.
+
+\subsection{Union Types}
+
+Gradualtalk supports union types, which is useful when
+source code contains different branches and each of them might return different types.
+
+\begin{verbatim}
+Boolean >> (a | b) ifTrue: (-> a) trueBlock ifFalse: (-> b) falseBlock
+\end{verbatim}
+
+Note that \textbf{trueBlock} and \textbf{falseBlock} might return
+different types, allowing this method to have \texttt{a} or \texttt{b}
+will not be satisfactory, and simply using \texttt{Dyn} type
+returns in a lose of information.
+Gradualtalk solves this problem by introducing union types: \texttt{a | b}
+is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
+
+\subsection{Structural and Nominal Types}
+
+A structural type describes the shape of an object.
+
+\begin{verbatim}
+RBParser >> bracketsOfNode: ({left (-> Integer) . right (->Integer)}) node
+\end{verbatim}
+
+The method above defines the argument type of \texttt{node} to have 2 methods:
+\texttt{left} and \texttt{right} and both of them will return an integer when invoked.
+
+A nominal type, on the other hand, is induced by classes
+(for example an instance of \texttt{String} will have \texttt{String} type).
+In addition, subtyping relations of them are formed from existing inheritance relation.
+
+Gradual type managed to unify them in an interesting way.
+
+\begin{verbatim}
+RBParser >> bracketsOfNode: (RBNode {
+left (-> Integer) .
+right (->Integer)
+}) node
+\end{verbatim}
+
+Note that in addition to the structural type we have seen,
+\texttt{RBNode} is a nominal type, the type of \texttt{node} above
+limits the value to be not just an instance that understands certain methods,
+but also requires it to be an instance of \texttt{RBNode}.
+
+Another interesting example is the combination of structural type
+and nominal type \texttt{Dyn}:
+
+\begin{verbatim}
+Canvas >> (Self) drawPoint: (Dyn {x (-> Integer) . y (->Integer)}) point
+... point x. "safe call"
+... point y. "safe call"
+... point z. "not an error, considering point to be Dyn"
+\end{verbatim}
+
+Besides calling \texttt{x} and \texttt{y}, a call to \texttt{z} does not
+raise an error ahead of execution, because \texttt{Dyn} can be casted to allow use of
+\texttt{z}.
+
+\subsection{Type Aliases}
+
+Gradualtalk supports type aliases. This does not expand expressiveness of type itself,
+but it make reusing existing types convenient.
+
+With type aliases comes the concepts of protocols, which are just type aliases
+for structural and nominal types.
+
 \section{C$^\sharp$ 4.0}
 
 While we have seen many examples that a dynamically typed language gets
@@ -463,141 +603,3 @@ they are brought into existence without boilerplate about type casts.
 This helps in terms of fast prototyping, in which programmers cares more about
 having a working implementation than maintain type precision.
 
-\section{From Smalltalk to Gradualtalk}
-
-Smalltalk is a language of highly dynamic nature:
-it supports live programming, which means programs with incomplete
-methods should be accepted, and programmers in Smalltalk relies on
-idioms that are tricky to type properly.
-Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk shows
-us a well combination of various features in order to extend Smalltalk
-into a gradual typed language.
-
-\subsection{Annotating Programs with Types}
-
-In Smalltalk there are objects that receives and processes messages.
-The following example computes euclidean distance for points:
-
-\begin{verbatim}
-Point >> distanceTo: p
-  | dx dy |
-  dx := self x - p x.
-  dy := self y - p y.
-  ^ (dx squared + dy squared) sqrt
-\end{verbatim}
-
-Gradualtalk extends this syntax that allows
-type annotation on parameter, return value and local variables.
-
-\begin{verbatim}
-Point >> (Number) distanceTo: (Point) p
-  | dx dy |
-  dx := self x - p x
-  dy := self y - p y
-  ^ (dx squared + dy squared) sqrt
-\end{verbatim}
-
-Since local variable \textbf{dx} and \textbf{dy} does not explicit type-annotated,
-they receive \textbf{Dyn} as default type.
-
-Blocks are basic features in Smalltalk,
-whose corresponding types are available in Gradualtalk in the form of normal function types.
-
-\begin{verbatim}
-Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
-  ...
-\end{verbatim}
-
-This definition expects \textbf{metricBlock} to be block
-that takes as argument two points, and returns a number.
-
-\subsection{Self Types}
-
-One practice in Smalltalk is to return object itself for setters
-to allow chained calls:
-
-\begin{verbatim}
-Point >> (Point) y: (Number) aNumber
-  y := aNumber.
-\end{verbatim}
-
-Notice that if we want to extend this class in future,
-its setter with be tagged with type \textbf{Point} and some
-type information will be lost in the way.
-To deal with this problem, Gradualtalk introduces self type:
-
-\begin{verbatim}
-Point >> (Self) y: (Number) aNumber
-y := aNumber.
-\end{verbatim}
-
-If any other class inherits from it, the self type will make sure
-to point to that class instead of sticking with \textbf{Point},
-this allows type information to be preserved.
-
-\subsection{Union Types}
-
-Gradualtalk supports union types, which is useful when
-source code contains different branches and each of them might return different types.
-
-\begin{verbatim}
-Boolean >> (a | b) ifTrue: (-> a) trueBlock ifFalse: (-> b) falseBlock
-\end{verbatim}
-
-Note that \textbf{trueBlock} and \textbf{falseBlock} might return
-different types, allowing this method to have \texttt{a} or \texttt{b}
-will not be satisfactory, and simply using \texttt{Dyn} type
-returns in a lose of information.
-Gradualtalk solves this problem by introducing union types: \texttt{a | b}
-is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
-
-\subsection{Structural and Nominal Types}
-
-A structural type describes the shape of an object.
-
-\begin{verbatim}
-RBParser >> bracketsOfNode: ({left (-> Integer) . right (->Integer)}) node
-\end{verbatim}
-
-The method above defines the argument type of \texttt{node} to have 2 methods:
-\texttt{left} and \texttt{right} and both of them will return an integer when invoked.
-
-A nominal type, on the other hand, is induced by classes
-(for example an instance of \texttt{String} will have \texttt{String} type).
-In addition, subtyping relations of them are formed from existing inheritance relation.
-
-Gradual type managed to unify them in an interesting way.
-
-\begin{verbatim}
-RBParser >> bracketsOfNode: (RBNode {
-    left (-> Integer) .
-    right (->Integer)
-  }) node
-\end{verbatim}
-
-Note that in addition to the structural type we have seen,
-\texttt{RBNode} is a nominal type, the type of \texttt{node} above
-limits the value to be not just an instance that understands certain methods,
-but also requires it to be an instance of \texttt{RBNode}.
-
-Another interesting example is the combination of structural type
-and nominal type \texttt{Dyn}:
-
-\begin{verbatim}
-Canvas >> (Self) drawPoint: (Dyn {x (-> Integer) . y (->Integer)}) point
-  ... point x. "safe call"
-  ... point y. "safe call"
-  ... point z. "not an error, considering point to be Dyn"
-\end{verbatim}
-
-Besides calling \texttt{x} and \texttt{y}, a call to \texttt{z} does not
-raise an error ahead of execution, because \texttt{Dyn} can be casted to allow use of
-\texttt{z}.
-
-\subsection{Type Aliases}
-
-Gradualtalk supports type aliases. This does not expand expressiveness of type itself,
-but it make reusing existing types convenient.
-
-With type aliases comes the concepts of protocols, which are just type aliases
-for structural and nominal types.

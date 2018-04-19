@@ -64,6 +64,7 @@ albeit some language extensions do make assumption about implementations of thei
 % Typed Scheme is implemented using PLT Scheme macro system.
 
 % TODO slight issue: TypeScript has 2 static typechecking passes
+% TODO: gradual type with reference?
 
 
 Gradualtalk is an extension to Pharo Smalltalk. It consists of 3 parts:
@@ -135,13 +136,42 @@ and another with non-\texttt{p} type.
 
 \subsection{Parametric Polymorphism}
 
-\section{Runtime Casts}
+(TODO: or mark as Typed Scheme-specific?)
+
+\section{Cast Insertion}
+
+Cast insertion provides mechanism for runtime typechecking.
+During static typechecking, type safety cannot be established in the presence of dynamic types,
+therefore casts are inserted in corresponding positions of the program. These casts are functions
+that takes a single value, checks whether the value is of the expected type then either
+raises type errors or resume the program with casted value.
+
+Unlike static typechecking, cast insertion has large impacts on runtime performance of a program.
+Many strategies of performing cast insertion are proposed and explored to reduce its overhead.
 
 \subsection{Object Proxy}
 
+Originally described by Siek and Taha, runtime objects are accessed through a proxy to
+allow field writes and method calls to be monitored.
+
 \subsection{Shallow Tagging}
 
-\subsection{Monotonic approach}
+Shallow tagging approach is used by Safe TypeScript and Reticulated Python as transient mode:
+instead of tagging objects deeply, they are only tagged up to one layer deep. Accessing deeper 
+into the structure causes invariants to propagate.
+
+\subsection{Monotonic Approach}
+
+Monotonic approach have the effect of locking down objects into precise types.
+It has the benefit that runtime information can be trimmed to reduce overhead at long run.
+
+\subsection{Type Dictionary}
+
+This approach is used by Gradualtalk, but can also be adapted to other languages of similar nature:
+in Smalltalk, certain classes are not allowed to be modified because
+the virtual machine relies on them to implement fundamental behaviors.
+Therefore language implementor maintains a type dictionary that keeps type information for objects
+instead of tagging directly on object themselves.
 
 \section{Dealing with Structural Data}
 
@@ -167,6 +197,8 @@ runtime checks when checks could have been performed once ahead of execution.
 Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
 
 \subsection{Support Field Mutation}
+
+
 
 \subsection{Object-Oriented Programming}
 

@@ -42,11 +42,12 @@ The one from $\csharp$ 3.0 is quite a different story.
 
 \subsubsection{Extension from Dynamically Typed Languages}
 
-The common approach for dynamic languages to make the extension
+The approach used by Safe TypeScript and Reticulated Python
 is to first perform static typechecking in the presence of dynamic types.
 If it is successful, programs written in extended languages are then translated into original languages.
-The translated program could contain runtime checks, these checks are either implemented in place or
-make calls to external libraries (which is usually called runtime in short) shipped with
+The translated program could contain runtime checks with some values instrumented,
+these checks and instruments are either implemented by inserting expressions or statements in place or
+making calls to external libraries (which is usually called runtime in short) shipped with
 the extended languages.
 
 This ensures a high compatibility with original languages: source code written in extended language
@@ -55,20 +56,15 @@ that all existing dynamically typed languages
 we are discussing have decent supports for modern package managers,
 including runtime support is as simple as making a dependency declaration to package metadata.
 Besides, by compiling to the original languages,
-we can ensure that the language implementations
- are independent of specific implementations of the original languages.
+we can to some extent be confident that the language implementations
+are independent of specific implementations of the original languages,
+albeit some language extensions do make assumption about implementations of their original languages.
 
-Safe TypeScript is implemented as a compiler pass of TypeScript.
-In addition to the first pass that performs static typecheck and erases all type infomation
-to produce code in JavaScript, it inserts a second pass that
-does its own static typechecking to further detect potential errors,
-and type casts are inserted to several locations instead of being completed removed.
-These casts are calls to Safe TypeScript runtime that performs typechecking logic and maintains
-potential runtime type information on its own.
+% Soundness of Typed Scheme?
+% Typed Scheme is implemented using PLT Scheme macro system.
 
-Reticulated Python is implemented as a source-to-source compiler
-in Python 3. Runtime casts are translated into calls to an external library
-that authors have developed.
+% TODO slight issue: TypeScript has 2 static typechecking passes
+
 
 Gradualtalk is an extension to Pharo Smalltalk. It consists of 3 parts:
 the core allows representing types in Smalltalk, the typechecker
@@ -80,18 +76,42 @@ Typed Scheme takes a similar approach: the implementation is a macro
 This phase either results in static type error being reported,
 or a working source code in PLT Scheme ready for execution.
 
-\subsection{Extension from A Bidirectional Type System}
+\subsection{Extension from A Static Type System}
 
+$\csharp$ is the only statically typed language that we have explored in this survey.
+Similar to Siek's original approach, the compiler assign types to terms using built-in knowledge,
+explicit type annotations and type inference, then the language is translated into another core
+language that consists of less constructions and dynamic types are either turned into
+casts or removed in this process to produce the final bytecode ready for execution.
+
+Unlike traditional static type systems, $\csharp$ 3.0 features bidirectional type system.
+Such a system have two distinct phases: \textbf{type checking} and \textbf{type synthesize}.
+While a type checking phase determines whether a given term can be assigned a particular type,
+type synthesize phase works out the expected type from context for a given term. These two phases
+are intertwined to produce a fully typed program.
+
+(TODO: achieve transitivity)
 
 \subsection{Complementary Extensions}
 
+While essential extensions establish the completeness of gradual type systems,
+complementary extensions are not exactly requirements.
+After all, programmers can always choose not to use explicitly typed terms and 
+leave types of them inferred or defaulted to dynamic types.
+This is however unsatisfactory, as using dynamic types often result in a lost of type information in the process.
+Therefore extra features of type systems are usually introduced to improve type expressiveness and 
+in general make language more convenient to use.
+
 \subsubsection{Union Types}
 
-Practical languages utilize control flows to have different behaviors for different situations.
-For a dynamic language, an expression can usually return values of various possible types.
-While simply assigning $\dyn$ as the type of the whole expression will work,
-it is less useful as type information is lost in the process.
-One solution that avoids making too much changes to programs is to introduce union types.
+Practical languages utilize control flows to have different behaviors depending on situations.
+For a dynamically typed language, an expression can usually return values of various possible types.
+Typed Scheme and Gradualtalk employ union types to allow preserving more type information.
+
+By notation, an union type $U = \tau_0 \cup \tau_1 \cup \ldots$ typechecks as long as the term in question
+typechecks with one of $\tau$.
+
+(TOOD: formal)
 
 \subsubsection{Occurrence Typing}
 
@@ -102,10 +122,9 @@ Most extensions we have discussed have concepts of classes and objects, they are
 structurally or nominally.
 However, instead of using classes or objects like other languages do,
 typical Scheme programs prefers using composed data structures as simple as just pairs, vectors
-and they are distinguished through testing the shape of the value or
-symbol comparison.
+and they are distinguished through testing the shape of the value or symbol comparison.
 To solve this potential mismatch between values and types, occurrence typing is introduced.
-The idea is that the difference occurrence of the same variable would have different types
+The idea is that the difference occurrences of the same variable would have different types
 depending on the context where it occurs.
 Types are defined by specifying some boolean-returning unary functions as type discriminators.
 When such a function \texttt{p?} in question returns non-falsy value for a value \texttt{v},
@@ -113,6 +132,8 @@ the type system will consider \texttt{v} to have value \texttt{p}.
 This way, a \texttt{if}-expression that depends of value of \texttt{(p? v)},
 will have its two branches with different types of \texttt{v}, one with type \texttt{p}
 and another with non-\texttt{p} type.
+
+\subsection{Parametric Polymorphism}
 
 \section{Dealing with Structural Data}
 
@@ -137,35 +158,25 @@ The purpose of combining static and dynamic typing is to reduce
 runtime checks when checks could have been performed once ahead of execution.
 Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
 
+\subsection{Support Field Mutation}
+
 \subsection{Object-Oriented Programming}
 
 The idea of structural data goes further: object-oriented programming adds methods to objects,
 and them to be shared by inheritance.
 This increase flexibility as different runtime behavior are enabled even if method of the same name and type signature is called.
 
-\subsection{Nominal or Structural}
+\subsubsection{Nominal or Structural}
 
 Structural type can be useful for languages that uses the practice of duck typing, as only the shape of types are required to be checked.
 However, nominal types can also find its uses when it comes to object-oriented programming,
 as structural type does not account for inheritance that object-oriented programming relies heavily on.
 
+\subsubsection{Self Types}
+
 \subsection{Recursive Data Types}
 
-using predicates
-constraints as type level computation (requires a type system of sufficient expressiveness)
-
-typing structural data
-
-nominal
-- structural
-
-object identity
-
-giving `this` / `self` special type treatment
-
-inheritance (could merge with subtyping)
-
-variable / member mutation
+\section{Eval function}
 
 \section{Other Performance Concerns}
 
@@ -174,19 +185,30 @@ variable / member mutation
 For programs that need runtime typechecks on large arrays,
 the overhead could be wasteful but significant.
 
+\subsection{Type Erasure}
+
 \section{Language-specific Challenges}
+
+\subsection{TypeScript}
+
+\subsection{Typed Scheme and Macros}
+
+\subsection{Python}
+
+\subsection{Gradualtalk and Live system}
+
+\subsection{$\csharp$ 4.0}
 
 %Chapter 4
 \renewcommand{\thechapter}{4}
 \chapter{Related Work}
 
-(TODO) sound gradual typing is nominally alive and well
-
+% (TODO) sound gradual typing is nominally alive and well
 
 TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
+%\renewcommand{\thechapter}{5}
+
+%\chapter{Future Work}
+
 \renewcommand{\thechapter}{5}
-
-\chapter{Future Work}
-
-\renewcommand{\thechapter}{6}
 \chapter{Conclusion}

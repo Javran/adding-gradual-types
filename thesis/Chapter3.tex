@@ -4,26 +4,37 @@
 
 \chapter{The Way Towards Gradual Typing}
 
-Previous chapter explored the benefits gradual typing
+% TODO: could be organized better?
+
+In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
-This chapter discuss the way towards making the extension:
-common and language-specific challenges the researchers have faced,
-and their solutions.
+There is no canonical way of supporting gradual typing:
+it can be extended for either a static typed language or dynamically typed one,
+and researchers have to make design choices depending on the nature of the language.
+This chapter takes a step further to discuss the way towards making these extensions.
+In general, this is not just an effort of putting theories of gradual typing into practical use,
+but also introductions of new language features that accomplishes the changes
+and helps development for these languages.
 
 \section{Extensions to Type Systems}
 
 Gradual type system supports both fully static and fully dynamic typing,
-which requires support for traditional static types including
+which requires support for traditional types including
 basic type, function type and types for structural data
-and a notion of dynamic type to allow presence of partial type information
-in the system. And static typechecking and runtime checks should work together
-to establish soundness for the extended languages.
+and a notion of dynamic type to allow presence of partial type information in the system.
+Type soundness should be established by a combined work of static and dynamic typechecking.
+Additionally, some other interesting extensions are also introduced to provide better
+supports for gradual typing.
 
-In addition to this, interesting extensions have been made
-for several languages we have discussed so far to provide better gradual
-typing support.
+This section will separate these extensions into two categories:
+\textbf{Essential extensions} are required for a complete gradual typing support;
+and \textbf{complementary extensions} are those that improves type expressiveness
+but a type system without them does not compromise completeness - after all,
+explicit types are optional for gradual typing.
 
-\subsection{Extension from Dynamic Languages}
+\subsection{Essential Extensions}
+
+\subsubsection{Extension from Dynamic Languages}
 
 The common approach for dynamic languages to make the extension
 is to first perform static typechecking in the presence of dynamic types,
@@ -31,10 +42,12 @@ then if it is successful, translate programs into original language.
 This ensures maximum compatibility with original language, and
 the implementation should work across different implementations of the same language.
 
-Safe TypeScript is implemented as a compiler pass of TypeScript,
-which does static typechecking to further detect potential errors,
-and type casts are inserted to several locations. These casts are calls
-to Safe TypeScript runtime that performs typechecking logic and maintains
+Safe TypeScript is implemented as a compiler pass of TypeScript.
+In addition to the first pass that performs static typecheck and erases all type infomation
+to produce code in JavaScript, it inserts a second pass that
+does its own static typechecking to further detect potential errors,
+and type casts are inserted to several locations instead of being completed removed.
+These casts are calls to Safe TypeScript runtime that performs typechecking logic and maintains
 potential runtime type information on its own.
 
 Reticulated Python is implemented as a source-to-source compiler
@@ -53,7 +66,10 @@ or a working source code in PLT Scheme ready for execution.
 
 \subsection{Extension from A Bidirectional Type System}
 
-\subsection{Union Types}
+
+\subsection{Complementary Extensions}
+
+\subsubsection{Union Types}
 
 Practical languages utilize control flows to have different behaviors for different situations.
 For a dynamic language, an expression can usually return values of various possible types.
@@ -61,7 +77,7 @@ While simply assigning $\dyn$ as the type of the whole expression will work,
 it is less useful as type information is lost in the process.
 One solution that avoids making too much changes to programs is to introduce union types.
 
-\subsection{Occurrence Typing}
+\subsubsection{Occurrence Typing}
 
 %TODO: to be clear about what to say in ch2
 

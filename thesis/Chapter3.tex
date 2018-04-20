@@ -29,16 +29,16 @@ supports for gradual typing.
 This section will separate these extensions into two categories:
 \textbf{Essential extensions} are required for a complete gradual typing support;
 and \textbf{complementary extensions} are those that improves type expressiveness
-but a type system without them does not compromise completeness - after all,
-explicit types are optional for gradual typing.
+but a type system without them does not compromise completeness.
 
 \subsection{Essential Extensions}
 
 We are looking at research works that falls into two different type disciplines:
-JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages.
-And $\csharp$ 3.0 is statically typed language.
-While dynamically typed languages share some similarity in their implementations.
-The one from $\csharp$ 3.0 is quite a different story.
+JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages
+%and share some similarity in their implementation.
+$\csharp$ 3.0, on the other hand, is statically typed one.
+%While dynamically typed languages share some similarity in their implementations.
+%The one from $\csharp$ 3.0 is quite a different story.
 
 \subsubsection{Extension from Dynamically Typed Languages}
 
@@ -47,7 +47,7 @@ is to first perform static typechecking in the presence of dynamic types.
 If it is successful, programs written in extended languages are then translated into original languages.
 The translated program could contain runtime checks with some values instrumented,
 these checks and instruments are either implemented by inserting expressions or statements in place or
-making calls to external libraries (which is usually called runtime in short) shipped with
+making calls to external libraries (which is called runtime in short) shipped with
 the extended languages.
 
 This ensures a high compatibility with original languages: source code written in extended language
@@ -64,8 +64,7 @@ albeit some language extensions do make assumption about implementations of thei
 % Typed Scheme is implemented using PLT Scheme macro system.
 
 % TODO slight issue: TypeScript has 2 static typechecking passes
-% TODO: gradual type with reference?
-
+% TODO: gradual type with reference?j
 
 Gradualtalk is an extension to Pharo Smalltalk. It consists of 3 parts:
 the core allows representing types in Smalltalk, the typechecker
@@ -77,7 +76,7 @@ Typed Scheme takes a similar approach: the implementation is a macro
 This phase either results in static type error being reported,
 or a working source code in PLT Scheme ready for execution.
 
-\subsection{Extension from A Static Type System}
+\subsubsection{Extension from A Static Type System}
 
 $\csharp$ is the only statically typed language that we have explored in this survey.
 Similar to Siek's original approach, the compiler assign types to terms using built-in knowledge,
@@ -134,9 +133,10 @@ This way, a \texttt{if}-expression that depends of value of \texttt{(p? v)},
 will have its two branches with different types of \texttt{v}, one with type \texttt{p}
 and another with non-\texttt{p} type.
 
-\subsection{Parametric Polymorphism}
+\subsubsection{Parametric Polymorphism}
 
-(TODO: or mark as Typed Scheme-specific?)
+Typed Scheme and Gradualtalk implements parametric polymorphism, which allows
+one type to be passed as type argument to a generic type.
 
 \section{Cast Insertion}
 

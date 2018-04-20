@@ -138,6 +138,8 @@ and another with non-\texttt{p} type.
 Typed Scheme and Gradualtalk implements parametric polymorphism, which allows
 one type to be passed as type argument to a generic type.
 
+% TODO
+
 \section{Cast Insertion}
 
 Cast insertion provides mechanism for runtime typechecking.
@@ -173,7 +175,7 @@ the virtual machine relies on them to implement fundamental behaviors.
 Therefore language implementor maintains a type dictionary that keeps type information for objects
 instead of tagging directly on object themselves.
 
-\section{Dealing with Structural Data}
+\section{Structural Data and Object-Oriented Programming}
 
 Practical languages come with support for structural data in which multiple values
 can be combined together to construct one single value, which is usually called an object.
@@ -182,25 +184,6 @@ Imperative languages would even allow values in an object to be removed or updat
 which complicates some support towards gradual typing.
 It is such an important concept that all languages we have discussed so far study
 it to some extent.
-
-% The notion can also be extended to object-oriented programming,
-% in which structural data are just objects with only fields and objects are also
-% allowed to have methods who can either share methods from other objects,
-% or defines it own to allow different runtime behavior.
-
-\subsection{Structural Data and Subtyping}
-
-\subsection{Differential Subtyping}
-
-The purpose of combining static and dynamic typing is to reduce
-runtime checks when checks could have been performed once ahead of execution.
-Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
-
-\subsection{Support Field Mutation}
-
-
-
-\subsection{Object-Oriented Programming}
 
 The idea of structural data goes further: object-oriented programming adds methods to objects,
 and them to be shared by inheritance.
@@ -212,20 +195,40 @@ Structural type can be useful for languages that uses the practice of duck typin
 However, nominal types can also find its uses when it comes to object-oriented programming,
 as structural type does not account for inheritance that object-oriented programming relies heavily on.
 
+\subsection{Subtyping}
+
+Subtyping relation comes in 2 favor: nominal types form a chain of superclasses,
+while structural types form subtyping relation depending on the presence of fields and whether
+fields are of consistent types.
+
+\subsection{Differential Subtyping}
+
+The purpose of combining static and dynamic typing is to reduce
+runtime checks when checks could have been performed once ahead of execution.
+Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
+
+\subsection{Field Mutation}
+
 \subsubsection{Self Types}
 
 \subsection{Recursive Data Types}
 
 \section{Eval function}
 
+Languages of highly dynamic nature often come with a function \texttt{eval}, which
+gets a string or abstract syntax tree as input, interprets it as if it is one part of the program
+and return the result of execution. Such functions cannot be precisely typed and several languages
+have to treat \texttt{eval} function specially for this reason.
+
 \section{Other Performance Concerns}
+
+\subsection{Type Erasure}
 
 \subsection{Large Arrays}
 
 For programs that need runtime typechecks on large arrays,
 the overhead could be wasteful but significant.
 
-\subsection{Type Erasure}
 
 \section{Language-specific Challenges}
 

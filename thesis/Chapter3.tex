@@ -8,7 +8,7 @@
 
 In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
-This chapter takes a step further to discuss the way towards making these extensions.
+Now we takes a step further to discuss the way towards making these extensions.
 
 There is no canonical way of supporting gradual typing and design choices have to be made
 depending on various facts like original type discipline, common practice and performance.
@@ -17,15 +17,18 @@ is not just an effort of putting theories of gradual typing into practical use,
 but also introductions of new language features that accomplishes the changes
 and helps development in these languages.
 
+This chapter will explore various issues related to making gradual typing extensions,
+discuss possible solutions and evaluate choices researchers have to made about them. 
+
 \section{Extensions to Type Systems}
 
 Gradual type system supports both fully static and fully dynamic typing,
 which requires support for traditional types including
 basic type, function type and types for structural data
 and a notion of dynamic type to allow presence of partial type information in the system.
-Type soundness should be established by a combined work of static and dynamic typechecking.
-Additionally, some other interesting extensions are also introduced to provide better
-supports for gradual typing.
+While type soundness is established by a combined work of static and dynamic typechecking,
+gradual typing itself opens up possibility of some other interesting extensions
+that makes the extended language more convenient to use and more attractive to programmers.
 
 This section will separate these extensions into two categories:
 \textbf{Essential extensions} are required for a complete gradual typing support;
@@ -34,12 +37,11 @@ but a type system without them does not compromise completeness.
 
 \subsection{Essential Extensions}
 
-We are looking at research works that falls into two different type disciplines:
-JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages
-%and share some similarity in their implementation.
-$\csharp$ 3.0, on the other hand, is statically typed one.
-%While dynamically typed languages share some similarity in their implementations.
-%The one from $\csharp$ 3.0 is quite a different story.
+We are looking at research works that falls into type disciplines of two different nature:
+JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages, from which
+much similarity shows up;
+$\csharp$ 3.0, on the other hand, is statically typed one,
+which have quite a different story about how the extension is implemented.
 
 \subsubsection{Extension from Dynamically Typed Languages}
 

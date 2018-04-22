@@ -88,14 +88,18 @@ Similar to Siek's original approach, the compiler assign types to terms using bu
 explicit type annotations and type inference, then programs are translated into another core
 language that consists of less constructions and dynamic types are either turned into
 casts or removed in this process to produce final executables.
-But unlike original work on functional languages, $\csharp$ 4.0 achieves transitivity on subtyping.
+But unlike original work on functional languages, $\csharp$ 4.0 achieves transitivity on subtyping:
+the problem occurs when dynamic types are involved, allowing subtyping relation to be established
+by using the dynamic type as middle ground. This problem is solved by not allowing dynamic types
+to be converted to any other types.
+
 % TODO: more to say?
 
-Unlike traditional static type systems, $\csharp$ 3.0 features bidirectional type system.
-Such a system have two distinct phases: \textbf{type checking} and \textbf{type synthesize}.
-While a type checking phase determines whether a given term can be assigned a particular type,
-type synthesize phase works out the expected type from context for a given term. These two phases
-are intertwined to produce a fully typed program.
+% Unlike traditional static type systems, $\csharp$ 3.0 features bidirectional type system.
+% Such a system have two distinct phases: \textbf{type checking} and \textbf{type synthesize}.
+% While a type checking phase determines whether a given term can be assigned a particular type,
+% type synthesize phase works out the expected type from context for a given term. These two phases
+% are intertwined to produce a fully typed program.
 
 (TODO: achieve transitivity)
 
@@ -109,16 +113,40 @@ This is however unsatisfactory, as using dynamic types often result in a lost of
 Therefore extra features of type systems are usually introduced to improve type expressiveness and 
 in general make language more convenient to use.
 
-\subsubsection{Union Types}
+\subsubsection{Union Type}
 
-Practical languages utilize control flows to have different behaviors depending on situations.
-For a dynamically typed language, an expression can usually return values of various possible types.
-Typed Scheme and Gradualtalk employ union types to allow preserving more type information.
+Practical languages utilize control flows to be able to determine
+the sequence of operations to perform base on runtime values.
+This allows same block of code to return values of different types and simply
+assigned returned value to a most general type results in information loss.
 
-By notation, an union type $U = \tau_0 \cup \tau_1 \cup \ldots$ typechecks as long as the term in question
-typechecks with one of $\tau$.
+Imagine the following code in Typed Scheme:
 
-(TOOD: formal)
+\begin{verbatim}
+(lambda (x : number)
+  (if (> x 0) x #f))
+\end{verbatim}
+
+Depending on the test \texttt{(> x 0)}, we either get a number or the boolean value \texttt{\#t} as result,
+which can be expressed through union type \texttt{($\cup$ Number Boolean)}.
+
+Union type is a simple extension employed by Typed Scheme and Gradualtalk
+to solve this problem.
+By notation, an union type $U = \tau_0 \cup \tau_1 \cup \ldots$ is a superset of
+all $\tau_x$s involved. For any value $v$, $v : U$ typechecks as long as $v : \tau_x$ does.
+By performing flow analysis on a block of code, we can find a list of types of return values to
+then construct a union type to allow preserving more type information.
+
+\subsubsection{Type for Objects}
+
+Object allows related values and codes to be organized together and is an important concept
+in various languages. Many language rely heavily on object-oriented programming,
+which demands proper type system support for them.
+Siek and Taha pioneered gradual typing for objects \cite{siek2007gradual}, which
+treats objects structurally as a pack of methods with labels.
+However, when applying to existing languages,
+this approach results in various issues that goes beyond type system.
+We will have a separated section regarding these issues.
 
 \subsubsection{Occurrence Typing}
 
@@ -140,84 +168,314 @@ This way, a \texttt{if}-expression that depends of value of \texttt{(p? v)},
 will have its two branches with different types of \texttt{v}, one with type \texttt{p}
 and another with non-\texttt{p} type.
 
+Despite this extension is shown only in Typed Scheme, we believe it can be applied to other languages
+as well: the latest version of TypeScript has implemented \textbf{type guard},
+which uses this exact technique to improves its type system.
+
 \subsubsection{Parametric Polymorphism}
 
-Typed Scheme and Gradualtalk implements parametric polymorphism, which allows
-one type to be passed as type argument to a generic type.
+The idea behind parametric polymorphism (a.k.a generic programming in some languages)
+is that some functions and structures can
+work uniformly regardless of the value it is operating on.
+Besides its presence in $\csharp$ 3.0,
+Safe TypeScript, Typed Scheme, Reticulated Python and Gradualtalk all include
+this feature to further extend their type expressiveness.
 
-% TODO
+The following illustrates such feature in Safe TypeScript:
+
+\begin{verbatim}
+interface Pair<A,B> { fst: A; snd: B }
+function pair<A,B>(a: A, b: B}: Pair<A,B> {
+  return {fst: a, snd: b};
+}
+\end{verbatim}
+
+In this example, \texttt{Pair} is a structure that contains two pieces of data and
+\texttt{pair} a function as its constructor.
+The two pieces of data can be retrieved
+by accessing \texttt{fst} and \texttt{snd} attributes without specific knowledge
+of actual data types. Type variables are \texttt{A} and \texttt{B}, which
+allows getting data types back once \texttt{Pair<A,B>} is known.
+
+This feature is made possible in Safe TypeScript by extending typing context with type variables
+and allowing type abstraction at appropriate places
+(e.g. in interfaces or function declarations as shown above).
+In Gradualtalk, same feature is implemented based on
+Ina and Igarashi's work\cite{ina2011gradual}.
 
 \section{Cast Insertion}
 
-Cast insertion provides mechanism for runtime typechecking.
-During static typechecking, type safety cannot be established in the presence of dynamic types,
-therefore casts are inserted in corresponding positions of the program. These casts are functions
-that takes a single value, checks whether the value is of the expected type then either
-raises type errors or resume the program with casted value.
+Cast insertion provides the mechanism for runtime typechecking.
+Casts are functions that takes a single value, checks whether the value is of expected type
+then either throws type error or proceed the program with the value just checked.
+Static typechecking for a gradual type system has an extra purpose of inserting casts:
+when dynamic types are encountered during static typechecking, the type information
+at hand is insufficient to guarantee type safety. Therefore casts are inserted
+in appropriate places so they can be checked at runtime.
 
-Unlike static typechecking, cast insertion has large impacts on runtime performance of a program.
-Many strategies of performing cast insertion are proposed and explored to reduce its overhead.
+Taking Safe TypeScript as an example:
 
-\subsection{Object Proxy}
+\begin{verbatim}
+function toOrigin(q: {x: number, y: number}) {q.x = 0; q.y = 0;}
+function toOrigin3d(p: {x: number, y: number, z: number}){
+  toOrigin(p); p.z = 0;
+}
+toOrigin3d({x: 17, y: 0, z: 42})
+\end{verbatim}
 
-Originally described by Siek and Taha, runtime objects are accessed through a proxy to
-allow field writes and method calls to be monitored.
+The code above is translated into JavaScript:
 
-\subsection{Shallow Tagging}
+\begin{verbatim}
+function toOrigin(q) { q.x = 0 ; q.y = 0; }
+function toOrigin3d(p) {
+  toOrigin(RT.shallowTag(p, {"z": RT.num})); p.z = 0;
+}
+toOrigin3d({x: 17, y: 0, z: 42})
+\end{verbatim}
 
-Shallow tagging approach is used by Safe TypeScript and Reticulated Python as transient mode:
-instead of tagging objects deeply, they are only tagged up to one layer deep. Accessing deeper 
-into the structure causes invariants to propagate.
+in which \texttt{RT} is Safe TypeScript runtime.
+Notice how argument of \texttt{toOrigin} requires an object that contains
+both \texttt{x} and \texttt{y} attributes while in the body of
+\texttt{toOrigin3d}, it only tags object \texttt{p},
+which is known to have \texttt{x}, \texttt{y} and  \texttt{z}, with extra attribute \texttt{z}.
+Thanks to static typechecking, we have reduce the amount of runtime checks
+by skipping checking types already known statically.
 
-\subsection{Monotonic Approach}
+While static typechecking is performed during compilation,
+dynamic typechecking is embedded in code and therefore impose a runtime overhead over original programs.
+To make the performance of partially typed programs close with its dynamically typed counterparts,
+It is essential to reduce the amount of dynamic checks.
+For value of primitive types, we can do no better than simple cast insertions,
+but there are still space when it comes to structured data and functions,
+researchers have come up with different strategies to balance between type safety, efficiency or design simplicity. We will explore thees strategies in next section.
 
-Monotonic approach have the effect of locking down objects into precise types.
-It has the benefit that runtime information can be trimmed to reduce overhead at long run.
+\section{Object-Oriented Programming}
 
-\subsection{Type Dictionary}
+Object-oriented programming is a popular style of programming.
+All languages we have discussed so far supports it to some extent.
+Some have developed intensive support for it,
+among which some even have the language itself designed to embrace its philosophy.
+To have a sound and efficient support for it 
+becomes center of topic when it comes to runtime performance of supporting gradual typing.
+
+\subsection{Unified Concepts}
+
+Despite that each language have a slightly different model of objects, they do have concepts
+in common.
+In this section, we give definition to some important concepts in object-oriented programmming
+to allow discussing them in an unified way.
+
+An \textbf{object} $o$ is a single value that contains \textbf{fields} (somethings also called
+\textbf{properties} or \textbf{attributes}) and \textbf{methods}.
+Unique labels $l$s are assigned to all fields and methods. By using notation $o.l$, we can \textbf{access}
+(i.e. \textbf{read} from or \textbf{write} to) fields and methods of object $o$. 
+Fields are values, and methods are functions within whose body gain access to a special variable
+(called \texttt{this} or \texttt{self} by convention) which can be used to refer to the object itself.
+
+A special kind of singleton objects are called \textbf{classes}.
+For a class $c$, we can create (a.k.a. \textbf{instantiate}) objects by calling constructor.
+The created object is considered an \textbf{instance} of class $c$.
+
+Classes can form a partial order of subclass relations: if a class $c_0$ \textbf{extends} from
+another class $c_1$, we say $c_0$ is a \textbf{subclass} of $c_1$ and $c_1$ a \textbf{superclass} of $c_0$.
+Methods can be shared through the mechanism of class-instance and inheritance relation:
+when we try to access $o.l$, $l$ is looked up in the order of instance itself (some languages disallow
+objects to have their own methods therefore skipping this step), its class, and superclass of its class,
+all the way through this chain of inheritance until hitting the top object.
+The lookup resolves to the first successful one,
+but if no method matching $l$ is found, program throws an error to inform about an unknown method being invoked.
+
+Sometimes the concept of \textbf{interfaces} (or \textbf{protocols}) is used. It is a set of
+field or method labels with associating any values or functions to them.
+Any object that can resolve all labels list by an interface is considered to
+\textbf{implement} that interface.
+
+\subsection{Nominal Type, Structural Type and Subtyping}
+
+There are two different approaches of typing objects:
+\textbf{nominal types} are derived from class definitions, these types usually have a matching name with its
+corresponding class.  Nominal types follow the traditional sense of inheritance:
+one must explicitly extend from another class to make it a subclass of the other
+(with a commonly assumed exception that topmost class is always a superclass of other classes).
+\textbf{Structural types}, on the other hand, views an object structurally.
+Inheritance, or rather subtyping, in this case is closer to an interface: if one object can resolve all labels of another object, it is considered a subtype of it. This approach is sometimes known as duck typing.
+
+Due to the highly dynamic nature of some languages, these two views can coexist and
+impose differences and difficulties and researchers need clean way to work around this issue.
+
+To illustrate the problem, suppose we have the following definitions in Python
+(assume that all methods will return values of the same type):
+
+\begin{verbatim}
+class A:
+  def foo(self):
+    ...
+
+class B(A):
+  def bar(self):
+  
+class C:
+  def foo(self):
+    ...
+  def bar(self):
+    ...
+\end{verbatim}
+
+While a nominal type allows a variable $v : A$ to be assigned an instance of $B$,
+assigning an instance of $C$ to $v$ is forbidden by the type system: despite
+have all methods that $A$ requires, it is not explicitly extending $A$ to form a proper relation of
+inheritance.
+
+Structural type is a more of a relaxed relation in this case: $A$ is simply $\{foo: \tau \}$ (for whatever appropriate type $\tau$), $B$ and $C$ are both equivalent to $\{foo: \tau, bar: \tau\}$. Therefore structurally, $B$ and $C$ are both subtypes of $A$ despite no being explicitly declared.
+
+Among languages we studied, Typed Scheme extends its structure system and uses nominal types
+(but thanks to the expressiveness of refinement type, it is still possible to 
+test an object structurally);
+Reticulated Python chooses the structural approach - despite class inheritance being allowed,
+duck typing is generally considered idiomatic approach in Python.
+On the other hand, both Safe TypeScript and Gradualtalk
+introduces a hybrid approach to deal with the coexistence:
+the former treats class types nominally, but allows viewing it structurally
+while Gradualtalk allows a unified syntax to allow an object to be typed nominally and structurally at the same time.
+
+\subsection{Objects and Dynamic Semantics}
+
+While most of extensions we have studied so far agrees on how casts are inserted
+around primitive values as originally suggested in \cite{siek2006gradual},
+objects and dynamic semantics are always center of discussion among languages
+that relies heavily on it.
+
+For this part, our discussion follows the work on Reticulated Python,
+as Reticulated is not just an implementation of gradually typed Python,
+but also a testbed of 3 different dynamic semantics, which covers most of the cases.
+Along the way, approaches from other literature of similar nature will be discuss and added as well.
+
+There are 3 different approaches implemented by Reticulated, known as \textbf{guarded}, \textbf{transient}
+and \textbf{monotonic}.
+
+For starter, an example in Reticulated is given:
+
+\begin{verbatim}
+class Foo:
+  bar = 42
+def g(x):
+  x.bar = 'hello'
+def f(x:Object({bar: Int})->Int:
+  g(x)
+  return x.bar
+f(Foo())
+\end{verbatim}
+
+Note that function \texttt{g} mutates the type of \texttt{x.bar} therefore its callee \texttt{f}
+no longer have a \texttt{x} of proper type to return \texttt{Int}.
+When different dynamic semantics are applied, the result varies as well and in following parts
+we will visit these approaches in order. 
+
+\subsubsection{The Guarded Dynamic Semantics}
+
+This approach wraps actual objects in a proxy which builds itself up using sequences of casts.
+This keeps proxies to always be one step alway from the actual object rather than building
+a chain of proxies that compromises efficiency over time.
+Method invocations and field accesses are relayed to the actual object,
+field writes and return values of method invocation are checked at the boundaries
+of statically and dynamically typed code.
+
+After translation, the relevant functions have casts inserted as following:
+
+\begin{verbatim}
+def g(x):
+  cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
+def f(x:Object({bar: Int}))->Int:
+  g(cast(x, Object({bar: Int}), Dyn))
+  return x.bar
+f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
+\end{verbatim}
+
+When the control reach body of function \texttt{g},
+\texttt{g} will have the most precise type \texttt{Object({bar:Int})} inferred from the sequence
+of operations. And the write to field \texttt{bar} will try casting a string into \texttt{Int},
+which results in a failure.
+
+Note that this approach have the problem that object identity is not preserved:
+
+\begin{verbatim}
+x is cast(x, Dyn, Object({bar:Int}))
+\end{verbatim}
+
+As \texttt{cast} function wrap \texttt{x} in a proxy, it is no longer considered the same object as \texttt{x}
+therefore returns \texttt{False}. However instance tests will still work, as proxies are considered a subclass.
+And for a similar reason, type test on such value might fail because from outside it is a \texttt{Proxy}
+rather than an instance of the relevant class.
+
+\subsubsection{The Transient Dynamic Semantics}
+
+Instead of using proxies, the transient approach inserts casts at use sites or at sites where
+the value becomes relevant. Under this approach, the same Reticulated function is translated as following:
+
+\begin{verbatim}
+def g(x):
+  cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
+def f(x:Object({bar: Int}))->Int:
+  check(x, Object({bar: Int}))
+  g(cast(x, Object({bar: Int}), Dyn))
+  return check(x.bar, Int)
+f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
+\end{verbatim}
+
+There are two differences: first, despite having the same name, \texttt{cast} is a different
+function that just checks whether cast on object is allowed and then returns it instead
+of wrapping it in a proxy; second, calls to \texttt{check} are inserted around the body of \texttt{f}.
+In this dynamic semantics, it is the final call to \texttt{check} inside the body of \texttt{f} that
+detects type error and throws, as \texttt{x.bar} is mutated and its type no longer matches the return
+type of \texttt{f}.
+
+\subsubsection{The Monotonic Dynamic Semantics}
+
+The monotonic approach relies on a slightly strong assumption than the other two approaches:
+if any update happens to object fields, it will not change its type.
+Instead of using a proxy, the object keep type information of its own. As casts are execute on objects
+overtime, its type information gets locked down to always become more precise.
+
+The translation is the same as that of guarded dynamic semantics, but with \texttt{cast} being a different
+function that applies monotonic approach.
+
+\begin{verbatim}
+def g(x):
+  cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
+def f(x:Object({bar: Int}))->Int:
+  g(cast(x, Object({bar: Int}), Dyn))
+  return x.bar
+f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
+\end{verbatim}
+
+Right before call to \texttt{f}, object newly created from \textbf{Foo()} is locked down to
+have a type at least as precise as \texttt{Object({bar:Int})}, this locks down type of \texttt{x.bar}
+therefore raises an error when the body of \texttt{g} tries to write a mismatching type to it.
+
+A similar approach is used by Safe TypeScript, in which runtime type information (RTTI) is maintained on
+objects themselves. And as program proceeds, RTTI decreases with respect to the subtyping relation,
+which avoids some unnecessary runtime checks to be performed over and over again.
+Additionally, another improvement done by Safe TypeScript is
+the strategy of shallowly tagging objects in RTTI, this avoids tagging objects that are never touched
+at the cost of having to propagate RTTI when needed, in practice researcher finds it to be a good tradeoff.
+
+\subsubsection{Type Dictionary}
 
 This approach is used by Gradualtalk, but can also be adapted to other languages of similar nature:
 in Smalltalk, certain classes are not allowed to be modified because
 the virtual machine relies on them to implement fundamental behaviors.
 Therefore language implementor maintains a type dictionary that keeps type information for objects
 instead of tagging directly on object themselves.
+This can be considered to be strategy for prototyping gradual typing extension for a language when
+efficiency is not a urgent concern as work on Gradualtalk is not (yet) focusing on performance either,
+and the tagging strategy is not being stated in detail to give more insight.
 
-\section{Structural Data and Object-Oriented Programming}
+\subsection{Differential Subtyping}
 
-Practical languages come with support for structural data in which multiple values
-can be combined together to construct one single value, which is usually called an object.
-These values can be retrieved later using a key or index into that object.
-Imperative languages would even allow values in an object to be removed or updated at runtime,
-which complicates some support towards gradual typing.
-It is such an important concept that all languages we have discussed so far study
-it to some extent.
+Safe TypeScript features a calculus that decreases RTTI overtime - 
+reducing runtime checks when checks could have been performed once for all.
 
-The idea of structural data goes further: object-oriented programming adds methods to objects,
-and them to be shared by inheritance.
-This increase flexibility as different runtime behavior are enabled even if method of the same name and type signature is called.
-
-\subsubsection{Nominal or Structural}
-
-Structural type can be useful for languages that uses the practice of duck typing, as only the shape of types are required to be checked.
-However, nominal types can also find its uses when it comes to object-oriented programming,
-as structural type does not account for inheritance that object-oriented programming relies heavily on.
-
-\subsubsection{Subtyping}
-
-Subtyping relation comes in 2 favor: nominal types form a chain of superclasses,
-while structural types form subtyping relation depending on the presence of fields and whether
-fields are of consistent types. To allow type expressiveness to extend further,
-the concept of self instance and self class is also introduced.
-
-\subsubsection{Differential Subtyping}
-
-The purpose of combining static and dynamic typing is to reduce
-runtime checks when checks could have been performed once ahead of execution.
-Differential subtyping by Safe Typing takes this idea and apply it in a finer-grained level.
-
-% \subsection{Field Mutation}
-
-\subsubsection{Self Types}
+\subsection{Self Types}
 
 The use of self types is seen in Gradualtalk to allow type information to be preserved
 in chained invocations.

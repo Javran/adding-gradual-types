@@ -1,15 +1,15 @@
 %Chapter 2
 
-\renewcommand{\thechapter}{2}
+% \renewcommand{\thechapter}{2}
 
-\chapter{Benefits of Gradual Typing}
+\section{Benefits of Gradual Typing}
 
 Gradual typing brings existing languages not just the good parts of both static and dynamic typing.
 The synergy also creates surprising new benefits to languages users.
 
 In this chapter, we will explore some literatures and see in detail about these benefits that gradual typing have brought in.
 
-\section{From JavaScript to Safe TypeScript}
+\subsection{From JavaScript to Safe TypeScript}
 
 Starting as a scripting language, JavaScript has grown into a language
 that powers many large web applications.
@@ -31,7 +31,7 @@ gradual typing.
 
 In this section we will visit some language features of Safe TypeScript and see how it improves JavaScript. Note that TypeScript uses $\textbf{any}$ for dynamic type.
 
-\subsection{Type Checking for Free}
+\subsubsection{Type Checking for Free}
 
 Despite JavaScript is capable of examining type of values at runtime,
 it does not have support for type annotations.
@@ -109,7 +109,7 @@ we have to wait for the check in function body to throw an error,
 while annotating $\textbf{x}$ with a type allows Safe TypeScript
 to spot the error even before execution.
 
-\subsection{Object-Oriented Programming in Safe TypeScript}
+\subsubsection{Object-Oriented Programming in Safe TypeScript}
 
 %TODO: what technique allos JS to simulate OO?
 JavaScript is a prototype-based language.
@@ -170,7 +170,7 @@ But $t_m$ is no longer a subtype of \textbf{MovablePoint}.
 %TODO: put this in ch3 \subsection{Type Erasure, information hiding and performance}
 
 
-\section{From Scheme to Typed Scheme}
+\subsection{From Scheme to Typed Scheme}
 
 Scheme is a dynamically typed language.
 It is used for casual scripting as well as industrial applications.
@@ -184,7 +184,7 @@ extends Scheme with gradual typing.
 
 %TODO: type discipline vs type system?
 
-\subsection{Support Informal Reasoning}
+\subsubsection{Support Informal Reasoning}
 
 The following code shows a function definition as typical style of programming in this language:
 
@@ -256,7 +256,7 @@ used instead of \textbf{filter} or \textbf{number?} is replaced by
 other predicates insufficient to test whether a value in question is indeed a value,
 the type system is able to recognize such errors and give warnings.
 
-\subsection{Refinement Type}
+\subsubsection{Refinement Type}
 
 Note that in Scheme, we use \textbf{number?} to distinguish numbers
 from other type of values.
@@ -294,7 +294,7 @@ gradual typing, but also allows refinement type,
 which provides us a powerful tool to use user-defined functions
 to define custom types of better precision.
 
-\section{From Python 3 to Reticulated Python}
+\subsection{From Python 3 to Reticulated Python}
 
 Python 3 (Python for short) is another popular dynamic typed language.
 M. Vitousek, M. Kent and Baker's work on Reticulated Python (Reticulated for short)
@@ -316,7 +316,7 @@ def distance(x: Int, y: Int)-> Int:
 While annotation allows arbitrary expressions, Reticulated Python
 only uses types built from several type constructors.
 
-\subsection{Function Types}
+\subsubsection{Function Types}
 
 Python 3 has different ways of calling the same function.
 Suppose we want to use \textbf{distance} defined above,
@@ -331,7 +331,7 @@ when their length and element types correspond. So functions can be called in bo
 ways without problem. Additionally \textbf{Arb} is another constructor
 that allows functions of arbitrary parameters.
 
-\subsection{Class and Object Types}
+\subsubsection{Class and Object Types}
 
 Python is an object-oriented programming language.
 Programmers define classes and create objects from them.
@@ -376,12 +376,12 @@ While object can access methods of its class, it is also possible
 to assign methods and fields to objects to change its behavior.
 Therefore Reticulated makes object type open with respect to consistency.
 
-\subsection{Dynamic Semantics}
+\subsubsection{Dynamic Semantics}
 
 Reticulated Python is not only a practical gradual type extension,
 but serves as an experiment of exploring different dynamic semantics
 
-\subsection{Other Features}
+\subsubsection{Other Features}
 
 There are other features of Reticulate.
 In particular, since it is not always possible to know what module would be loaded
@@ -392,7 +392,7 @@ it does not provide a way of annotating local variables with tyoe.
 Instead, Reticulated takes a step further and perform dataflow-based type inference.
 
 
-\section{From Smalltalk to Gradualtalk}
+\subsection{From Smalltalk to Gradualtalk}
 
 Smalltalk is a language of highly dynamic nature:
 it supports live programming, which means programs with incomplete
@@ -402,7 +402,7 @@ Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk shows
 us a well combination of various features in order to extend Smalltalk
 into a gradual typed language.
 
-\subsection{Annotating Programs with Types}
+\subsubsection{Annotating Programs with Types}
 
 In Smalltalk there are objects that receives and processes messages.
 The following example computes euclidean distance for points:
@@ -440,7 +440,7 @@ Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
 This definition expects \textbf{metricBlock} to be block
 that takes as argument two points, and returns a number.
 
-\subsection{Self Types}
+\subsubsection{Self Types}
 
 One practice in Smalltalk is to return object itself for setters
 to allow chained calls:
@@ -464,7 +464,7 @@ If any other class inherits from it, the self type will make sure
 to point to that class instead of sticking with \textbf{Point},
 this allows type information to be preserved.
 
-\subsection{Union Types}
+\subsubsection{Union Types}
 
 Gradualtalk supports union types, which is useful when
 source code contains different branches and each of them might return different types.
@@ -480,7 +480,7 @@ returns in a lose of information.
 Gradualtalk solves this problem by introducing union types: \texttt{a | b}
 is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
 
-\subsection{Structural and Nominal Types}
+\subsubsection{Structural and Nominal Types}
 
 A structural type describes the shape of an object.
 
@@ -523,7 +523,7 @@ Besides calling \texttt{x} and \texttt{y}, a call to \texttt{z} does not
 raise an error ahead of execution, because \texttt{Dyn} can be casted to allow use of
 \texttt{z}.
 
-\subsection{Type Aliases}
+\subsubsection{Type Aliases}
 
 Gradualtalk supports type aliases. This does not expand expressiveness of type itself,
 but it make reusing existing types convenient.
@@ -532,7 +532,7 @@ With type aliases comes the concepts of protocols, which are just type aliases
 for structural and nominal types.
 
 \newcommand{\csharp}{C^\sharp}
-\section{$\csharp$ 4.0}
+\subsection{$\csharp$ 4.0}
 
 While we have seen many examples that a dynamically typed language gets
 gradual type extensions, Bierman, Meijer and Torgersen's work on
@@ -541,7 +541,7 @@ extends towards gradual typing.
 This extension makes interoperation between statically and dynamically typed code
 more convenient and brings in features meant for dynamically typed languages.
 
-\subsection{Interaction with Dynamic Objects}
+\subsubsection{Interaction with Dynamic Objects}
 
 The following code snippet shows how C$^\sharp$ 3.0 interact with JavaScript:
 
@@ -581,7 +581,7 @@ as if there are regular objects.
 These improvements are more than just syntactic: gradual typing is implemented
 so that typechecking can be involved and this part of code can benefit from it.
 
-\subsection{Using Features Intended For Dynamic Languages}
+\subsubsection{Using Features Intended For Dynamic Languages}
 
 The extension also makes available some features meant for dynamic languages
 directly in C$^\sharp$, one example is the use of \textbf{ExpandoObject}

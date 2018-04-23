@@ -1,8 +1,8 @@
 %Chapter 1
 
-\renewcommand{\thechapter}{1}
+% \renewcommand{\thechapter}{1}
 
-\chapter{Introduction}
+\section{Introduction}
 
 % TODO: about detect and localize error
 
@@ -39,7 +39,7 @@ in order to take the benefits from the two,
 which in return gives birth to many possible solutions.
 One particular example among them is gradual typing.
 
-\section{Strengths and Weaknesses of Static and Dynamic Typing}
+\subsection{Strengths and Weaknesses of Static and Dynamic Typing}
 
 The difference between static and dynamic typing is the difference
 between whether type checking occurs ahead of execution or at runtime.
@@ -60,7 +60,7 @@ We use $o : \tau$ to mean that a term $o$ is assigned type $\tau$.
 For example $f : \tarr{(\tnum, \tnum)}{\tnum}$ is a function that
 takes a tuple of two numbers as input and returns a number.
 
-\subsection{Static Type Systems}
+\subsubsection{Static Type Systems}
 
 %TODO: type system or language?
 
@@ -101,7 +101,7 @@ in statically typed languages: it involves trial and error to find the best impl
 to solve a problem, which means the ability to write partial programs,
 make frequent changes to structure of variables and functions, but these features are not easily available for a statically typed language.
 
-\subsection{Dynamic Type Systems}
+\subsubsection{Dynamic Type Systems}
 
 Dynamic type systems do typechecking at runtime, which is best suited for
 languages designed for scripting and fast prototyping.
@@ -133,7 +133,7 @@ Optimization could also be hindered for a dynamically type language:
 array cloning can be implemented efficiently as memory copy instructions knowing the array in question contains only primitive values but no reference or pointers, whereas without prior knowledge like this, every element of the array has to be traversed and even recursively cloned.
 
 
-\section{Combining the benefits of the two}
+\subsection{Combining the benefits of the two}
 
 %TODO could have more to say.
 
@@ -150,7 +150,7 @@ In hope of bringing in benefits of both,
 several attempts are motivated to put these two type systems in one.
 In this section, we will discuss about these research works.
 
-\subsection{Design Goals}
+\subsubsection{Design Goals}
 
 
 Summarizing pros and cons of static and dynamic typed languages,
@@ -171,7 +171,7 @@ Aside from these two goals, type annotations can also be used for
 other purposes like optimization and providing hints to development tools.
 For a language with this new type system, it should also be possible.
 
-\subsection{A Introduction to Gradual Typing}
+\subsubsection{A Introduction to Gradual Typing}
 
 \newcommand{\dyn}{\textbf{dyn}}
 
@@ -189,7 +189,7 @@ extending a dynamic type system.
 
 % TODO: in fact maj of langs are extended from dynamic ones
 
-\subsubsection{Dynamic Type and Type Consistency}
+\paragraph{Dynamic Type and Type Consistency}
 
 Gradual type system introduces a special type on top of a static type system
 to capture the idea that type information might only be partially known
@@ -228,7 +228,7 @@ This is still beneficial, as some literal values and primitives will still have 
 an obvious misuse like taking the square root of a string value can now be detected ahead of execution
 instead of raising runtime exceptions.
 
-\subsubsection{Cast Insertion and Runtime Typechecking}
+\paragraph{Cast Insertion and Runtime Typechecking}
 
 As we can see gradual type system attempts to contain both statically and dynamically typed programs.
 However, because of presence of dynamic types,
@@ -247,7 +247,7 @@ its runtime is always checked by $c$ to decide whether to pass the value to $f$ 
 a type error.
 %TODO: from Gradual Typing for Functional Languages
 
-\subsubsection{Optional Type Annotation and ``pay-as-you-go''}
+\paragraph{Optional Type Annotation and ``pay-as-you-go''}
 
 So far we have seen that gradual type system introduces a dynamic type,
 which allows accepting both statically and dynamically typed programs during static typechecking.
@@ -279,7 +279,7 @@ therefore programmer only pays for what they want from a type system.
 
 
 
-\subsubsection{Gradual Guarantee}
+\paragraph{Gradual Guarantee}
 
 Regarding the term gradual typing itself,
 Siek, Vitousek, Cimini and Boyland's work gives a detailed explanation of
@@ -294,7 +294,7 @@ such idea:
 \end{itemize}
 
 
-\subsection{Alternatives}
+\subsubsection{Alternatives}
 
 There are other type systems that bring benefits of the two together.
 Cartwright and Fagan's introduced soft typing, which is a type system
@@ -311,7 +311,7 @@ in the process of attempting the proof, Siek and Taha finds a better solution,
 which results in gradual typing that we have seen today.
 %TODO? 
 
-\subsection{Discussion}
+\subsubsection{Discussion}
 
 Among various research works that combines
 benefit of static and dynamic type checking

@@ -1,8 +1,8 @@
 %Chapter 3
 
-\renewcommand{\thechapter}{3}
+% \renewcommand{\thechapter}{3}
 
-\chapter{The Way Towards Gradual Typing}
+\subsection{The Way Towards Gradual Typing}
 
 % TODO: could be organized better?
 
@@ -20,7 +20,7 @@ and helps development in these languages.
 This chapter will explore various issues related to making gradual typing extensions,
 discuss possible solutions and evaluate choices researchers have to made about them. 
 
-\section{Extensions to Type Systems}
+\subsection{Extensions to Type Systems}
 
 Gradual type system supports both fully static and fully dynamic typing,
 which requires support for traditional types including
@@ -35,7 +35,7 @@ This section will separate these extensions into two categories:
 and \textbf{complementary extensions} are those that improves type expressiveness
 but a type system without them does not compromise completeness.
 
-\subsection{Essential Extensions}
+\subsubsection{Essential Extensions}
 
 We are looking at research works that falls into type disciplines of two different nature:
 JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages, from which
@@ -43,7 +43,7 @@ much similarity shows up;
 $\csharp$ 3.0, on the other hand, is statically typed one,
 which have quite a different story about how the extension is implemented.
 
-\subsubsection{Extension from Dynamically Typed Languages}
+\paragraph{Extension from Dynamically Typed Languages}
 
 The approach used by Safe TypeScript and Reticulated Python
 is to first perform static typechecking in the presence of dynamic types.
@@ -80,7 +80,7 @@ This phase either results in static type error being reported,
 or source code translated to PLT scheme with some runtime casts inserted
 in the form of contracts.
 
-\subsubsection{Extension from A Static Type System}
+\paragraph{Extension from A Static Type System}
 
 The work on $\csharp$ 4.0 shows us how statically typed language can be extended
 to support gradual typing.
@@ -103,7 +103,7 @@ to be converted to any other types.
 
 (TODO: achieve transitivity)
 
-\subsection{Complementary Extensions}
+\subsubsection{Complementary Extensions}
 
 While essential extensions establish the completeness of gradual type systems,
 complementary extensions are not exactly requirements.
@@ -113,7 +113,7 @@ This is however unsatisfactory, as using dynamic types often result in a lost of
 Therefore extra features of type systems are usually introduced to improve type expressiveness and 
 in general make language more convenient to use.
 
-\subsubsection{Union Type}
+\paragraph{Union Type}
 
 Practical languages utilize control flows to be able to determine
 the sequence of operations to perform base on runtime values.
@@ -137,7 +137,7 @@ all $\tau_x$s involved. For any value $v$, $v : U$ typechecks as long as $v : \t
 By performing flow analysis on a block of code, we can find a list of types of return values to
 then construct a union type to allow preserving more type information.
 
-\subsubsection{Type for Objects}
+\paragraph{Type for Objects}
 
 Object allows related values and codes to be organized together and is an important concept
 in various languages. Many language rely heavily on object-oriented programming,
@@ -148,7 +148,7 @@ However, when applying to existing languages,
 this approach results in various issues that goes beyond type system.
 We will have a separated section regarding these issues.
 
-\subsubsection{Occurrence Typing}
+\paragraph{Occurrence Typing}
 
 %TODO: to be clear about what to say in ch2
 
@@ -172,7 +172,7 @@ Despite this extension is shown only in Typed Scheme, we believe it can be appli
 as well: the latest version of TypeScript has implemented \textbf{type guard},
 which uses this exact technique to improves its type system.
 
-\subsubsection{Parametric Polymorphism}
+\paragraph{Parametric Polymorphism}
 
 The idea behind parametric polymorphism (a.k.a generic programming in some languages)
 is that some functions and structures can
@@ -203,7 +203,7 @@ and allowing type abstraction at appropriate places
 In Gradualtalk, same feature is implemented based on
 Ina and Igarashi's work\cite{ina2011gradual}.
 
-\section{Cast Insertion}
+\subsection{Cast Insertion}
 
 Cast insertion provides the mechanism for runtime typechecking.
 Casts are functions that takes a single value, checks whether the value is of expected type
@@ -249,7 +249,7 @@ For value of primitive types, we can do no better than simple cast insertions,
 but there are still space when it comes to structured data and functions,
 researchers have come up with different strategies to balance between type safety, efficiency or design simplicity. We will explore thees strategies in next section.
 
-\section{Object-Oriented Programming}
+\subsection{Object-Oriented Programming}
 
 Object-oriented programming is a popular style of programming.
 All languages we have discussed so far supports it to some extent.
@@ -258,7 +258,7 @@ among which some even have the language itself designed to embrace its philosoph
 To have a sound and efficient support for it 
 becomes center of topic when it comes to runtime performance of supporting gradual typing.
 
-\subsection{Unified Concepts}
+\subsubsection{Unified Concepts}
 
 Despite that each language have a slightly different model of objects, they do have concepts
 in common.
@@ -290,7 +290,7 @@ field or method labels with associating any values or functions to them.
 Any object that can resolve all labels list by an interface is considered to
 \textbf{implement} that interface.
 
-\subsection{Nominal Type, Structural Type and Subtyping}
+\subsubsection{Nominal Type, Structural Type and Subtyping}
 
 There are two different approaches of typing objects:
 \textbf{nominal types} are derived from class definitions, these types usually have a matching name with its
@@ -338,7 +338,7 @@ introduces a hybrid approach to deal with the coexistence:
 the former treats class types nominally, but allows viewing it structurally
 while Gradualtalk allows a unified syntax to allow an object to be typed nominally and structurally at the same time.
 
-\subsection{Objects and Dynamic Semantics}
+\subsubsection{Objects and Dynamic Semantics}
 
 While most of extensions we have studied so far agrees on how casts are inserted
 around primitive values as originally suggested in \cite{siek2006gradual},
@@ -371,7 +371,7 @@ no longer have a \texttt{x} of proper type to return \texttt{Int}.
 When different dynamic semantics are applied, the result varies as well and in following parts
 we will visit these approaches in order. 
 
-\subsubsection{The Guarded Dynamic Semantics}
+\paragraph{The Guarded Dynamic Semantics}
 
 This approach wraps actual objects in a proxy which builds itself up using sequences of casts.
 This keeps proxies to always be one step alway from the actual object rather than building
@@ -407,7 +407,7 @@ therefore returns \texttt{False}. However instance tests will still work, as pro
 And for a similar reason, type test on such value might fail because from outside it is a \texttt{Proxy}
 rather than an instance of the relevant class.
 
-\subsubsection{The Transient Dynamic Semantics}
+\paragraph{The Transient Dynamic Semantics}
 
 Instead of using proxies, the transient approach inserts casts at use sites or at sites where
 the value becomes relevant. Under this approach, the same Reticulated function is translated as following:
@@ -429,7 +429,7 @@ In this dynamic semantics, it is the final call to \texttt{check} inside the bod
 detects type error and throws, as \texttt{x.bar} is mutated and its type no longer matches the return
 type of \texttt{f}.
 
-\subsubsection{The Monotonic Dynamic Semantics}
+\paragraph{The Monotonic Dynamic Semantics}
 
 The monotonic approach relies on a slightly strong assumption than the other two approaches:
 if any update happens to object fields, it will not change its type.
@@ -459,7 +459,7 @@ Additionally, another improvement done by Safe TypeScript is
 the strategy of shallowly tagging objects in RTTI, this avoids tagging objects that are never touched
 at the cost of having to propagate RTTI when needed, in practice researcher finds it to be a good tradeoff.
 
-\subsubsection{Type Dictionary}
+\paragraph{Type Dictionary}
 
 This approach is used by Gradualtalk, but can also be adapted to other languages of similar nature:
 in Smalltalk, certain classes are not allowed to be modified because
@@ -470,7 +470,7 @@ This can be considered to be strategy for prototyping gradual typing extension f
 efficiency is not a urgent concern as work on Gradualtalk is not (yet) focusing on performance either,
 and the tagging strategy is not being stated in detail to give more insight.
 
-\subsection{RTTI and Differential Subtyping}
+\subsubsection{RTTI and Differential Subtyping}
 
 Runtime Type Information (RTTI) is one part of the mechanism for Safe TypeScript
 to implement its dynamic typechecking. Much like the monotonic approach found in Reticulated Python,
@@ -504,39 +504,52 @@ and encode in the form of RTTI instead of keeping types of all fields around the
 
 % \section{Other Performance Concerns}
 
-\subsection{Type Erasure and Optional Typing}
+%% \subsubsection{Type Erasure and Optional Typing}
 
 % \subsection{Large Arrays}
 % 
-For programs that need runtime typechecks on large arrays,
-the overhead could be wasteful but significant.
+%%For programs that need runtime typechecks on large arrays,
+%% the overhead could be wasteful but significant.
 
 
-\section{Language-specific Challenges}
+\subsection{Language-specific Challenges}
 
-\subsection{JavaScript}
+This section shows language-specific challenges and open questions.
 
-\subsection{Scheme and Macros}
+% \subsubsection{JavaScript}
 
-\subsection{Python}
+\subsubsection{Scheme}
 
-\subsection{Gradualtalk and Live system}
+Typical Scheme practice involve heavy use of macros.
+Despite Typed Scheme is able to handle most of the macros by expanding them before typechecking,
+some macro systems of sufficient complication require some understanding of their own invariants,
+which remains future work.
 
-\subsection{$\csharp$ 4.0}
+\subsubsection{Python 3.0}
+
+A potential problem with Python 3.0 is that the annotation syntax is allowed in the original language
+albeit not being used. Therefore it is possible that some other library might want to use annotation syntax for
+other purposes, which is unlikely to be compatible with Reticulated.
+
+\subsubsection{Smalltalk}
+
+Smalltalk features a live system: developers might modify code, run it and debug it using the same execution environment,
+this requires its gradual typed extension to react quickly to code changes and remain up-to-date.
+
+\subsubsection{$\csharp$ 4.0}
 
 %Chapter 4
-\renewcommand{\thechapter}{4}
-\chapter{Related Work}
+\section{Related Work}
 
 % (TODO) sound gradual typing is nominally alive and well
 
-TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
+% TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
 %\renewcommand{\thechapter}{5}
 
 %\chapter{Future Work}
 
 \renewcommand{\thechapter}{5}
-\chapter{Conclusion}
+\section{Conclusion}
 
 Gradual typing is an approach that brings benefits of static and dynamic type system
 together in a sound and efficient manner, from which partially typed programs are also supported

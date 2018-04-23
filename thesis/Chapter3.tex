@@ -470,38 +470,49 @@ This can be considered to be strategy for prototyping gradual typing extension f
 efficiency is not a urgent concern as work on Gradualtalk is not (yet) focusing on performance either,
 and the tagging strategy is not being stated in detail to give more insight.
 
-\subsection{Differential Subtyping}
+\subsection{RTTI and Differential Subtyping}
 
-Safe TypeScript features a calculus that decreases RTTI overtime - 
-reducing runtime checks when checks could have been performed once for all.
+Runtime Type Information (RTTI) is one part of the mechanism for Safe TypeScript
+to implement its dynamic typechecking. Much like the monotonic approach found in Reticulated Python,
+with casts inserted in appropriate places and objects instrumented, runtime casts can be performed.
 
-\subsection{Self Types}
+One key contribution of Safe TypeScript is its use of differential subtyping:
+it is an extension that not only tells subtyping relations, but also allows splitting
+a structural type into slices of interest.
+The observation is that, during static typechecking, when subtyping relation is used, there is a potential loss in precision. We can extend subtyping relation to compute the exact set of type information,
+and encode in the form of RTTI instead of keeping types of all fields around therefore improve performance.
 
-The use of self types is seen in Gradualtalk to allow type information to be preserved
-in chained invocations.
+% \subsection{Self Types}
 
-\subsection{Recursive Data Types}
+% Self types are presence in Gradualtalk, but we believe such 
 
-\section{Blame Tracking}
+% The use of self types is seen in Gradualtalk to allow type information to be preserved
+% in chained invocations.
 
-\section{Eval function}
+% \subsection{Recursive Data Types}
 
-Languages of highly dynamic nature often come with a function \texttt{eval}, which
-gets a string or abstract syntax tree as input, interprets it as if it is one part of the program
-and return the result of execution. Such functions cannot be precisely typed and several languages
-have to treat \texttt{eval} function specially for this reason.
+% \section{Type Inference}
 
-\section{Other Performance Concerns}
+% \section{Blame Tracking}
 
-\subsection{Type Erasure}
+% \section{Eval function}
 
-\subsection{Large Arrays}
+% Languages of highly dynamic nature often come with a function \texttt{eval}, which
+% gets a string or abstract syntax tree as input, interprets it as if it is one part of the program
+% and return the result of execution. Such functions cannot be precisely typed and several languages
+% have to treat \texttt{eval} function specially for this reason.
 
+% \section{Other Performance Concerns}
+
+\subsection{Type Erasure and Optional Typing}
+
+% \subsection{Large Arrays}
+% 
 For programs that need runtime typechecks on large arrays,
 the overhead could be wasteful but significant.
 
 
-\section{Language-specific Challenges}
+\section{Challenges}
 
 \subsection{TypeScript}
 

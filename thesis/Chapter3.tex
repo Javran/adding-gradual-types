@@ -512,11 +512,41 @@ and encode in the form of RTTI instead of keeping types of all fields around the
 %% the overhead could be wasteful but significant.
 
 
-\subsection{Language-specific Challenges}
+\subsection{Challenges}
 
-This section shows language-specific challenges and open questions.
+This section shows challenges and open questions.
 
-% \subsubsection{JavaScript}
+\subsubsection{Common Challenges}
+
+\paragraph{Synchronization}
+One problem of making extensions to an existing language
+lie in the fact that the extended one needs extra maintenance efforts to keep being
+a superset of the original language.
+If the language being extended is actively changing or extending its syntax,
+our gradual typed version will have trouble keeping it up or
+even run into the problem of conflicting syntax.
+This is particular true in case of JavaScript: nowadays language proposals
+are still being reviewed and accepted, which requires Safe TypeScript to bring in these
+new features as well.
+
+\paragraph{Libraries Maintenance}
+Despite that gradual typed systems claim to provide freedom of making choices
+between statically or dynamically typed.
+For this feature to be useful at all, type signatures must be provided
+and kept up-to-date, which might require maintenance efforts.
+
+\subsubsection{JavaScript}
+
+% TODO: this is not particular for JS
+
+%One particular challenge of extending JavaScript lies in the fact
+%that it is an old language that still grows as of today.
+%It was designed for casual scripting but later finds its popularity
+%in web techniques that people use everyday.
+%While language proposals are still being reviewed and accepted today,
+%some awkward language features have to be preserved for backward compatibility.
+%For Safe TypeScript to keep synchronized with JavaScript, its syntax and
+%semantics have to be updated accordingly and carefully.
 
 \subsubsection{Scheme}
 

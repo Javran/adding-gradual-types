@@ -493,9 +493,17 @@ and encode in the form of RTTI instead of keeping types of all fields around the
 
 \subsubsection{Type Inference}
 
-Programs with type inference and gradual typed programs have some similarity in the sense
-that it allows programmers to write less type annotation themselves.
-Many languages we have mentioned so far supports type inference to some extent
+Programs with type inference and those with gradual typing have some similarity in the sense
+that both allow programmers to write less type annotation themselves.
+Many languages we have mentioned so far supports type inference to some extent.
+TypeScript implements local type inference within method bodies,
+as Safe TypeScript is built on top of it, it inherits this features as well.
+Reticulated Python implements local type inference by
+using dataflow analysis to compute possible types for each variables
+and then join these types to determine what type should be assigned to each variables.
+
+
+
 
 
 % \section{Blame Tracking}

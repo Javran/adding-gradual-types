@@ -514,7 +514,20 @@ A local type inference is also employed in Typed Scheme.
 
 % \section{Other Performance Concerns}
 
-%% \subsubsection{Type Erasure and Optional Typing}
+\subsubsection{Type Erasure and Optional Typing}
+
+Sometimes it is helpful to ensure that no runtime overhead is imposed
+on some values: for a tag-based implementation of gradual typing,
+an large array of objects will suffer from unnecessary taggings.
+In such cases, some languages provide a way to ensure that no tag is attached
+to these objects.
+Note that this is different from using dynamic types:
+when using dynamic types, as we have seen in dynamic semantics,
+some implementation of gradual typing allows structure of types to become more precise
+during execution, an erased type ensures that no runtime tagging will happen
+therefore typing is avoided.
+Of course, without tagging it is impossible to enforce some invariants at runtime,
+which remains as a choice that programmers can do.
 
 % \subsection{Large Arrays}
 % 

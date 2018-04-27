@@ -545,6 +545,15 @@ between statically or dynamically typed.
 For this feature to be useful at all, type signatures must be provided
 and kept up-to-date, which might require maintenance efforts.
 
+\paragraph{Eval function}
+
+Languages of highly dynamic nature would provide a \texttt{eval} function,
+which when given a string or a abstract syntax tree, evaluates it as
+if it is one part of the program and returns the result.
+These functions are difficult to give a type more precise than that of a function.
+However, the use of \texttt{eval} function is generally considered bad practices and
+might impose threats to security because this might allow arbitrary code to be executed.
+
 \subsubsection{JavaScript}
 
 % TODO: this is not particular for JS

@@ -200,7 +200,17 @@ To deal with dynamic types, type consistency is introduced
 to accommodate type judgments for gradual typing.
 Figure ? shows rules for type consistency relation.
 
-(TODO: type consistency rules here, lambda calculus and with some ground types)
+\begin{math}
+\inferrule*[left=(CREFL)]{ }{\tau \sim \tau}
+\inferrule*[left=(CFUNC)]
+  {\sigma_1 \sim \tau_1 \\ \sigma_2 \sim \tau_2}
+  {\tarr{\sigma_1}{\sigma_2} \sim \tarr{\tau_1}{\tau_2} }
+\end{math}
+
+\begin{math}
+\inferrule*[left=(CUNR)]{ }{\tau \sim \dyn}
+\inferrule*[left=(CUNL)]{ }{\dyn \sim \tau}
+\end{math}
 
 In general, two types are consistent when
 their type structures do not conflict with each other.

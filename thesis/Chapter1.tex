@@ -17,7 +17,8 @@ type errors prevent erroneous part of a program from execution.
 There are other benefits of type systems besides automated checking:
 types can be used to reveal optimization opportunities,
 can serve as simple documentation to programmers or
-provide hints to development tools to automate navigation, documentation lookup
+provide hints to development tools to allow auxiliary features like
+automate navigation, documentation lookup
 or auto-completion.
 
 All these benefits make type system an important part of programming languages,
@@ -27,17 +28,16 @@ which is also known as type checking.
 It occurs either statically ahead of program execution, or dynamically at runtime.
 For a static type system, ill-typed programs are rejected by compiler and
 no executable can be produced until all type errors are fixed.
-For a dynamic type system, type information is examined at runtime and type errors result
+For a dynamic type system,
+type information is examined at runtime and type errors result
 in abortion of the program or exceptions being raised
 instead of causing segmentation faults or other worse consequences.
 Static and dynamic type system both have their advantages and disadvantages,
 and languages make different choices depending on their needs.
 
-In this chapter, we start off by discussing static and dynamic type systems,
-which motivates research works that attempted to combine both within one system
-in order to take the benefits from the two,
-which in return gives birth to many possible solutions.
-One particular example among them is gradual typing.
+In this section, we start off by discussing static and dynamic type systems,
+which have inspired many lines of research that combine both within one system.
+One instance among them is gradual typing, the main focus of this survey.
 
 \subsection{Strengths and Weaknesses of Static and Dynamic Typing}
 
@@ -50,7 +50,8 @@ This section discusses advantages and disadvantages of both.
 \newcommand{\tbool}{\textbf{bool}}
 \newcommand{\tarr}[2]{#1 \rightarrow #2}
 
-In this section we use $\tau_0, \tau_1, \ldots$ for type variables.
+\subsubsection{Notation}
+In the following sections we use $\tau_0, \tau_1, \ldots$ for type variables.
 $\tbool$, $\tnum$ and $\tstr$ are types of
 boolean values, numbers and strings respectively.\
 Tuple types are notated as $(\tau_0, \tau_1, \ldots)$,
@@ -62,15 +63,13 @@ takes a tuple of two numbers as input and returns a number.
 
 \subsubsection{Static Type Systems}
 
-%TODO: type system or language?
-
 A static type system is preferred if robustness and performance
 is the main goal of a language.
 Because type checking occurs ahead of execution,
 ill-typed programs are rejected before it can start, and
 when a program typechecks,
 one can therefore expect no type error to occur and
-no extra cost is paid for typechecking at runtime.
+no extra cost of typechecking is paid at runtime.
 
 For a static type system to work, all variables, functions, etc. in a program
 will need to be assigned types. This is usually done by programmers or through the
@@ -79,8 +78,10 @@ available type information. This is both an advantage and a disadvantage
 of a static type system: having type annotations improves readability
 and since programmers are required to keep the consistency between type and code,
 type also serves as simple, faithful documentation. But on the other hand,
-adding and maintaining type annotations can also considered a burden.
+extra maintenance efforts are required to keep type annotation up-to-date,
+which might not be desired in many situations.
 
+% TODO: what situation?
 Having static known type information also helps in terms of performance in other ways.
 For example, In many programming languages, arithmetic functions are polymorphic.
 It is allowed for \textbf{a} and \textbf{b} to have different numeric types in \textbf{a + b}, a cast will be inserted to ensure arithmetic primitives only deals with addition of compatible types: if we are adding integer \textbf{b} to a floating number \textbf{a}, then \textbf{b} will be casted so we can call addition primitive that expected floating numbers on both sides.

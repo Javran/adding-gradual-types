@@ -137,27 +137,24 @@ array cloning can be implemented efficiently as memory copy instructions knowing
 
 %TODO could have more to say.
 
-One might have noticed that static type checking and dynamic one
-are not mutually exclusive: it is possible to have a program typechecked
-statically, while allowing runtime type checking.
-While static type system does typechecking ahead of time
-and avoids runtime overhead,
-it lacks the ability of using runtime type information;
-dynamic type system does typechecking at runtime,
-but it requires sophisticated work to reduce the amount of
-unnecessarily repeated runtime checks.
-In hope of bringing in benefits of both,
+One might have noticed that
+while static type checking happens ahead of execution,
+dynamic one is performed at runtime.
+Therefore they are not fundamentally mutually exclusive to each other.
+
+Indeed, researchers have been looking at different angles of
+the possibility of integrating both type discipline within one.
 several attempts are motivated to put these two type systems in one.
 In this section, we will discuss about these research works.
 
 \subsubsection{Design Goals}
 
-
 Summarizing pros and cons of static and dynamic typed languages,
 we now have a picture of an ideal type system, it should have following features:
 
 \begin{itemize}
-	\item \textbf{Detect and rule out errors ahead of program execution.} This is one main purpose of having a static type system. When a program starts running,
+	\item \textbf{Detect and rule out errors ahead of program execution.}
+	This is one main purpose of having a static type system. When a program starts running,
 	type errors should already be eliminated and runtime overhead should be minimized
 	to keep its performance close to that of a static type system.
 	\item \textbf{Delay typechecking until needed at runtime.}

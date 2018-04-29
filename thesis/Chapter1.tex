@@ -82,6 +82,7 @@ extra maintenance efforts are required to keep type annotation up-to-date,
 which might not be desired in many situations.
 
 % TODO: what situation?
+
 Having static known type information also helps in terms of performance in other ways.
 For example, In many programming languages, arithmetic functions are polymorphic.
 It is allowed for \textbf{a} and \textbf{b} to have different numeric types in \textbf{a + b}, a cast will be inserted to ensure arithmetic primitives only deals with addition of compatible types: if we are adding integer \textbf{b} to a floating number \textbf{a}, then \textbf{b} will be casted so we can call addition primitive that expected floating numbers on both sides.
@@ -95,7 +96,7 @@ If we want to write a program that deals with data whose structure is
 unknown at compile time, runtime inspection must be possible.
 While typical dynamically typed languages allow inspect of types or object properties,
 some extra work are required for a statically typed language
-to keep type information available at runtime.
+to keep and check runtime type information.
 
 In addition, it is often less convenient for programmers to prototype
 in statically typed languages: it involves trial and error to find the best implementation
@@ -106,12 +107,14 @@ make frequent changes to structure of variables and functions, but these feature
 
 Dynamic type systems do typechecking at runtime, which is best suited for
 languages designed for scripting and fast prototyping.
-A shell script, for example, runs other executables and feeds one's output to another, effectively gluing programs together.
+A shell script, for example, runs other executables and feeds one's output to another,
+effectively gluing programs together.
 In such a case, we have little to no knowledge about these executables ahead of time,
 making statically type checking impractical.
 And when it comes to prototyping,
-it is more important for programmers to execute the code and make modifications accordingly
+it is more important for programmers to execute the code and make adjustments accordingly
 than to enforce correctness and consistency through whole program.
+% TODO: bypassing is sufficient
 In such scenario, it is more convenient to delay type checking until
 it is required at runtime.
 
@@ -132,7 +135,6 @@ determine how to cast it into a boolean value at runtime.
 
 Optimization could also be hindered for a dynamically type language: 
 array cloning can be implemented efficiently as memory copy instructions knowing the array in question contains only primitive values but no reference or pointers, whereas without prior knowledge like this, every element of the array has to be traversed and even recursively cloned.
-
 
 \subsection{Combining the benefits of the two}
 

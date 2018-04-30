@@ -119,47 +119,54 @@ languages designed for scripting and fast prototyping.
 A shell script, for example, runs other executables and feeds one's output to another,
 effectively gluing programs together.
 In such a case, we have little to no knowledge about these executables ahead of time,
-making statically type checking impractical.
+making statically type checking improbable.
 And when it comes to prototyping,
-it is more important for programmers to execute the code and make adjustments accordingly
-than to enforce correctness and consistency through whole program.
+it is usually more important to allow a trial-and-error type of style of programming
+over concerns about robustness and correctness.
 % TODO: bypassing is sufficient
-In such scenario, it is more convenient to delay type checking until
-it is required at runtime.
+In such scenario, it is more convenient if the type system does not prevent
+an incomplete or ill-typed program from execution.
 
 However, it is also easy to spot weaknesses of dynamic type systems.
-Despite that type checking does not happen ahead of execution,
-programmers usually have facts about behaviors of programs,
-which is often described in comments or through naming of variables and functions without a systematic way of verifying them.
-As program develops, it is easy to make changes and forget updating these descriptions accordingly, which forces future maintainers to go back and rediscover these facts, causing maintenance difficulties.
+Despite that dynamically typed languages do not often provide a way of writing type annotations,
+programmers usually have facts about behaviors of programs.
+These facts are often described in comments or through the naming of variables and functions without a systematic way of verifying them.
+As program develops, it is easy to make changes but leaving these descriptions untouched.
+This troubles future maintainers to locate the problem and rediscover new facts,
+causing maintenance difficulties.
 
 %TODO: throw error at runtime
-
 Furthermore, without type information statically available,
 dynamic type system needs to maintain runtime information
 and rely on it to implement expected semantics.
 For example, if it is allowed for a language to condition on non-boolean values,
 its type has to be available at runtime in order to
-determine how to cast it into a boolean value at runtime.
+determine how to interpret its value as a boolean at runtime.
 
-Optimization could also be hindered for a dynamically type language: 
-array cloning can be implemented efficiently as memory copy instructions knowing the array in question contains only primitive values but no reference or pointers, whereas without prior knowledge like this, every element of the array has to be traversed and even recursively cloned.
+Opportunity of optimization could also be obscured for a dynamically type language.
+Array cloning, as an example,
+can be implemented efficiently as memory copy instructions
+knowing the array in question contains only primitive values but no reference or pointers.
+But without prior knowledge like this,
+every element of the array has to be traversed and even recursively cloned,
+which is the usual case for dynamically typed languages without sophisticated mechanism
+of optimization.
 
 \subsection{Combining the benefits of the two}
 
-%TODO could have more to say.
-
-One might have noticed that
-while static type checking happens ahead of execution,
-dynamic one is performed at runtime.
-Therefore they are not fundamentally mutually exclusive to each other.
+One might have noticed that static type systems and dynamic type systems
+are not incompatible in a fundamental level:
+the former does type checking ahead of execution while
+the latter maintain and inspect type information at runtime.
 
 Indeed, researchers have been looking at different angles of
-the possibility of integrating both type discipline within one.
-several attempts are motivated to put these two type systems in one.
-In this section, we will discuss about these research works.
+the possibility of integrating these two type disciplines within one.
+Several lines of research are motivated,
+and in this section, we will discuss about these research works.
 
 \subsubsection{Design Goals}
+
+% XXX
 
 Summarizing pros and cons of static and dynamic typed languages,
 we now have a picture of an ideal type system, it should have following features:

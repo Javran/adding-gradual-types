@@ -77,18 +77,27 @@ means of type inference, which is a technique that infers types using
 available type information. This is both an advantage and a disadvantage
 of a static type system: having type annotations improves readability
 and since programmers are required to keep the consistency between type and code,
-type also serves as simple, faithful documentation. But on the other hand,
-extra maintenance efforts are required to keep type annotation up-to-date,
-which might not be desired in many situations.
+type also serves as simple, faithful documentation.
+But on the other hand, extra maintenance on type annotations
+is required just to allow program execution. This might
+be undesirable in situations where a trial-and-error style of programming
+is preferable.
 
-% TODO: what situation?
-
-Having static known type information also helps in terms of performance in other ways.
-For example, In many programming languages, arithmetic functions are polymorphic.
-It is allowed for \textbf{a} and \textbf{b} to have different numeric types in \textbf{a + b}, a cast will be inserted to ensure arithmetic primitives only deals with addition of compatible types: if we are adding integer \textbf{b} to a floating number \textbf{a}, then \textbf{b} will be casted so we can call addition primitive that expected floating numbers on both sides.
-A dynamic language would have to figure out types of \textbf{a} and \textbf{b} at runtime, make decision about whether casting is required or which primitive addition to call all at runtime. But with type information statically available,
-these decisions can be made ahead of execution,
-resulting in improved performance at runtime.
+Having static known type information also helps in terms of performance.
+For example, In machine instructions, primitive arithmetic operations
+would only deal with operands of compatible types: addition can only add together
+two integers or two floating numbers.
+However, in many programming languages,
+addition is polymorphic and when it comes to the case of adding an integer
+and an floating number, the integer is implicitly converted into a floating number before
+performing the actual addition.
+For a statically typed system, type information can be used ahead of execution
+to figure out exactly whether it is necessary to insert conversions
+and where they are required.
+But a dynamic typed language might struggle because type information
+is only available at runtime.
+As a consequence, similar decisions about conversions have to be made at runtime,
+imposing performance penalty.
 
 Besides extra effort of maintaining type annotations,
 the disadvantage of a statically type language often lies in the lack of runtime flexibility.
@@ -96,7 +105,7 @@ If we want to write a program that deals with data whose structure is
 unknown at compile time, runtime inspection must be possible.
 While typical dynamically typed languages allow inspect of types or object properties,
 some extra work are required for a statically typed language
-to keep and check runtime type information.
+to maintain and check runtime type information.
 
 In addition, it is often less convenient for programmers to prototype
 in statically typed languages: it involves trial and error to find the best implementation

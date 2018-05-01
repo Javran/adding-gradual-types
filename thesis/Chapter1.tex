@@ -238,13 +238,13 @@ which are replaced by two rules in gradually typed lambda calculus:
 {\Gamma \vdash_G e_1 e_2 : \tau'}
 \end{math}
 
-
-%TODO XXX
-
+While GAPP1 allows a value of dynamic type to be typed as if it is a function,
+GAPP2 is more interesting: it resembles function application of a static type system,
+but instead of demanding $\tau_2 = \tau$, it uses a new relation $\sim$, which
+is called type consistency relation.
 To deal with dynamic types, type consistency is introduced
 to accommodate type judgments for gradual typing.
-Figure ? shows rules for type consistency relation.
-
+The following shows rules for type consistency relation.
 
 \begin{math}
 \inferrule*[left=(CREFL)]{ }{\tau \sim \tau}
@@ -257,6 +257,9 @@ Figure ? shows rules for type consistency relation.
 \inferrule*[left=(CUNR)]{ }{\tau \sim \dyn}
 \inferrule*[left=(CUNL)]{ }{\dyn \sim \tau}
 \end{math}
+
+%TODO XXX
+
 
 In general, two types are consistent when
 their type structures do not conflict with each other.

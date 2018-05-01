@@ -166,32 +166,36 @@ and in this section, we will discuss about these research works.
 
 \subsubsection{Design Goals}
 
-% XXX
-
 Summarizing pros and cons of static and dynamic typed languages,
-we now have a picture of an ideal type system, it should have following features:
+we now have a picture of a resulting type system integrating the two,
+it should be able to:
 
 \begin{itemize}
-	\item \textbf{Detect and rule out errors ahead of program execution.}
-	This is one main purpose of having a static type system. When a program starts running,
-	type errors should already be eliminated and runtime overhead should be minimized
-	to keep its performance close to that of a static type system.
-	\item \textbf{Delay typechecking until needed at runtime.}
-	This is the crucial feature of a dynamic type system,
-	it allows ill-typed or partially written programs to execute,
-	which makes it suitable in situations where static type information
+	\item \textbf{Detect and rule out type errors ahead of program execution.}
+	This is one main purpose of having a static type system.
+	When a program starts running, type errors should already be eliminated,
+	leaving no need of typechecking during execution.
+
+	% TODO: no better words for now
+	\item \textbf{Delay typechecking until it is required at runtime.}
+	A dynamic type system is known for its permissiveness on what programs it can accept:
+	ill-typed or partially written programs are still allowed to execute
+	all the way to its termination or until reaching their incomplete or ill-typed parts.
+	This makes it suitable in situations where static type information
 	is limited or fast prototyping is preferred over robustness or runtime performance.
 \end{itemize}
 
-Aside from these two goals, type annotations can also be used for
-other purposes like optimization and providing hints to development tools.
-For a language with this new type system, it should also be possible.
+Aside from these two goals,
+a statically typed language receives benefits from
+utilizing type information for other purposes like
+optimization or providing hints to development tools.
+For the resulting system, we should be able to have these benefits as well.
 
 \subsubsection{A Introduction to Gradual Typing}
 
 \newcommand{\dyn}{\textbf{dyn}}
 
-Gradual typing is one possible approach that meets our design goal.
+Gradual typing is one possible approach that meets our design goals.
 It captures the fact that type information might only be partially known
 ahead of execution by introducing a special type that indicates partial types.
 It attempts to typecheck programs like a static type system does, but delays
@@ -202,19 +206,32 @@ In the following sections, we will introduce it
 as an extension to static type system.
 But it is also possible and practical to support gradual typing by
 extending a dynamic type system.
-
-% TODO: in fact maj of langs are extended from dynamic ones
+In fact, there are more instances of dynamically typed languages
+making extensions to support gradual typing than that of statically typed ones.
 
 \paragraph{Dynamic Type and Type Consistency}
 
-Gradual type system introduces a special type on top of a static type system
-to capture the idea that type information might only be partially known
-ahead of execution.
-The special type is usually called a ``dynamic type'', we introduce a special type $\dyn$ for it.
+In order to capture the idea that type information might only be partially known
+ahead of execution, gradual type system introduces a special type, 
+which is called ``dynamic type'' by convention, on top of a static type system
+and extends type judgment to allow a more permissive form of type checking in the presence
+of dynamic types. For the rest of this survey,
+we will use type $\dyn$ to indicate dynamic types in appropriate contexts.
+
+% As for the type judgment extension, all bindings sites are extended to support 
+
+\begin{math}
+\inferrule*[left=(GAPP1)]{ }{\tau \sim \tau}
+\end{math}
+
+
+%TODO XXX
+
 
 To deal with dynamic types, type consistency is introduced
 to accommodate type judgments for gradual typing.
 Figure ? shows rules for type consistency relation.
+
 
 \begin{math}
 \inferrule*[left=(CREFL)]{ }{\tau \sim \tau}

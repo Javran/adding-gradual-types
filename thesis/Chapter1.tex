@@ -195,7 +195,7 @@ For the resulting system, we should be able to have these benefits as well.
 
 \newcommand{\dyn}{\textbf{dyn}}
 
-Gradual typing is one possible approach that meets our design goals.
+Gradual typing \cite{siek2006gradual} is one possible approach that meets our design goals.
 It captures the fact that type information might only be partially known
 ahead of execution by introducing a special type that indicates partial types.
 It attempts to typecheck programs like a static type system does, but delays
@@ -218,15 +218,28 @@ and extends type judgment to allow a more permissive form of type checking in th
 of dynamic types. For the rest of this survey,
 we will use type $\dyn$ to indicate dynamic types in appropriate contexts.
 
+To demonstrate necessary changes to type judgments,
+we use statically typed lambda calculus as a starting point.
+
+All type rules are preserved except for function applications,
+which are replaced by two rules in gradually typed lambda calculus:
+
 % As for the type judgment extension, all bindings sites are extended to support 
 
 \begin{math}
-\inferrule*[left=(GAPP1)]{ }{\tau \sim \tau}
+\inferrule*[left=(GAPP1)]
+{\Gamma \vdash_G e_1 : \dyn \\ \Gamma \vdash e_2 : \tau_2 }
+{\Gamma \vdash_G e_1 e_2 : \dyn}
+\end{math}
+
+\begin{math}
+\inferrule*[left=(GAPP2)]
+{\Gamma \vdash_G e_1 : \tarr{\tau}{\tau'} \\ \Gamma \vdash_G e_2 : \tau_2 \\ \tau_2 \sim \tau }
+{\Gamma \vdash_G e_1 e_2 : \tau'}
 \end{math}
 
 
 %TODO XXX
-
 
 To deal with dynamic types, type consistency is introduced
 to accommodate type judgments for gradual typing.

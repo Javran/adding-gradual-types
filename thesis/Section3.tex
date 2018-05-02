@@ -1,6 +1,6 @@
 %Section 3
 
-\subsection{The Way Towards Gradual Typing}
+\section{The Way Towards Gradual Typing}
 
 % TODO: could be organized better?
 
@@ -567,16 +567,16 @@ might impose threats to security because this might allow arbitrary code to be e
 
 \subsubsection{JavaScript}
 
-% TODO: this is not particular for JS
-
-%One particular challenge of extending JavaScript lies in the fact
-%that it is an old language that still grows as of today.
-%It was designed for casual scripting but later finds its popularity
-%in web techniques that people use everyday.
-%While language proposals are still being reviewed and accepted today,
-%some awkward language features have to be preserved for backward compatibility.
-%For Safe TypeScript to keep synchronized with JavaScript, its syntax and
-%semantics have to be updated accordingly and carefully.
+Originally designed for casual scripting and extended over a long period of time,
+JavaScript admittedly contains many design flaws that
+programmers must be aware of and work around them.
+Any language extension claimed to fully support JavaScript inherits these problems as well.
+Some goes to the path of writing another language that compiles to JavaScript,
+therefore completely avoiding dealing with JavaScript directly for programmers.
+Other like Safe TypeScript, only support a reasonable subset of JavaScript -
+some use of language features are considered deprecated or bad practice,
+so not fully supporting all programs that JavaScript accepts does not raise
+much concern in practice.
 
 \subsubsection{Scheme}
 
@@ -585,24 +585,50 @@ Despite Typed Scheme is able to handle most of the macros by expanding them befo
 some macro systems of sufficient complication require some understanding of their own invariants,
 which remains future work.
 
+Another challenge that scheme faces is that the type expressiveness of Typed Scheme
+not sufficient for some highly flexible functions:
+some functions can be of indefinite arity, for example \texttt{(map f xs)}, \texttt{(map f xs ys)}
+and \texttt{(map f xs ys zs)} can all be valid given \texttt{f} of expected arity;
+a similar situation is with \texttt{apply} function, which accepts a function and a list of arguments.
+Typed Scheme has special cases to deal with these cases, but it is more desirable
+if these types can be expressed using the type language.
+
 \subsubsection{Python 3.0}
 
-A potential problem with Python 3.0 is that the annotation syntax is allowed in the original language
-albeit not being used. Therefore it is possible that some other library might want to use annotation syntax for
-other purposes, which is unlikely to be compatible with Reticulated.
+One problem with Python is that Python does its own runtime checks which cannot be prevented
+even if it can be proved in Reticulated that some particular checks are unnecessary.
+
+Another potential problem with Python is that the annotation syntax is allowed
+in the original language albeit not being used.
+Therefore it is possible that some other library might want to use annotation syntax for other purposes, which is unlikely to be compatible with Reticulated.
 
 \subsubsection{Smalltalk}
 
-Smalltalk features a live system: developers might modify code, run it and debug it using the same execution environment,
-this requires its gradual typed extension to react quickly to code changes and remain up-to-date.
+Smalltalk features a live system: developers might modify code, run it and debug it using the same execution environment, this raises several challenges in the development of Gradualtalk:
 
-\subsubsection{$\csharp$ 4.0}
+\begin{itemize}
+	\item \textbf{Granularity of the compiling process}
+	Smalltalk's compile unit is smaller than that of many other languages.
+	Instead of doing per-class compilation, Smalltalk compiles in the unit of method to
+	allow a live system. This causes troubles when defining methods with circular dependencies.
+	Gradualtalk solves this problem by decoupling typechecking and compiling process,
+	so a type error does not prevent compilation of a incomplete program.
+	\item \textbf{Work done by the typechecker can be obsolete}
+	When new methods are added or type signature for an existing type changes,
+	typecheckers can produce obsolete results. This is solved by using a dependency tracking
+	mechanism and with the use of ghost entities.
+	\item \textbf{Type errors in critical code} Sometimes type errors can be critical:
+	for example, if default error handling function itself contains some kind of error,
+	this would result in an infinite loop. This is solved by allowing cast insertion
+	to be disabled.
+\end{itemize}
+% \subsubsection{$\csharp$ 4.0}
 
 %Chapter 4
 \section{Related Work}
 
 
-\subsubsection{Alternatives}
+\subsubsection{Alternatives to Integrating Static and Dynamic Typing}
 
 There are other type systems that bring benefits of the two together.
 Cartwright and Fagan's introduced soft typing, which is a type system
@@ -619,17 +645,17 @@ in the process of attempting the proof, Siek and Taha finds a better solution,
 which results in gradual typing that we have seen today.
 %TODO? 
 
-\subsection{Static type system extensions}
+%\subsection{Static type system extensions}
 
-Liquid type, dependent type
+% Liquid type, dependent type
 
-\subsection{Soft typing}
+%\subsection{Soft typing}
 
-\subsection{Like type?}
+%\subsection{Like type?}
 
-\subsection{contracts}
+%\subsection{contracts}
 
-\subsection{refinement type}
+%\subsection{refinement type}
 
 % (TODO) sound gradual typing is nominally alive and well
 
@@ -643,11 +669,16 @@ Liquid type, dependent type
 
 Gradual typing is an approach that brings benefits of static and dynamic type system
 together in a sound and efficient manner, from which partially typed programs are also supported
-and evolution towards either fully fully static or full dynamic program is also open in a smooth way.
-In this survey, we visited several extensions that extends existing languages to support such type system.
-We have seem how gradual typing and related features brought in with it can benefit in developments.
-We also studied how these features are implemented and possible strategies and tradeoffs language designers have
-to make.
+and evolution towards either fully static or fully dynamic programs
+is also open and intended to be smooth.
+In this survey, we visited several extensions that extends existing languages to support such type system. From aspect of programmers, gradual type extensions makes it possible
+to describe program invariants to be described in a machine-checkable way,
+and allows statically typed program to have parts without type annotations.
+For language designers and implementors, we have seen how gradual typing extensions are implemented
+together with complementary features that makes types expressive and easy to use.
+Challenges are present, despite some of them are still left as open questions,
+we remain confident that gradual typing benefits existing languages in long run.
+
 
 
 

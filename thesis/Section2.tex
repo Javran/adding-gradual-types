@@ -2,10 +2,12 @@
 
 \section{Benefits of Gradual Typing}
 
-Gradual typing brings existing languages not just the good parts of both static and dynamic typing.
-The synergy also creates surprising new benefits to languages users.
+Besides most advantages one could expect from static and dynamic typing,
+the synergy also creates surprising new benefits to languages users.
 
-In this chapter, we will explore some literatures and see in detail about these benefits that gradual typing have brought in.
+In this section, we will explore some literatures
+from aspects of language users
+and see in detail about these benefits that gradual typing have brought in.
 
 \subsection{From JavaScript to Safe TypeScript}
 
@@ -13,14 +15,15 @@ Starting as a scripting language, JavaScript has grown into a language
 that powers many large web applications.
 Unfortunately, as a language that exists over a long period of time,
 the language evolves but many of its flaws are still left as it is for compatibility reasons,
-hindering productivity of many programmers.
+hindering productivity of even most experienced programmers.
 
 Among tools and extensions to JavaScript that attempt to ease this pain,
-TypeScript is one closely related to gradual typing:
-it is a superset of JavaScript that supports optional type annotations,
-a compiler typechecks TypeScript code ahead of execution and compile code
-into plain JavaScript source code, making it ready to be executed out of box
+TypeScript is one closely related to gradual typing.
+Its syntax is a superset of JavaScript that supports optional type annotations on variables
+and a compiler typechecks TypeScript source code ahead of execution
+and compile it into plain JavaScript source code, making it ready to be executed out of box
 for JavaScript interpreters.
+% TODO XXX
 However, TypeScript is intentionally unsound: only static typechecking is performed,
 which does not prevent runtime type errors.
 One noticeable improvement to TypeScript is Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris, which shares the same syntax with TypeScript
@@ -37,14 +40,14 @@ This leads to a common practice in which function bodies will have code
 just for checking its argument types and throw errors before
 proceeding with actual implementation:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 function f(x) {
     if (typeof x !== 'string') {
         // throw error
     }
     return x + '!';
 }
-\end{verbatim}
+\end{minted}
 
 As a toy example, the function accepts a string value,
 then returns another with exclamation sign concatenated to it. 
@@ -55,7 +58,7 @@ it will soon become less maintainable.
 By extending the language with type annotations,
 we can do something better in Safe TypeScript:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 function f(x : string) : string {
     // now this check becomes unnecessary
     if (typeof x !== 'string') {
@@ -63,7 +66,7 @@ function f(x : string) : string {
     }
     return x + '!';
 }
-\end{verbatim}
+\end{minted}
 
 In the code above, we just declared a function $\textbf{f}$ that accepts
 one variable $x$ of $\textbf{string}$ type, and returns a value of $\textbf{string}$ type.
@@ -76,21 +79,21 @@ therefore the body of the $\textbf{if}$ statement cannot possibly be entered.
 This allows us to get rid of the check totally:
 
 
-\begin{verbatim}
+\begin{minted}{javascript}
 function f(x : string) : string {
     return x + '!';
 }
-\end{verbatim}
+\end{minted}
 
 The use site of $\textbf{f}$ might look like the following:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 f('one'); // good
 f(1); // bad
 function g(x) {
     return f(x); // might be unsafe
 }
-\end{verbatim}
+\end{minted}
 
 Here Safe TypeScript is able to tell that: calling $\textbf{f}$ with a string literal
 is safe, and no extra cast is needed; the second call is immediately rejected
@@ -123,9 +126,9 @@ style as well.
 TypeScript introduces the concept of interface to allow representing the structure
 of runtime objects.
 
-\begin{verbatim}
+\begin{minted}{javascript}
 interface Point { x: number; y: number }
-\end{verbatim}
+\end{minted}
 
 This defines $\textbf{Point}$ type to be an object that has two fields $\textbf{x}$
 and $\textbf{y}$ whose types are all $\textbf{number}$s.
@@ -133,21 +136,21 @@ For example, the invocation with object literal $f(\textbf{\{x: 1, y: 0\})}$ typ
 with $f : Point \Rightarrow any$.
 An interface can be implemented by classes:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 class MovablePoint implements Point {
   constructor(public x: number, public y: number) {this.x = x; this.y = y;}
   public move(dx: number, dy: number} { this.x += dx; this.y += dy; }
 }
-\end{verbatim}
+\end{minted}
 
 While in TypeScript, all classes are viewed structurally, this does not match
 with JavaScript semantics. Consider the following function:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 function mustBeTrue(x : MovablePoint) {
   return !x || x instanceof MovablePoint;
 }
-\end{verbatim}
+\end{minted}
 
 One might expect this function to always return $\textbf{true}$.
 However, a structural view will consider object literal
@@ -186,14 +189,14 @@ extends Scheme with gradual typing.
 
 The following code shows a function definition as typical style of programming in this language:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 ;; a Complex is either
 ;; - a number
 ;; - (cons number number)
 (define (creal x)
   (cond [(number? x) x]
         [else (car x)]))
-\end{verbatim}
+\end{minted}
 
 The code above defines a function $\textbf{creal}$, which takes as argument
 a complex number: a real number is simply a value satisfying $\textbf{number?}$,
@@ -214,22 +217,22 @@ occurrence typing.
 
 The Typed Scheme version begins with definition of complex number:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 ;; a Complex is either
 ;; - a number
 ;; - (cons number number)
 (define-type-alias Cplx (Union Number (cons Number Number)))
-\end{verbatim}
+\end{minted}
 
 While \textbf{Cplx} is just an alias for the union type, it improves readability
 and allows other parts of the program to refer to it by name.
 The body of the function looks like:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 (define: (creal [x: Cplx]) : Number
   (cond [(number? x) x]
         [else (car x)]))
-\end{verbatim}
+\end{minted}
 
 Note that we are explicitly giving the return type \textbf{Number},
 and the type system is capable of inferencing that
@@ -240,9 +243,9 @@ Another different kind of reasoning is also being used among Scheme programmers:
 Suppose we have stored a list of various types of values in \textbf{xs}
 and the following code will compute the sum of all numbers from \textbf{xs}:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 (foldl + 0 (filter number? xs))
-\end{verbatim}
+\end{minted}
 
 Note that despite \textbf{xs} is a list that contains not just numbers,
 it is guaranteed that \textbf{(filter number? xs)} will return a list of numbers
@@ -262,11 +265,11 @@ In general, given a boolean-valued unary function
 we can define the set of values that produces \textbf{true} when fed to this function.
 This allows Typed Scheme to support refinement type.
 
-\begin{verbatim}
+\begin{minted}{scheme}
 (: just-even (Number -> (Refinement even?)))
 (define (just-even n)
   (if (even? n) n (error 'not-even)))
-\end{verbatim}
+\end{minted}
 
 The code above uses boolean-valued function \textbf{even?}
 and its corresponding refinement type \textbf{Refinement even?},
@@ -275,11 +278,11 @@ so we can expect a value of such type to be not just numbers, but also only even
 More practical examples include use refinement types to distinguish raw input
 from validated ones:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 (: sql-safe? (String -> Boolean))
 (define (sql-safe? s) ...)
 (declare-refinement sql-safe?)
-\end{verbatim}
+\end{minted}
 
 In this example, user defines function \textbf{sql-safe?} to verify
 that a raw string contains no SQL injection or other contents of malicious attempt.
@@ -306,10 +309,10 @@ which makes it suitable for type annotation.
 Given proper definition of \textbf{Int}, we can write annotated
 function \textbf{distance} like below:
 
-\begin{verbatim}
+\begin{minted}{python}
 def distance(x: Int, y: Int)-> Int:
   return abs(x - y)
-\end{verbatim}
+\end{minted}
 
 While annotation allows arbitrary expressions, Reticulated Python
 only uses types built from several type constructors.
@@ -338,7 +341,7 @@ and Reticulated provides corresponding types for both.
 
 Consider the following example:
 
-\begin{verbatim}
+\begin{minted}{python}
 @fields({'x': Int})
 class 1DPoint:
   def __init__(self: 1DPoint):
@@ -348,7 +351,7 @@ class 1DPoint:
     return self
 
 p = 1DPoint()
-\end{verbatim}
+\end{minted}
 
 It defines a class \textbf{1DPoint} with one field \textbf{x} of \textbf{Int} type.
 And an object is created from it through the constructor
@@ -405,13 +408,13 @@ into a gradual typed language.
 In Smalltalk there are objects that receives and processes messages.
 The following example computes euclidean distance for points:
 
-\begin{verbatim}
+\begin{minted}{smalltalk}
 Point >> distanceTo: p
 | dx dy |
 dx := self x - p x.
 dy := self y - p y.
 ^ (dx squared + dy squared) sqrt
-\end{verbatim}
+\end{minted}
 
 Gradualtalk extends this syntax that allows
 type annotation on parameter, return value and local variables.
@@ -482,9 +485,9 @@ is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
 
 A structural type describes the shape of an object.
 
-\begin{verbatim}
+\begin{minted}{smalltalk}
 RBParser >> bracketsOfNode: ({left (-> Integer) . right (->Integer)}) node
-\end{verbatim}
+\end{minted}
 
 The method above defines the argument type of \texttt{node} to have 2 methods:
 \texttt{left} and \texttt{right} and both of them will return an integer when invoked.
@@ -495,12 +498,12 @@ In addition, subtyping relations of them are formed from existing inheritance re
 
 Gradual type managed to unify them in an interesting way.
 
-\begin{verbatim}
+\begin{minted}{smalltalk}
 RBParser >> bracketsOfNode: (RBNode {
 left (-> Integer) .
 right (->Integer)
 }) node
-\end{verbatim}
+\end{minted}
 
 Note that in addition to the structural type we have seen,
 \texttt{RBNode} is a nominal type, the type of \texttt{node} above
@@ -510,12 +513,12 @@ but also requires it to be an instance of \texttt{RBNode}.
 Another interesting example is the combination of structural type
 and nominal type \texttt{Dyn}:
 
-\begin{verbatim}
+\begin{minted}{smalltalk}
 Canvas >> (Self) drawPoint: (Dyn {x (-> Integer) . y (->Integer)}) point
 ... point x. "safe call"
 ... point y. "safe call"
 ... point z. "not an error, considering point to be Dyn"
-\end{verbatim}
+\end{minted}
 
 Besides calling \texttt{x} and \texttt{y}, a call to \texttt{z} does not
 raise an error ahead of execution, because \texttt{Dyn} can be casted to allow use of
@@ -530,7 +533,7 @@ With type aliases comes the concepts of protocols, which are just type aliases
 for structural and nominal types.
 
 \newcommand{\csharp}{C^\sharp}
-\subsection{$\csharp$ 4.0}
+\subsection{From $\csharp 3.0$ to $\csharp$ 4.0}
 
 While we have seen many examples that a dynamically typed language gets
 gradual type extensions, Bierman, Meijer and Torgersen's work on
@@ -543,7 +546,7 @@ more convenient and brings in features meant for dynamically typed languages.
 
 The following code snippet shows how C$^\sharp$ 3.0 interact with JavaScript:
 
-\begin{verbatim}
+\begin{minted}{csharp}
 ...
 ScriptObject map = win.CreateInstance("VEMap", "myMap");
 map.Invoke("LoadMap");
@@ -554,7 +557,7 @@ var x = win.CreateInstance("VELatLong", latitude, longitude)
 var pin = map.Invoke("AddPushpin", x);
 pin.Invoke("SetTitle", name);
 ...
-\end{verbatim}
+\end{minted}
 
 In order to interact with JavaScript, method calls
 are made using string-based interface, which is verbose, fragile to maintain.

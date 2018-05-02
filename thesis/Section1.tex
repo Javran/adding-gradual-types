@@ -1,6 +1,4 @@
-%Chapter 1
-
-% \renewcommand{\thechapter}{1}
+%Section 1
 
 \section{Introduction}
 
@@ -290,7 +288,6 @@ allow any pair of types to match and therefore render static typechecking useles
 
 \paragraph{Cast Insertion and Runtime Typechecking}
 
-
 As we can see gradual type system attempts to contain both statically and dynamically typed programs.
 However, because of the presence of dynamic types,
 the type system cannot be sound by only have static typechecking.
@@ -319,7 +316,7 @@ By inserting the cast, function application $f(v)$ becomes $f(c(v))$.
 This still typechecks statically, but whenever we need to pass a runtime value to $f$,
 the value is always checked by $c$ to decide whether to pass the value to $f$ or raise
 a type error. Now that in the body of $f$,
-the type system guarantees that its argument has to be a number.
+the type system guarantees that its argument is a number.
 
 \paragraph{Optional Type Annotations and ``pay-as-you-go''}
 

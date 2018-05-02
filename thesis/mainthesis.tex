@@ -1,27 +1,12 @@
 % !TeX document-id = {f1cf4dec-bb8e-4493-8f97-c2bb9562ab5a}
 % !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
 
-% August 2017 (TOC contents linked in blue in pdf file)
-%This template was prepared by Dorothea F. Brosius of the
-%Institute for Electronics and Applied Physics, University of Maryland, College Park, MD
-%The template was last updated in August 2017
-%Thesis Main Page used with thesis.sty based on the
-%University of Maryland Electronic Thesis and Dissertation (ETD) Style Guide (2016)
-
-%The YourInformation file was created by Freja Nordsiek, 2014.
-%Code for linking the TOC titles to the text in the pdf file was created by Freja Nordsiek, 2014.
-
-% Select the version that fits how you are making this LaTeX document (its driver).
-% The first two are the most likely ones to be needed.
-
-\newcommand{\mydriver}{pdflatex} %Making a PDF directly using pdflatex.
+\newcommand{\mydriver}{pdflatex}
 
 \documentclass[runningheads]{llncs}
 % \documentclass[12pt,\mydriver]{thesis}  %12pt is larger than 11pt
 
-%\usepackage{titlesec}
-%   \titleformat{\chapter}
-%      {\normalfont\large}{Chapter \thechapter:}{1em}{}
+
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{lscape}
@@ -31,16 +16,6 @@
 \usepackage{minted}
 \usepackage{mathpartir}
 
-%\newcommand{\tbsp}{\rule{0pt}{18pt}} %used to get a vertical distance after \hline
-%\renewcommand{\baselinestretch}{2}
-%\setlength{\textwidth}{5.9in}
-%\setlength{\textheight}{9in}
-%\setlength{\topmargin}{-.50in}
-%\setlength{\topmargin}{0in}    %use this setting if the printer makes the the top margin 1/2 inch instead of 1 inch
-%\setlength{\oddsidemargin}{.55in}
-%\setlength{\parindent}{.4in}
-%\pagestyle{empty}
-
 \begin{document}
 	
 \title{Adding Gradual Types to Existing Languages}
@@ -48,9 +23,9 @@
 
 \include{Abstract} %(must be first, required, non-numbered)
 
-\include{Chapter1}
-\include{Chapter2}
-\include{Chapter3}
+\include{Section1}
+\include{Section2}
+\include{Section3}
 
 \bibliographystyle{plain}
 \bibliography{refs}

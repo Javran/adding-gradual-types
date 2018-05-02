@@ -258,85 +258,108 @@ The following shows rules for type consistency relation.
 \inferrule*[left=(CUNL)]{ }{\dyn \sim \tau}
 \end{math}
 
-%TODO XXX
+As we can see, if dynamic types are not present at all, type consistency is the same
+as type equality. Therefore we still can typecheck all static programs like
+static type systems do.
+But we now can talk about types with partial information.
+Roughly speaking, two types are consistent when there are sensible values that belong to both of them.
+We demonstrate this by giving few examples:
 
+\begin{itemize}
+	\item $\tbool$ is consistent with type $\dyn$. Despite that the latter is less precise,
+	all boolean values can also be of type $\dyn$.
+	\item $\tarr{\tnum}{\dyn}$ is consistent with both $\tarr{\dyn}{\tnum}$ and $\tarr{\dyn}{\dyn}$,
+	because a function of type $\tarr{\tnum}{\tnum}$ can belong to all these types at the same time.
+	\item $\tarr{\dyn}{\dyn}$ is never consistent with $\tbool$, because the former is a function type while the latter a boolean value,
+	whose type structures do not match.
+\end{itemize}
 
-In general, two types are consistent when
-their type structures do not conflict with each other.
-For example, $\tbool$ is consistent with type $\dyn$
-despite that the latter is less precise;
-$\tarr{\tnum}{\dyn}$ is consistent with both $\tarr{\dyn}{\tnum}$ and $\tarr{\dyn}{\dyn}$,
-because all these types are functions that accepts one value and returns another and
-$\tnum$ and $\dyn$ are consistent with each other.
-However $\tarr{\dyn}{\dyn}$ is never consistent with $\tbool$,
-because the former is a function type while the latter a boolean value,
-whose type structures do not match.
-
-In order to perform static typechecking, it is required that
-all terms in the program to must have types ahead of execution.
-In a gradual type system, this is no longer required:
-for a specific term,
-if programmers choose not to give a type annotation, it will be assigned type $\dyn$.
-This still allows static typechecking to detect errors because
-for types that contains $\dyn$, it is not totally ignored, but checked
-up to the point where the structure of type is known.
+Now that we have dynamic types, it is no longer a requirement to require
+every term in a program to have a type ahead of execution.
+For any term missing type information, we can simply assigned it with type $\dyn$,
+and type rules will be permissive to accept it as long as type consistency is met.
 
 On the other hand, a dynamically type program can now be statically typechecked
 by considering it to be a program without any type annotation.
-This is still beneficial, as some literal values and primitives will still have their built-in types,
+This is still beneficial, as some literal values and primitives will have their built-in types,
 an obvious misuse like taking the square root of a string value can now be detected ahead of execution
 instead of raising runtime exceptions.
 
+As a side note, it is intended that type consistency is not a transitive relation: given that $\tau_0 \sim \dyn$ and $\dyn \sim \tau_1$, transitivity will imply $\tau_0 \sim \tau_1$, which would
+allow any pair of types to match and therefore render static typechecking useless.
+
 \paragraph{Cast Insertion and Runtime Typechecking}
 
+
 As we can see gradual type system attempts to contain both statically and dynamically typed programs.
-However, because of presence of dynamic types,
+However, because of the presence of dynamic types,
 the type system cannot be sound by only have static typechecking.
-Imagine function $f : \tarr{\tnum}{\dyn}$ and variable $v : \dyn$, while the function application
-$f v$ can pass static typechecking, the runtime value of $t$ might turn out to be a string
-and now the application is ill-typed.
+Imagine function $f : \tarr{\tnum}{\dyn}$ and variable $v : \dyn$, while function application
+$f(v)$ can pass static typechecking, the runtime value of $t$ might turn out to be a string
+and this violates $f$'s input type $\tnum$.
 
-The problem lies in the fact that some terms might be assigned with types that contains
-$\dyn$, its runtime counterpart are precise, which is not checked during static typechecking.
-To solve this problem, casts are inserted at appropriate locations, which then
-allows type errors to be detected at runtime.
-Suppose we have a cast function $c : \tarr{\dyn}{\tnum}$, function application $f v$
-then becomes $f (c v)$, which still typechecks, but whenever we need to pass a runtime value to $f$,
-its runtime is always checked by $c$ to decide whether to pass the value to $f$ or raise
-a type error.
-%TODO: from Gradual Typing for Functional Languages
+We can see what have gone wrong: while any number is also of type $\dyn$,
+not all values of $\dyn$ type can be numbers.
+In general, when we are using a value of $\tau_0$ as if it is a value of $\tau_1$ and
+$\tau_0$ is less precise than $\tau_1$
+(i.e. when \textbf{downcasting} a value), we need confirmation that this conversion
+from $\tau_0$ to $\tau_1$ is safe. This is exactly the idea
+behind \textbf{cast insertion} for gradual types.
 
-\paragraph{Optional Type Annotation and ``pay-as-you-go''}
+Casts are functions that when given a value and a type, check whether the value
+agrees with the type, then either return the value if it is the case, or report an error
+or abort the program.
+Before program execution, casts are inserted to guard locations where downcasting happens.
+Cast insertion together with static type checking grant soundness for gradual type systems:
+a program either terminates successfully, raises type errors ahead of execution or during execution, or
+results in error not captured by the type system.
 
-So far we have seen that gradual type system introduces a dynamic type,
-which allows accepting both statically and dynamically typed programs during static typechecking.
-But what is more important is that it creates a middle ground in which programs
-can be partially annotated with types:
-in a gradual type system, terms are either explicitly given a type,
-or, when type annotation is missing, given $\dyn$ type.
-This renders all type annotations to be optional and allows programmers
-to have more control over what they need from typechecking:
+For the previous example, suppose we now have a cast $c : \tarr{\dyn}{\tnum}$.
+By inserting the cast, function application $f(v)$ becomes $f(c(v))$.
+This still typechecks statically, but whenever we need to pass a runtime value to $f$,
+the value is always checked by $c$ to decide whether to pass the value to $f$ or raise
+a type error. Now that in the body of $f$,
+the type system guarantees that its argument has to be a number.
+
+\paragraph{Optional Type Annotations and ``pay-as-you-go''}
+
+It is important to realize that gradual type systems are not just about accepting
+both fully typed programs and those without any type annotation - it accepts
+programs that are partially typed.
+This gives programmers more control over what they need from typechecking (\textbf{``pay-as-you-go''}).
+As an example, one might wish to implement a function $f$ that expects a string value
+as input. There are multiple choices:
+
+\begin{itemize}
+	\item We can give $f$ a type annotation:
+	$f : \tarr{\textbf{str}}{\dyn}$. By doing so, type system takes the responsibility
+	of making sure that the input type is indeed a string.
+	This is the only available choice in statically typed languages.
+	\item We can do it with our program: right after entering the body of $f$,
+	we write code to inspect type of the argument and react accordingly.
+	A JavaScript program would do exactly this by branching
+	on the result of evaluating \texttt{x \&\& typeof x === "string"} (suppose \texttt{x} is the argument).
+	This is often seen in a dynamically typed language, as there could be no other means
+	of verification. But if the type system of a gradually typed one does not have
+	sufficient type expressiveness to describe desired invariant, this still remains an option.
+	\item For time or performance concerns or when programmer expects a frequent change of types
+	during prototyping, we might wish to skip all static or runtime checks for a portion
+	of a program, which can be achieved by leaving no type annotation. So programmers
+	get just what they want from a type system.
+	\footnote{A gradual type system might still maintain runtime type information,
+	which could impose some overhead. See ``type erasure'' for detail and some viable solutions.}
+\end{itemize}
+
+By making typechecking a choice, we have opened up some flexibilities:
 for an originally statically typed program, we can now write terms without giving a type,
 this allows easy prototyping; for an originally dynamically typed program,
 some parts of it might already been stable and robust enough, annotating these parts
-with type allows some effort of ensuring correctness being shifted to typechecking.
+with types strengthens it with type error detection ahead of execution, machine-proved correctness,
+more opportunities of optimization and 
+all other benefits that a statically typed language can enjoy.
 
-For example, one might wish to implement a function $f$ that expects a string value
-as input. There are two approaches: we can either give $f$ a type annotation:
-$f : \tarr{\textbf{str}}{\dyn}$. By doing so, type system takes the responsibility
-of making sure that the input type is indeed a string. Alternatively,
-we can inspect type of the input value at runtime ourselves.
-A static type system allows us to do the former, but a return type must either
-be given explicitly or inferred. And a dynamic type system does the later, but
-we cannot statically detect any mistake like applying a number literal to $f$.
-However, a gradual type system finds the balance between two,
-it allows us to give input value a type without worrying about
-giving a return type if not needed,
-therefore programmer only pays for what they want from a type system.
-
-%TODO more to say
-
-
+% TODO XXX
+% TODO: downcast
 
 \paragraph{Gradual Guarantee}
 

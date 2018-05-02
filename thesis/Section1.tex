@@ -355,52 +355,53 @@ with types strengthens it with type error detection ahead of execution, machine-
 more opportunities of optimization and 
 all other benefits that a statically typed language can enjoy.
 
+\paragraph{Criteria for Gradual Typing}
+
+There are certainly many possible ways of integrating static and dynamic typing
+and gradual typing just happens to be one of them.
+Siek, Vitousek, Cimini and Boyland's work \cite{siek2015refined}
+further introduces \textbf{gradual guarantee} property
+to formalize the idea behind gradual typing.
+Our intention is not about giving proofs about whether a specific type system is qualified as
+gradual typing, but to highlight the goals shared among this particular family of type systems.
+
+In the original work, the following aspects are demonstrated:
 % TODO XXX
 % TODO: downcast
 
-\paragraph{Gradual Guarantee}
-
-Regarding the term gradual typing itself,
-Siek, Vitousek, Cimini and Boyland's work gives a detailed explanation of
-the original intention.
-Several works we are going to discuss in the following few chapters respects
-such idea:
-
 \begin{itemize}
 	\item \textbf{Gradual typing includes both fully static and fully dynamic}
-	A gradually typed language should be a superset of both a statically typed
-	language and a dynamically typed one.
-	Except for cases of type errors, evaluating a fully type-annotated program
-	should have the same result as its untyped counterpart.
+	A gradually typed language is equivalent to a superset of both a statically typed
+	language and a dynamically typed one:
+	When a program is fully type-annotated with no presence of dynamic types,
+	it should behave the same as its statically typed counterpart;
+	on the other hand, a program without any type annotation should behave the same
+	as its dynamically typed counterpart. Executing such a program
+	results in either a trapped error \cite{luca1997} or successful termination.
 	\item \textbf{Gradual typing provides sound interoperability}
+	As for partially typed programs, a gradual type system guarantees that,
+	if the program typechecks statically, runtime type errors only raises from
+	portions with dynamic types.
+	% but what it means?
 	\item \textbf{Gradual typing enables gradual evolution}
+	Adding type annotations moves a program in the direction of static typing
+	whereas removing type annotations moves in the direction of dynamic typing.
+	Gradual evolution is the idea that programmers can freely add or remove type annotations
+	without worrying about changing program behavior, which allows programs to evolve overtime:
+	new features can be prototyped with no type annotation and later type can be gradually
+	added to the corresponding portion. And old type annotations can be removed,
+	giving more room for refactoring or experimenting new ideas without upsetting type system.
 \end{itemize}
 
-
-\subsubsection{Alternatives}
-
-There are other type systems that bring benefits of the two together.
-Cartwright and Fagan's introduced soft typing, which is a type system
-that programers do not write type annotations but use type inference to
-assign appropriate types to terms, and runtime checks are inserted as needed.
-The drawback of this design is that programmers do not have control over types.
-%TODO probably more drawbacks
-Quasi-static typing is another attempt, with the idea of dynamic type in use,
-it chooses to use a subtyping relation and allows both up-casts and down-casts.
-A second pass of plausibility checking detects incompatible casts and signals the program
-in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
-and it does not statically catch all type errors (TODO: ref)
-in the process of attempting the proof, Siek and Taha finds a better solution, 
-which results in gradual typing that we have seen today.
-%TODO? 
 
 \subsubsection{Discussion}
 
 Among various research works that combines
 benefit of static and dynamic type checking
 gradual typing remains one of the most popular approach.
-In the sprite of gradual guarantee, gradual typing extensions aim at
-making all existing programs written in the original one still valid with little difference in semantics.
+Gradual typing extensions aim at
+making all existing programs written
+in the original one still valid with little difference in semantics.
 In addition, unlike other approaches, programmers have better control over should and should not be typechecked.
 
 Despite that gradual type systems are well-studied research topics,
@@ -411,7 +412,8 @@ which have not been addressed much.
 In addition, language-specific features, idioms and common practice needs
 to be carefully studied to allow existing code and language users to transit smoothly into
 the extended language. In this survey we will explore literatures that extends existing languages to support gradual typing.
-In chapter 2, we will focus on benefits of making these extensions. Chapter 3 discusses and categorizes common and language-specific
+In section 2, we will focus on benefits brought by these extensions.
+Section 3 discusses and categorizes common and language-specific
 challenges researchers have to face and solutions to them.
-Some of these challenges, however, still remains as open questions, which will be covered in chapter 4.
-
+Related work will be covered in section 4, and
+we draw our conclusion in section 5.

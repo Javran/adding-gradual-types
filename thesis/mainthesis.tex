@@ -4,8 +4,6 @@
 \newcommand{\mydriver}{pdflatex}
 
 \documentclass[runningheads]{llncs}
-% \documentclass[12pt,\mydriver]{thesis}  %12pt is larger than 11pt
-
 
 \usepackage{graphicx}
 \usepackage{cite}
@@ -16,12 +14,17 @@
 \usepackage{minted}
 \usepackage{mathpartir}
 
-\begin{document}
-	
 \title{Adding Gradual Types to Existing Languages}
+\author{
+	Javran Cheng \\
+	\institute{University of Maryland}
+}
+
+\begin{document}
+
 \maketitle
 
-\include{Abstract} %(must be first, required, non-numbered)
+\include{Abstract}
 \setcounter{tocdepth}{2}
 \tableofcontents
 

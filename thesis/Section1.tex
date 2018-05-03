@@ -224,17 +224,17 @@ which are replaced by two rules in gradually typed lambda calculus:
 
 % As for the type judgment extension, all bindings sites are extended to support 
 
-\begin{math}
+\begin{mathpar}
 \inferrule*[left=(GAPP1)]
 {\Gamma \vdash_G e_1 : \dyn \\ \Gamma \vdash e_2 : \tau_2 }
 {\Gamma \vdash_G e_1 e_2 : \dyn}
-\end{math}
 
-\begin{math}
 \inferrule*[left=(GAPP2)]
 {\Gamma \vdash_G e_1 : \tarr{\tau}{\tau'} \\ \Gamma \vdash_G e_2 : \tau_2 \\ \tau_2 \sim \tau }
 {\Gamma \vdash_G e_1 e_2 : \tau'}
-\end{math}
+\end{mathpar}
+
+
 
 While GAPP1 allows a value of dynamic type to be typed as if it is a function,
 GAPP2 is more interesting: it resembles function application of a static type system,
@@ -244,17 +244,17 @@ To deal with dynamic types, type consistency is introduced
 to accommodate type judgments for gradual typing.
 The following shows rules for type consistency relation.
 
-\begin{math}
+\begin{mathpar}
 \inferrule*[left=(CREFL)]{ }{\tau \sim \tau}
+
 \inferrule*[left=(CFUNC)]
   {\sigma_1 \sim \tau_1 \\ \sigma_2 \sim \tau_2}
   {\tarr{\sigma_1}{\sigma_2} \sim \tarr{\tau_1}{\tau_2} }
-\end{math}
 
-\begin{math}
 \inferrule*[left=(CUNR)]{ }{\tau \sim \dyn}
+
 \inferrule*[left=(CUNL)]{ }{\dyn \sim \tau}
-\end{math}
+\end{mathpar}
 
 As we can see, if dynamic types are not present at all, type consistency is the same
 as type equality. Therefore we still can typecheck all static programs like

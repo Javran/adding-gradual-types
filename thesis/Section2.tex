@@ -105,22 +105,26 @@ function g(x) {
 }
 \end{minted}
 
-Here Safe TypeScript is able to tell that: calling $\textbf{f}$ with a string literal
+Here Safe TypeScript is able to tell that:
+calling $\textbf{f}$ with a string literal
 is safe, and no extra cast is needed; the second call is immediately rejected
-because number literal is clearly not a $\textbf{string}$;
-and for the third case where $\textbf{x}$
+because number literal is clearly not a $\texttt{string}$;
+and for the third case where $\texttt{x}$
 is not explicitly given a type, Safe TypeScript compiler will insert runtime type cast
-and either allow it to proceed to the body $\textbf{f}$ when $\textbf{x}$ is indeed a string,
-or throw an error before even calling $\textbf{f}$.
+and either allow it to proceed to the body $\texttt{f}$ when $\texttt{x}$ is indeed a string,
+or throw an error before even calling $\texttt{f}$.
 
 Notice that by making use of type annotations, Safe TypeScript not only allows
 clearer code, but also able to spot some type errors ahead of execution:
-imagine the function application $\textbf{f(1)}$, when its written in plain JavaScript,
+imagine the function application $\texttt{f(1)}$, when its written in plain JavaScript,
 we have to wait for the check in function body to throw an error,
-while annotating $\textbf{x}$ with a type allows Safe TypeScript
+while annotating $\texttt{x}$ with a type allows Safe TypeScript
 to spot the error even before execution.
 
-%TODO: this generalized to many dynamic languages
+This benefit can be generalized to many other dynamic languages:
+allowing a static typechecking phase might render some runtime checks unnecessary
+and redundant. Programs might end up running more efficiently
+without compromising correctness once these checks are recognized and removed.
 
 \subsubsection{Object-Oriented Programming in Safe TypeScript}
 

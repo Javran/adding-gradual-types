@@ -155,8 +155,12 @@ An interface can be implemented by classes:
 
 \begin{minted}{javascript}
 class MovablePoint implements Point {
-  constructor(public x: number, public y: number) {this.x = x; this.y = y;}
-  public move(dx: number, dy: number} { this.x += dx; this.y += dy; }
+  constructor(public x: number, public y: number) {
+    this.x = x; this.y = y;
+  }
+  public move(dx: number, dy: number} {
+    this.x += dx; this.y += dy;
+  }
 }
 \end{minted}
 
@@ -489,9 +493,11 @@ this allows type information to be preserved.
 Gradualtalk supports union types, which is useful when
 source code contains different branches and each of them might return different types.
 
-\begin{verbatim}
-Boolean >> (a | b) ifTrue: (-> a) trueBlock ifFalse: (-> b) falseBlock
-\end{verbatim}
+\begin{minted}{smalltalk}
+Boolean >> (a | b)
+  ifTrue: (-> a) trueBlock
+  ifFalse: (-> b) falseBlock
+\end{minted}
 
 Note that \textbf{trueBlock} and \textbf{falseBlock} might return
 different types, allowing this method to have \texttt{a} or \texttt{b}

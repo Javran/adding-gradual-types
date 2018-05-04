@@ -2,12 +2,15 @@
 
 \section{Benefits of Gradual Typing}
 
-Besides most advantages one could expect from static and dynamic typing,
-the synergy also creates surprising new benefits to languages users.
+% TODO (???)
+Gradual typing not just allows language users to write partially typed programs.
+It also make it possible to bring in features meant for static or dynamic typing.
+In fact, language extensions come with many other features to
+improve experience working with the extended language.
 
 In this section, we will explore some literatures
-from aspects of language users
-and see in detail about these benefits that gradual typing have brought in.
+from aspects of language users and see in detail about these benefits
+gradual typing have granted us.
 
 \subsection{From JavaScript to Safe TypeScript}
 
@@ -44,7 +47,7 @@ it does not have support for type annotations.
 This leads to a common practice in which we have some lines of code
 right after entering the body of a function
 to check its argument types, report errors if any, before
-proceeding with actual implementation:
+proceeding with actual implementation. This can be seen in the following code snippet:
 
 \begin{minted}{javascript}
 function f(x) {
@@ -54,13 +57,14 @@ function f(x) {
     return x + '!';
 }
 \end{minted}
-% TODO XXX
 
 As a toy example, the function accepts a string value,
 then returns another with exclamation sign concatenated to it. 
 But imagine in real projects there will be multiple arguments to a function
-and some of them have to go through this process of checking,
-it will soon become less maintainable.
+and some of them have to go through this process of checking.
+Without proper and up-to-date documentation,
+% TODO XXX
+it is easy to make mistakes while maintaining code written in such a style.
 
 By extending the language with type annotations,
 we can do something better in Safe TypeScript:

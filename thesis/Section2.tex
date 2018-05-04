@@ -79,15 +79,15 @@ function f(x : string) : string {
 }
 \end{minted}
 
-In the code above, we just declared a function $\textbf{f}$ that accepts
-one variable $x$ of $\textbf{string}$ type, and returns a value of $\textbf{string}$ type.
+In the code above, we just declared a function $\texttt{f}$ that accepts
+one variable $x$ of $\texttt{string}$ type, and returns a value of $\texttt{string}$ type.
 The code for runtime checking is removed, instead, Safe TypeScript performs typechecking
 and insert casts when needed to ensure that,
-when $\textbf{f}$ is called, its argument is indeed a $\textbf{string}$.
-This renders the  $\textbf{typeof}$ check at the beginning useless:
-when we enter the function body $\textbf{x}$ is guaranteed to be a $\textbf{string}$,
-therefore the body of the $\textbf{if}$ statement cannot possibly be entered.
-This allows us to get rid of the check totally:
+when $\texttt{f}$ is called, its argument is indeed a $\texttt{string}$.
+This renders the  $\texttt{typeof}$ check at the beginning useless:
+when we enter the function body, $\texttt{x}$ is guaranteed to be a $\texttt{string}$,
+therefore the body of the $\texttt{if}$ statement cannot possibly be entered.
+This allows us to fully get rid of runtime checks:
 
 \begin{minted}{javascript}
 function f(x : string) : string {
@@ -95,7 +95,7 @@ function f(x : string) : string {
 }
 \end{minted}
 
-The use site of $\textbf{f}$ might look like the following:
+The use site of $\texttt{f}$ might look like the following:
 
 \begin{minted}{javascript}
 f('one'); // good

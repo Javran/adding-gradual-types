@@ -241,23 +241,31 @@ shows a function definition as typical style of programming in this language:
 \end{minted}
 
 It defines a function \texttt{creal}, which takes as argument
-a complex number: a real number is simply a value satisfying \textbf{number?},
-while an imaginary number is a pair of \texttt{number}s.
-Function \texttt{number?} distinguishes two different representation of numbers:
-in the first branch of \texttt{cond}, \texttt{x} is treated like a number
-while in the second branch \texttt{x} is a pair with proper use of \texttt{car}
+a complex number. By the informal contract in the comment,
+we know that input value is supposed to be either a number or
+a pair of numbers representing real and imaginary part respectively for a complex number.
+Predicate \footnote{By Scheme convention,
+	a predicate is a procedure that always return a boolean value.
+} \texttt{number?} distinguished these two different representations.
+So in first branch of \texttt{cond}, we know for sure that \texttt{x} is a number,
+whereas the second branch must deal with remaining case,
+so \texttt{x} must be a pair with proper use of \texttt{car}
 to extract its real part.
 
 % TODO: XXX
-The observation is that by evaluating a predicate\footnote{By Scheme convention,
-	a predicate is a procedure that always return a boolean value.
-} on a value \texttt{v},
-the property of \texttt{v} becomes more clear. 
+Few key observations are:
 
-One might have noticed that
-while input value \texttt{x} could be either a number or a pair of numbers,
-predicate \texttt{number?} distinguishes between them and
-in difference branches of the \texttt{cond} expression, \texttt{x} gets different types.
+\begin{itemize}
+	\item Difference occurrences of the same variable might have different types.
+	\item A predicate distinguishes one particular type of value from others.
+	For example, \texttt{number?} can distinguish numbers from other types.
+	\item By reasoning about the execution path taken to reach certain point in the program,
+	we can accumulate information about a variable to form a contextual type for it.
+	For instance,
+	in definition of \texttt{creal}, we assume \texttt{x} is either a number or a pair of numbers.
+	By further evaluating \texttt{(number? x)}, each branch of \texttt{cond} expression
+	have only one type of \texttt{x} to work with. 
+\end{itemize}
 
 It is important for the type system to be able to assign same variable with different
 types depending on the context where the variable appears, this is exactly the notion of

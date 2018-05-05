@@ -52,3 +52,7 @@ TypeScript: JavaScript with optional type annotation.
     - Object that implements methods
 
 - exceptions?
+
+# Parts
+
+

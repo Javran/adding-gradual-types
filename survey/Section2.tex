@@ -3,10 +3,11 @@
 \section{Benefits of Gradual Typing}
 
 % TODO (???)
-Gradual typing not just allows language users to write partially typed programs.
-It also make it possible to bring in features meant for static or dynamic typing.
-In fact, language extensions come with many other features to
-improve experience working with the extended language.
+Gradual typing not just allows language users to write partially typed programs,
+it also make it possible to bring in features meant for static or dynamic typing.
+In fact, these extras are no less important than gradual typing itself,
+as it helps make the language more convenient to use
+and therefore motivates programmers to use gradual typing to their advantages.
 
 In this section, we will explore some literatures
 from aspects of language users and see in detail about these benefits
@@ -14,40 +15,45 @@ gradual typing have granted us.
 
 \subsection{From JavaScript to Safe TypeScript}
 
-Starting as a scripting language, JavaScript has grown into a language
-that powers many large web applications.
+Starting as a scripting language,
+JavaScript has grown into a language that powers many large web applications.
 Unfortunately, as a language that exists over a long period of time,
 the language evolves but many of its flaws are still left as it is for compatibility reasons,
 hindering productivity of even most experienced programmers.
 
 Among tools and extensions to JavaScript that attempt to ease this pain,
 TypeScript is one closely related to gradual typing.
-Its syntax is a superset of JavaScript that supports optional type annotations on variables.
-A compiler typechecks TypeScript source code ahead of execution
-and compile it into plain JavaScript source code,
+Its syntax is a superset of JavaScript that supports optional type annotations\cite{bierman2014understanding}.
+A compiler typechecks TypeScript source code
+and compile it into plain JavaScript,
 making it ready to be executed out of box for JavaScript interpreters.
 
-However, TypeScript is designed to typecheck programs only
-statically, remove all traces of type and emit JavaScript code with no extra runtime overhead.
-Since we cannot enforce invariants at runtime, TypeScript is intentionally unsound
-and benefits from the type system is therefore limited.
+However, TypeScript is intentionally unsound:
+it is designed to typecheck programs only statically
+and removes all traces of type when emitting code in JavaScript.
+Therefore invariants about types cannot be enforced at runtime
+ and benefits from the type system is limited.
 
 Nonetheless, TypeScript still serves as a reasonable starting point
-for Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris \cite{rastogi2015safe}.
+for Safe TypeScript by Rastogi, Swamy, Fournet, Bierman \& Vekris\cite{rastogi2015safe}.
 Safe TypeScript shares the same syntax with TypeScript,
-but features a sound type system and efficient runtime type information (RTTI)-based
-gradual typing.
+but features a sound gradual type system and efficient implementation\footnote{It is suggested
+that Safe TypeScript only cover a large fragment of JavaScript, but we assume that this coverage
+is sufficient to support all essential features of JavaScript.
+}.
 
-In this section we will visit some language features of Safe TypeScript and see how it improves JavaScript. Note that TypeScript uses $\texttt{any}$ for dynamic type.
+In this part we will visit language features of Safe TypeScript and
+see how it improves JavaScript.
 
 \subsubsection{Type Checking for Free}
 
 Despite JavaScript is capable of examining type of values at runtime,
 it does not have support for type annotations.
-This leads to a common practice in which we have some lines of code
+This leads to a common practice in which some lines of code are placed
 right after entering the body of a function
-to check its argument types, report errors if any, before
-proceeding with actual implementation. This can be seen in the following code snippet:
+to check its argument types, report errors if any before
+proceeding with actual implementation.
+This can be seen in the following code snippet:
 
 \begin{minted}{javascript}
 function f(x) {
@@ -59,11 +65,11 @@ function f(x) {
 \end{minted}
 
 As a toy example, the function accepts a string value,
-then returns another with exclamation sign concatenated to it. 
-But imagine in real projects there will be multiple arguments to a function
-and some of them have to go through this process of checking.
-Without proper and up-to-date documentation,
-% TODO XXX
+then returns another with exclamation sign concatenated to it.
+This does not look complicated, but imagine in real projects,
+there would be multiple arguments to a function and some of them have to
+go through this process of checking.
+Without machine-checkable and consistent way of enforcing these invariants,
 it is easy to make mistakes while maintaining code written in such a style.
 
 By extending the language with type annotations,
@@ -81,13 +87,10 @@ function f(x : string) : string {
 
 In the code above, we just declared a function $\texttt{f}$ that accepts
 one variable $x$ of $\texttt{string}$ type, and returns a value of $\texttt{string}$ type.
-The code for runtime checking is removed, instead, Safe TypeScript performs typechecking
-and insert casts when needed to ensure that,
+Safe TypeScript then performs typechecking and insert casts when needed to ensure that,
 when $\texttt{f}$ is called, its argument is indeed a $\texttt{string}$.
-This renders the  $\texttt{typeof}$ check at the beginning useless:
-when we enter the function body, $\texttt{x}$ is guaranteed to be a $\texttt{string}$,
-therefore the body of the $\texttt{if}$ statement cannot possibly be entered.
-This allows us to fully get rid of runtime checks:
+This renders the $\texttt{typeof}$ check at the beginning unnecessary
+and therefore can be safely removed:
 
 \begin{minted}{javascript}
 function f(x : string) : string {
@@ -98,8 +101,8 @@ function f(x : string) : string {
 The use site of $\texttt{f}$ might look like the following:
 
 \begin{minted}{javascript}
-f('one'); // good
-f(1); // bad
+f('one'); // typechecks
+f(1); // does not typecheck
 function g(x) {
     return f(x); // might be unsafe
 }
@@ -112,7 +115,7 @@ because number literal is clearly not a $\texttt{string}$;
 and for the third case where $\texttt{x}$
 is not explicitly given a type, Safe TypeScript compiler will insert runtime type cast
 and either allow it to proceed to the body $\texttt{f}$ when $\texttt{x}$ is indeed a string,
-or throw an error before even calling $\texttt{f}$.
+or throw an error before even entering the body of $\texttt{f}$.
 
 Notice that by making use of type annotations, Safe TypeScript not only allows
 clearer code, but also able to spot some type errors ahead of execution:
@@ -121,96 +124,112 @@ we have to wait for the check in function body to throw an error,
 while annotating $\texttt{x}$ with a type allows Safe TypeScript
 to spot the error even before execution.
 
-This benefit can be generalized to many other dynamic languages:
-allowing a static typechecking phase might render some runtime checks unnecessary
-and redundant. Programs might end up running more efficiently
-without compromising correctness once these checks are recognized and removed.
+This benefit of detecting type errors earlier is not a specific one for Safe TypeScript.
+In general, adding a phase of static typechecking to a dynamically typed language
+might render some runtime checks no longer necessary.
+Once these checks are removed,
+programs might end up running more efficiently without compromising correctness.
+
 
 \subsubsection{Object-Oriented Programming in Safe TypeScript}
 
-%TODO: what technique allos JS to simulate OO?
-
-JavaScript is a prototype-based language.
-This means runtime objects form a chain in which one object
-can be a prototype of other objects and
-to perform method invocation, method names are searched
-first in object itself and then along the chain,
-and the first one with matching method name is used for the invocation.
-Using well-known techniques allows JavaScript to simulate objected-oriented programming.
+Although JavaScript does not support classes\footnote{
+	Classes were not standard features of JavaScript
+	as of publication date of Safe TypeScript.
+},
+its prototype-based model allows essential features of object-oriented
+programming to be simulated in JavaScript.
 Designed to be a superset of JavaScript, Safe TypeScript must accommodate such programming
 style as well.
 
-TypeScript introduces the concept of interface to allow representing the structure
-of runtime objects.
+TypeScript introduces the concept of interface to allow describing
+the structure of runtime objects and Safe TypeScript follows this concept as well.
+The following example defines
+interface \texttt{Point}, which is a valid type for objects
+that has two fields \texttt{x} and \texttt{y} whose types are all \texttt{number}s:
 
 \begin{minted}{javascript}
 interface Point { x: number; y: number }
+
+function f(o: Point) {
+   // omitted
+}
+f({x: 1, y: 0}); // typechecks
+f({x: 1, y: "a"}); // does not typecheck
+f({x: 1, y: 0, z: 2}); // typechecks
+f(1); // does not typecheck
 \end{minted}
 
-This defines $\textbf{Point}$ type to be an object that has two fields $\textbf{x}$
-and $\textbf{y}$ whose types are all $\textbf{number}$s.
-For example, the invocation with object literal $f(\textbf{\{x: 1, y: 0\})}$ typechecks
-with $f : Point \Rightarrow any$.
-An interface can be implemented by classes:
+As demonstrated by the example above,
+interface can only typecheck with objects that has all expected fields of expected types.
+
+Classes are given special treatment\footnote{While TypeScript treats classes structurally,
+	this does not match with JavaScript semantics. See ``Nominal Type, Structural Type and Subtyping''
+	of section 3.3 for detail.
+} to cooperate better with model used by JavaScript. To be more precise,
+it treats class types nominally but allows it to be viewed structurally.
+
+In addition to the \texttt{Point} interface defined above,
+suppose we have the following definition:
 
 \begin{minted}{javascript}
-class MovablePoint implements Point {
+class CPoint implements Point {
   constructor(public x: number, public y: number) {
     this.x = x; this.y = y;
   }
-  public move(dx: number, dy: number} {
-    this.x += dx; this.y += dy;
-  }
 }
+
+function f1(v : {x: number, y: number}) { return true; }
+// f2 is equivalent to f1
+function f2(v : Point) { return true; }
+function f3(v : CPoint) { return true; }
+
+var obj1 = {x: 1, y: 2}; var obj2 = new CPoint(1,2);
+f1(obj1); // typechecks
+f1(obj2); // typechecks 
+f3(obj1); // does not typecheck
+f3(obj2); // typechecks  
 \end{minted}
 
-While in TypeScript, all classes are viewed structurally, this does not match
-with JavaScript semantics. Consider the following function:
+This example demonstrates few features of interest:
 
-\begin{minted}{javascript}
-function mustBeTrue(x : MovablePoint) {
-  return !x || x instanceof MovablePoint;
-}
-\end{minted}
-
-One might expect this function to always return $\textbf{true}$.
-However, a structural view will consider object literal
-$v$ = \textbf{\{x: 0, y: 0, move(dx: number, dy:number) {}\}}
-to match with $\textbf{MovablePoint}$, but $\textbf{mustBeTrue(v)}$
-will return $\textbf{false}$ because JavaScript will expect $v$ to have
-$\textbf{MovablePoint}$ somewhere along its prototype chain.
-
-To solve this problem, Safe TypeScript takes a different approach:
-it treats class types nominally but can be viewed structurally.
-Namely, $\textbf{MovablePoint}$ is still a subtype of
-$t_m$ = \textbf{\{x: number, y: number, move(dx: number, dy:number): any\}}
-and \textbf{\{x: number, y: number\}}.
-But $t_m$ is no longer a subtype of \textbf{MovablePoint}.
-
-%TODO: method & field
-
-%TODO: put this in ch3 \subsection{Type Erasure, information hiding and performance}
-
-%TODO: "this"
-
+\begin{itemize}
+	\item \textbf{Structural view of classes}
+	Since interfaces are structural, \texttt{f1} and \texttt{f2} are equivalent.
+	In addition,
+	objects created from object literals and instance created from classes can both typecheck against it.
+	In the example above, despite that \texttt{obj1} and \texttt{obj2} are created in different ways,
+	they both have expected fields of expected types and therefore function calls \texttt{f1(obj1)}
+	and \texttt{f1(obj2)} do not raise any type error.
+	\item \textbf{Interface declaration}
+	In fact, \texttt{implements Point} is optional since interfaces are structural.
+	It is nonetheless a good practice to write it out.
+	Because this not only serves as a simple documentation,
+	but it also allows Safe TypeScript to understand programmer's intention
+	so type system can warn user when a declared interface is not actually satisfied.
+	\item \textbf{Nominal view of classes} When using class names as types,
+	Safe TypeScript treats them nominally, this is consistent with
+	JavaScript's object model and \texttt{instanceof} operator, as the latter does not allow a structural
+	match.
+	Therefore while \texttt{f3(obj2)} typechecks, \texttt{f3(obj1)} does not.
+\end{itemize}
 
 \subsection{From Scheme to Typed Scheme}
 
-Scheme is a dynamically typed language.
-It is used for casual scripting as well as industrial applications.
+Scheme is another dynamically typed language used
+for casual scripting as well as industrial applications.
 Like other dynamic typed languages, programmers are not attached to using any
-type discipline but rely on various kind of reasoning on their needs.
-This makes the language flexible but challenging to assign proper and precise types to terms.
+type discipline but rely on various kind of reasoning to accomplish their tasks.
+This makes the language flexible but assigning proper and precise types to terms becomes a real challenge.
 
-Tobin-Hochstadt and Felleisen's work on Typed Scheme
-introduces the notion of occurrence typing, which
-extends Scheme with gradual typing.
-
-%TODO: type discipline vs type system?
+Tobin-Hochstadt and Felleisen's work on Typed Scheme \cite{tobin2008design}
+introduces the notion of occurrence typing, which cooperates with Scheme well to
+form the building block of a gradual type system for Scheme.
 
 \subsubsection{Support Informal Reasoning}
 
-The following code shows a function definition as typical style of programming in this language:
+The following code\footnote{Most of the examples in this section are adapted from \cite{tobin2008design}.}
+shows a function definition as typical style of programming in this language:
 
 \begin{minted}{scheme}
 ;; a Complex is either
@@ -221,21 +240,27 @@ The following code shows a function definition as typical style of programming i
         [else (car x)]))
 \end{minted}
 
-The code above defines a function $\textbf{creal}$, which takes as argument
-a complex number: a real number is simply a value satisfying $\textbf{number?}$,
-while an imaginary number is a pair of $\textbf{number}$.
-Function $\textbf{number?}$ distinguishes two different representation of numbers:
-in the the first branch of $\textbf{cond}$, $\textbf{x}$ is treated like a number
-while in the second branch $\textbf{x}$ is a pair and $\textbf{car}$ is used
+It defines a function \texttt{creal}, which takes as argument
+a complex number: a real number is simply a value satisfying \textbf{number?},
+while an imaginary number is a pair of \texttt{number}s.
+Function \texttt{number?} distinguishes two different representation of numbers:
+in the first branch of \texttt{cond}, \texttt{x} is treated like a number
+while in the second branch \texttt{x} is a pair with proper use of \texttt{car}
 to extract its real part.
 
-One might have noticed that
-while input value \textbf{x} could be either a number or a pair of numbers,
-predicate \textbf{number?} distinguishes between them and
-in difference branches of the \textbf{cond} expression, \textbf{x} gets different types.
+% TODO: XXX
+The observation is that by evaluating a predicate\footnote{By Scheme convention,
+	a predicate is a procedure that always return a boolean value.
+} on a value \texttt{v},
+the property of \texttt{v} becomes more clear. 
 
-It is important that type system should be able to assign same variable with different
-types depending on the context where variable occurs, this is exactly the notion of
+One might have noticed that
+while input value \texttt{x} could be either a number or a pair of numbers,
+predicate \texttt{number?} distinguishes between them and
+in difference branches of the \texttt{cond} expression, \texttt{x} gets different types.
+
+It is important for the type system to be able to assign same variable with different
+types depending on the context where the variable appears, this is exactly the notion of
 occurrence typing.
 
 The Typed Scheme version begins with definition of complex number:

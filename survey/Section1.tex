@@ -214,7 +214,8 @@ ahead of execution, gradual type system introduces a special type,
 which is called ``dynamic type'' by convention, on top of a static type system
 and extends type judgment to allow a more permissive form of type checking in the presence
 of dynamic types. For the rest of this survey,
-we will use type $\dyn$ to indicate dynamic types in appropriate contexts.
+we will use type $\dyn$ to indicate dynamic types
+when no language-specific notations are available.
 
 To demonstrate necessary changes to type judgments,
 we use statically typed lambda calculus as a starting point.
@@ -233,8 +234,6 @@ which are replaced by two rules in gradually typed lambda calculus:
 {\Gamma \vdash_G e_1 : \tarr{\tau}{\tau'} \\ \Gamma \vdash_G e_2 : \tau_2 \\ \tau_2 \sim \tau }
 {\Gamma \vdash_G e_1 e_2 : \tau'}
 \end{mathpar}
-
-
 
 While GAPP1 allows a value of dynamic type to be typed as if it is a function,
 GAPP2 is more interesting: it resembles function application of a static type system,

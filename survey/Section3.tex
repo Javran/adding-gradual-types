@@ -2,7 +2,10 @@
 
 \section{The Way Towards Gradual Typing}
 
-% TODO: could be organized better?
+%TODO: typescript-specific:
+%TODO: method & field
+%TODO: Type Erasure, information hiding and performance
+%TODO: "this"
 
 In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
@@ -304,7 +307,7 @@ impose differences and difficulties and researchers need clean way to work aroun
 To illustrate the problem, suppose we have the following definitions in Python
 (assume that all methods will return values of the same type):
 
-\begin{verbatim}
+\begin{minted}{python}
 class A:
   def foo(self):
     ...
@@ -317,24 +320,64 @@ class C:
     ...
   def bar(self):
     ...
-\end{verbatim}
+\end{minted}
 
 While a nominal type allows a variable $v : A$ to be assigned an instance of $B$,
 assigning an instance of $C$ to $v$ is forbidden by the type system: despite
-have all methods that $A$ requires, it is not explicitly extending $A$ to form a proper relation of
+having all methods that $A$ requires, it is not explicitly extending $A$ to form a proper relation of
 inheritance.
 
-Structural type is a more of a relaxed relation in this case: $A$ is simply $\{foo: \tau \}$ (for whatever appropriate type $\tau$), $B$ and $C$ are both equivalent to $\{foo: \tau, bar: \tau\}$. Therefore structurally, $B$ and $C$ are both subtypes of $A$ despite no being explicitly declared.
+Structural type is more of a relaxed relation in this case: $A$ is simply $\{foo: \tau \}$ (for whatever appropriate type $\tau$), $B$ and $C$ are both equivalent to $\{foo: \tau, bar: \tau\}$. Therefore structurally, $B$ and $C$ are both subtypes of $A$ despite no being explicitly declared.
 
-Among languages we studied, Typed Scheme extends its structure system and uses nominal types
-(but thanks to the expressiveness of refinement type, it is still possible to 
-test an object structurally);
+Another interesting example comes from TypeScript.
+Suppose we have the following definition\footnote{This example is taken and adapted from \cite{rastogi2015safe}.}:
+
+\begin{minted}{javascript}
+interface Point { x: number; y: number }
+
+class MovablePoint implements Point {
+  constructor(public x: number, public y: number) {
+    this.x = x; this.y = y;
+  }
+  public move(dx: number, dy: number} {
+    this.x += dx; this.y += dy;
+  }
+}
+
+function mustBeTrue(x : MovablePoint) {
+  return !x || x instanceof MovablePoint;
+}
+
+// typechecks, but returns false
+mustBeTrue({
+  x: 1, y: 2,
+  move: function(dx,dy) {
+    ...
+  }
+}); 
+\end{minted}
+
+One might expect calls to function \texttt{mustBeTrue} to always return \texttt{true},
+but in TypeScript this is not the case.
+As TypeScript treats classes structurally, any object that has field \texttt{x}, \texttt{y} and \texttt{move}
+of matching types can typecheck with \texttt{MovablePoint} without being an actual instance of it.
+So \texttt{instanceof} operator, which only respects the prototype chain,
+is inconsistent with TypeScript's type system.
+
+To solve this problem, Safe TypeScript treats class types nominally but allows it to be viewed structurally.
+Taking the same example but assume that we are using Safe TypeScript,
+instances of \texttt{MovablePoint} can still be used in places where type 
+\texttt{\{x: number, y: number, move(dx: number, dy:number): any\}}
+or \texttt{\{x: number, y: number\}} is expected.
+But in order to typecheck a value against \texttt{MovablePoint},
+the value now has to be an instance of \texttt{MovablePoint}.
+
+Among other languages we studied,
+Typed Scheme extends its structure system and uses nominal types \footnote{Thanks to the expressiveness of refinement type, it is still possible to test an object structurally.};
 Reticulated Python chooses the structural approach - despite class inheritance being allowed,
 duck typing is generally considered idiomatic approach in Python.
-On the other hand, both Safe TypeScript and Gradualtalk
-introduces a hybrid approach to deal with the coexistence:
-the former treats class types nominally, but allows viewing it structurally
-while Gradualtalk allows a unified syntax to allow an object to be typed nominally and structurally at the same time.
+On the other hand, Gradualtalk takes an approach similar to that of Safe TypeScript's:
+it implements a unified syntax to allow an object to be typed nominally and structurally at the same time.
 
 \subsubsection{Objects and Dynamic Semantics}
 

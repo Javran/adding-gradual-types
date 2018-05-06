@@ -218,12 +218,17 @@ This example demonstrates few features of interest:
 
 Scheme is another dynamically typed language used
 for casual scripting as well as industrial applications.
-Like other dynamic typed languages, programmers are not attached to using any
-type discipline but rely on various kind of reasoning to accomplish their tasks.
-This makes the language flexible but assigning proper and precise types to terms becomes a real challenge.
+Instead of relying on any specific type discipline, programmers
+reason about their code in informal ways,
+which makes the language highly flexible.
+But for the same reason,
+it becomes a real challenge to design gradual type systems
+that can work well with scheme programs.
 
-Tobin-Hochstadt and Felleisen's work on Typed Scheme \cite{tobin2008design}
-introduces the notion of occurrence typing, which cooperates with Scheme well to
+Tobin-Hochstadt and Felleisen's work on Typed Scheme\cite{tobin2008design}
+provides an interesting and practical solution.
+In the same paper, the notion of occurrence typing is introduced,
+which cooperates with Scheme well to
 form the building block of a gradual type system for Scheme.
 
 \subsubsection{Support Informal Reasoning}
@@ -244,16 +249,17 @@ It defines a function \texttt{creal}, which takes as argument
 a complex number. By the informal contract in the comment,
 we know that input value is supposed to be either a number or
 a pair of numbers representing real and imaginary part respectively for a complex number.
-Predicate \footnote{By Scheme convention,
+Predicate\footnote{By Scheme convention,
 	a predicate is a procedure that always return a boolean value.
-} \texttt{number?} distinguished these two different representations.
+} \texttt{number?} distinguishes number representation from the other one.
 So in first branch of \texttt{cond}, we know for sure that \texttt{x} is a number,
-whereas the second branch must deal with remaining case,
+whereas the second branch deals with remaining case,
 so \texttt{x} must be a pair with proper use of \texttt{car}
 to extract its real part.
 
+
 % TODO: XXX
-Few key observations are:
+Key observations are:
 
 \begin{itemize}
 	\item Difference occurrences of the same variable might have different types.
@@ -261,15 +267,13 @@ Few key observations are:
 	For example, \texttt{number?} can distinguish numbers from other types.
 	\item By reasoning about the execution path taken to reach certain point in the program,
 	we can accumulate information about a variable to form a contextual type for it.
-	For instance,
-	in definition of \texttt{creal}, we assume \texttt{x} is either a number or a pair of numbers.
-	By further evaluating \texttt{(number? x)}, each branch of \texttt{cond} expression
-	have only one type of \texttt{x} to work with. 
 \end{itemize}
 
 It is important for the type system to be able to assign same variable with different
 types depending on the context where the variable appears, this is exactly the notion of
 occurrence typing.
+Since these informal reasonings rely on predicates used in control flows,
+the idea is to use predicates as building block for types.
 
 The Typed Scheme version begins with definition of complex number:
 

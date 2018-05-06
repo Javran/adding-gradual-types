@@ -182,7 +182,7 @@ Besides its presence in $\csharp$ 3.0,
 Safe TypeScript, Typed Scheme, Reticulated Python and Gradualtalk all include
 this feature to further extend their type expressiveness.
 
-The following illustrates such feature in Safe TypeScript:
+The following illustrates this feature in Safe TypeScript:
 
 \begin{verbatim}
 interface Pair<A,B> { fst: A; snd: B }
@@ -445,7 +445,7 @@ x is cast(x, Dyn, Object({bar:Int}))
 
 As \texttt{cast} function wrap \texttt{x} in a proxy, it is no longer considered the same object as \texttt{x}
 therefore returns \texttt{False}. However instance tests will still work, as proxies are considered a subclass.
-And for a similar reason, type test on such value might fail because from outside it is a \texttt{Proxy}
+And for a similar reason, type test on such a value might fail because from outside it is a \texttt{Proxy}
 rather than an instance of the relevant class.
 
 \paragraph{The Transient Dynamic Semantics}
@@ -714,7 +714,7 @@ Gradual typing is an approach that brings benefits of static and dynamic type sy
 together in a sound and efficient manner, from which partially typed programs are also supported
 and evolution towards either fully static or fully dynamic programs
 is also open and intended to be smooth.
-In this survey, we visited several extensions that extends existing languages to support such type system. From aspect of programmers, gradual type extensions makes it possible
+In this survey, we visited several extensions that extends existing languages to support such a type system. From aspect of programmers, gradual type extensions makes it possible
 to describe program invariants to be described in a machine-checkable way,
 and allows statically typed program to have parts without type annotations.
 For language designers and implementors, we have seen how gradual typing extensions are implemented

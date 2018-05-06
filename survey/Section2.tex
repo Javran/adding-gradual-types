@@ -319,8 +319,10 @@ the type system can further conclude that in the second clause \texttt{x} must b
 % TODO: ref LTI
 Thanks to local type inference supported by Typed Scheme,
 explicitly giving the return type \texttt{Number}
-is sufficient to let type system know that every clause of \texttt{cond} returns a number
+is sufficient to let the type system know that every clause of \texttt{cond} returns a number
 so this part of the code can typecheck successfully.
+
+% TODO: XXX
 
 Another different kind of reasoning is also being used among Scheme programmers:
 Suppose we have stored a list of various types of values in \textbf{xs}

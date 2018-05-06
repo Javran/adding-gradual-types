@@ -226,7 +226,7 @@ it becomes a real challenge to design gradual type systems
 that can work well with scheme programs.
 
 Tobin-Hochstadt and Felleisen's work on Typed Scheme\cite{tobin2008design}
-provides an interesting and practical solution.
+provides a novel and practical solution.
 In the same paper, the notion of occurrence typing is introduced,
 which cooperates with Scheme well to
 form the building block of a gradual type system for Scheme.
@@ -246,58 +246,81 @@ shows a function definition as typical style of programming in this language:
 \end{minted}
 
 It defines a function \texttt{creal}, which takes as argument
-a complex number. By the informal contract in the comment,
-we know that input value is supposed to be either a number or
+a complex number.
+Rather than relying on type systems, the contract is informally written in the comment,
+which indicates that input value is supposed to be either a number or
 a pair of numbers representing real and imaginary part respectively for a complex number.
 Predicate\footnote{By Scheme convention,
 	a predicate is a procedure that always return a boolean value.
 } \texttt{number?} distinguishes number representation from the other one.
-So in first branch of \texttt{cond}, we know for sure that \texttt{x} is a number,
-whereas the second branch deals with remaining case,
+So in first clause of \texttt{cond}, we know for sure that \texttt{x} is a number,
+whereas the second clause deals with remaining case,
 so \texttt{x} must be a pair with proper use of \texttt{car}
 to extract its real part.
-
-
-% TODO: XXX
-Key observations are:
+There are few key observations from this example:
 
 \begin{itemize}
-	\item Difference occurrences of the same variable might have different types.
-	\item A predicate distinguishes one particular type of value from others.
-	For example, \texttt{number?} can distinguish numbers from other types.
+	\item Difference occurrences of the same variable might have different set of possible values.
+	\item This style of informal reasoning relies on result of applying predicates, and 
+	a predicate distinguishes one particular set of values from others.
+	For example, \texttt{number?} can distinguish numbers from other values.
 	\item By reasoning about the execution path taken to reach certain point in the program,
-	we can accumulate information about a variable to form a contextual type for it.
+	predicates about a variable can be accumulated to further constraint the set of possible values.
 \end{itemize}
 
-It is important for the type system to be able to assign same variable with different
-types depending on the context where the variable appears, this is exactly the notion of
-occurrence typing.
-Since these informal reasonings rely on predicates used in control flows,
-the idea is to use predicates as building block for types.
+%TODO: such
 
-The Typed Scheme version begins with definition of complex number:
+These observations suggest that we could use predicates as some sort of types
+when extending the language with gradual typing: say all values that make predicate \texttt{number?}
+return true are \texttt{Number}s, and all values that make predicate \texttt{cons?} return true
+are pairs, we should be able to encode this complex number representation using types.
+In fact, Typed Scheme version of it begins with such a type definition:
+
+%It is important for the type system to be able to assign same variable with different
+%types depending on the context where the variable appears, this is exactly the notion of
+%occurrence typing.
+%Since these informal reasonings rely on predicates used in control flows,
+%the idea is to use predicates as building block for types.
+
+%The Typed Scheme version begins with definition of complex number:
 
 \begin{minted}{scheme}
 ;; a Complex is either
 ;; - a number
 ;; - (cons number number)
-(define-type-alias Cplx (Union Number (cons Number Number)))
+(define-type-alias Cplx (U Number (cons Number Number)))
 \end{minted}
 
-While \textbf{Cplx} is just an alias for the union type, it improves readability
+Note that \texttt{U} constructs a union type, it combines multiple types together so
+a value satisfying any of these types will also satisfy the resulting union type.
+As a separate note,\texttt{Cplx} is just an alias for the union type,
+it nonetheless improves readability
 and allows other parts of the program to refer to it by name.
-The body of the function looks like:
+
+The body of the function in Typed Scheme looks like:
 
 \begin{minted}{scheme}
-(define: (creal [x: Cplx]) : Number
+(define: (creal [x : Cplx]) : Number
   (cond [(number? x) x]
         [else (car x)]))
 \end{minted}
 
-Note that we are explicitly giving the return type \textbf{Number},
-and the type system is capable of inferencing that
-both branch of \textbf{cond} expression returns a number
-so it will still typecheck.
+% occurrence typing ref?
+
+Note that despite \texttt{x} is of type \texttt{Cplx} as it enters the function body,
+it is actually a number in first clause of \texttt{cond} and a pair of numbers
+in the second clause. This phenomenon is captured by the idea of
+\textbf{occurrence typing}: one variable can have different types
+for its different occurrences, and the type depends on execution path it takes to reach that location.
+The use of predicate \texttt{number?} allows type system to know that \texttt{x}
+in the first clause must be a number. By eliminating number type from \texttt{Cplx},
+the type system can further conclude that in the second clause \texttt{x} must be a pair of numbers.
+
+% TODO: ref LTI
+Thanks to local type inference supported by Typed Scheme,
+explicitly giving the return type \texttt{Number}
+is sufficient to let type system know that every clause of \texttt{cond} returns a number
+so this part of the code can typecheck successfully.
 
 Another different kind of reasoning is also being used among Scheme programmers:
 Suppose we have stored a list of various types of values in \textbf{xs}

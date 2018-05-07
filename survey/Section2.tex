@@ -268,8 +268,6 @@ There are few key observations from this example:
 	predicates about a variable can be accumulated to further constraint the set of possible values.
 \end{itemize}
 
-%TODO: such
-
 These observations suggest that we could use predicates as some sort of types
 when extending the language with gradual typing: say all values that make predicate \texttt{number?}
 return true are \texttt{Number}s, and all values that make predicate \texttt{cons?} return true
@@ -313,42 +311,44 @@ in the second clause. This phenomenon is captured by the idea of
 \textbf{occurrence typing}: one variable can have different types
 for its different occurrences, and the type depends on execution path it takes to reach that location.
 The use of predicate \texttt{number?} allows type system to know that \texttt{x}
-in the first clause must be a number. By eliminating number type from \texttt{Cplx},
+in the first clause must be a number. By eliminating the number type from \texttt{Cplx},
 the type system can further conclude that in the second clause \texttt{x} must be a pair of numbers.
 
-% TODO: ref LTI
-Thanks to local type inference supported by Typed Scheme,
+With the help of local type inference\cite{pierce2000local},
 explicitly giving the return type \texttt{Number}
 is sufficient to let the type system know that every clause of \texttt{cond} returns a number
 so this part of the code can typecheck successfully.
 
-% TODO: XXX
-
-Another different kind of reasoning is also being used among Scheme programmers:
-Suppose we have stored a list of various types of values in \textbf{xs}
+Here is another example that shows a different kind of reasoning
+that Scheme programmers would rely on:
+suppose we have stored a list of values of various types in \textbf{xs}
 and the following code will compute the sum of all numbers from \textbf{xs}:
 
 \begin{minted}{scheme}
 (foldl + 0 (filter number? xs))
 \end{minted}
 
-Note that despite \textbf{xs} is a list that contains not just numbers,
-it is guaranteed that \textbf{(filter number? xs)} will return a list of numbers
-so \textbf{foldl} will work properly to produce the desired result.
+Note that despite \texttt{xs} is a list that contains not just numbers,
+the invariant of \texttt{filter} guarantees that
+\texttt{(filter number? xs)} will always return a list of numbers
+so it will work properly to produce the desired result.
 
-The expression requires no modification at all to typecheck in Typed Scheme
-and it receives type system benefits: suppose \textbf{map} is mistakenly
-used instead of \textbf{filter} or \textbf{number?} is replaced by
-other predicates insufficient to test whether a value in question is indeed a value,
-the type system is able to recognize such errors and give warnings.
+Typed Scheme is capable of encoding invariants about \texttt{filter} with its type system,
+and this expression requires no modification at all to typecheck in Typed Scheme.
+Having integrated the code into Typed Scheme, it can now enjoy some benefits meant for static typing:
+ suppose \texttt{map} is mistakenly
+used instead of \texttt{filter} or \texttt{number?} is replaced by
+other predicates insufficient to conclude whether a value in question is indeed a number,
+the type system is able to recognize such errors and warnings will be given ahead of execution.
 
 \subsubsection{Refinement Type}
 
-Note that in Scheme, we use \textbf{number?} to distinguish numbers
+We have been using \texttt{number?} to distinguish numbers
 from other type of values.
-In general, given a boolean-valued unary function
-we can define the set of values that produces \textbf{true} when fed to this function.
-This allows Typed Scheme to support refinement type.
+In general, given a predicate \texttt{f}, we can define 
+a type whose values are the set of values that \texttt{f} hold true.
+This idea is captured in Typed Scheme with refinement types\cite{freeman1991refinement}.
+The function below shows a valid use of refinement types:
 
 \begin{minted}{scheme}
 (: just-even (Number -> (Refinement even?)))
@@ -356,9 +356,9 @@ This allows Typed Scheme to support refinement type.
   (if (even? n) n (error 'not-even)))
 \end{minted}
 
-The code above uses boolean-valued function \textbf{even?}
-and its corresponding refinement type \textbf{Refinement even?},
-so we can expect a value of this type to be not just numbers, but also only even ones.
+In this example, type \texttt{(Refinement even?)} is defined by predicate \texttt{even?},
+which returns true if and only if input value is an even number.
+so we can expected this function to either a value satisfying \texttt{even?}, or throw an error.
 
 More practical examples include use refinement types to distinguish raw input
 from validated ones:
@@ -369,42 +369,47 @@ from validated ones:
 (declare-refinement sql-safe?)
 \end{minted}
 
-In this example, user defines function \textbf{sql-safe?} to verify
+In this example, user implements predicate \texttt{sql-safe?} to verify
 that a raw string contains no SQL injection or other contents of malicious attempt.
 Then a refinement type is declared using this very function.
-This makes available type \textbf{(Refinement sql-safe?)} to rest part of the program
-to avoid mistakenly using raw input rather than verified safe ones.
+This makes available type \texttt{(Refinement sql-safe?)} to rest part of the program
+so that when a programmer mistakenly uses string that contains raw input rather than verified strings,
+predicate \texttt{sql-safe?} will raise a type error instead of allowing program to proceed
+with potentially malicious raw input.
 
-As we can see occurrence typing not just enables
-gradual typing, but also allows refinement type,
-which provides us a powerful tool to use user-defined functions
-to define custom types of better precision.
+There are many other features introduced by Typed Scheme,
+but we can clearly see that extending Scheme with gradual typing
+brings benefits of static typing into the language.
 
 \subsection{From Python 3 to Reticulated Python}
 
-Python 3 (Python for short) is another popular dynamic typed language.
-M. Vitousek, M. Kent and Baker's work on Reticulated Python (Reticulated for short)
+Python 3 (Python for short) is another dynamic typed language.
+M. Vitousek, M. Kent and Baker's work on Reticulated Python\cite{vitousek2014design}
+(Reticulated for short)
 explored extending Python with gradual typing.
 
-Python comes with annotation syntax.
-This syntax allows expressions to be optionally attached to
-function definitions and their arguments,
-which makes it suitable for type annotation.
-
-Given proper definition of \textbf{Int}, we can write annotated
-function \textbf{distance} like below:
+Reticulated makes use of Python's annotation syntax\cite{pep3107}
+to allow type annotation on function definitions and their arguments.
+Given proper definition of \texttt{Int}, we can write annotated
+function \texttt{distance} like below:
 
 \begin{minted}{python}
 def distance(x: Int, y: Int)-> Int:
   return abs(x - y)
 \end{minted}
 
-While annotation allows arbitrary expressions, Reticulated Python
-only uses types built from several type constructors.
+While syntactically Python annotation allows arbitrary expressions,
+Reticulated Python only use few base types (\texttt{Int}, \texttt{String} and \texttt{Float}, to name a few)
+and a limited set of constructors
+(for example, \texttt{List}, \texttt{Dict}, \texttt{Object} and \texttt{Class} whose meanings are clear
+from their names),
+which nonetheless gives us sufficient expressiveness.
+
+%TODO XXX
 
 \subsubsection{Function Types}
 
-Python 3 has different ways of calling the same function.
+Python has different ways of calling the same function.
 Suppose we want to use \textbf{distance} defined above,
 we can use positional arguments like \textbf{distance(3,4)},
 or use keywords like \textbf{distance(y=4, x=3)} and the result should be the same.

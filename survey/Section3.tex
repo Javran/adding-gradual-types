@@ -11,28 +11,40 @@ In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
 Now we takes a step further to discuss the way towards making these extensions.
 
-There is no canonical way of supporting gradual typing and design choices have to be made
+Despite that we have gradual guarantee\cite{siek2015refined} and other
+theoretical works to serve as guidelines for gradual typing extensions,
+there is no canonical way of supporting gradual typing
+and design choices have to be made
 depending on various facts like original type discipline, common practice and performance.
-On the other hand, adding gradual types to an existing language
-is not just an effort of putting theories of gradual typing into practical use,
-but also introductions of new language features that accomplishes the changes
-and helps development in these languages.
 
-This chapter will explore various issues related to making gradual typing extensions,
-discuss possible solutions and evaluate choices researchers have to made about them. 
+Additionally, adding gradual types to an existing language
+is not just an effort of putting theories of gradual typing into practical use,
+but also introductions of new language features
+that take the advantage of gradual typing
+and help development or improve performance in these languages.
+
+In this chapter, we will explore various issues regarding
+type system extensions, design choices,
+implementation, and other technical details.
+This allows us to obtain more understanding and insight about the way towards gradual typing for existing languages.
 
 \subsection{Extensions to Type Systems}
 
-Gradual type system supports both fully static and fully dynamic typing,
-which requires support for traditional types including
-basic type, function type and types for structural data
-and a notion of dynamic type to allow presence of partial type information in the system.
-While type soundness is established by a combined work of static and dynamic typechecking,
+For statically typed languages, gradual type system introduces
+dynamic types, which then allows presence of partial type information
+in types.
+For dynamically typed languages, gradual type extension
+enables type annotations or enriches its type expressiveness
+to allow programmers to enforce invariants in a more uniform and
+machine-checkable way.
+While type soundness is established by a cooperative work
+of static and dynamic typechecking,
 gradual typing itself opens up possibility of some other interesting extensions
 that makes the extended language more convenient to use and more attractive to programmers.
 
-This section will separate these extensions into two categories:
-\textbf{Essential extensions} are required for a complete gradual typing support;
+These extensions can be split into two categories:
+\textbf{Essential extensions} are those necessary
+for a complete gradual typing support;
 and \textbf{complementary extensions} are those that improves type expressiveness
 but a type system without them does not compromise completeness.
 
@@ -41,7 +53,7 @@ but a type system without them does not compromise completeness.
 We are looking at research works that falls into type disciplines of two different nature:
 JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages, from which
 much similarity shows up;
-$\csharp$ 3.0, on the other hand, is statically typed one,
+$\csharp$ 3.0, on the other hand, is statically typed,
 which have quite a different story about how the extension is implemented.
 
 \paragraph{Extension from Dynamically Typed Languages}
@@ -666,63 +678,4 @@ Smalltalk features a live system: developers might modify code, run it and debug
 	to be disabled.
 \end{itemize}
 % \subsubsection{$\csharp$ 4.0}
-
-%Chapter 4
-\section{Related Work}
-
-
-\subsubsection{Alternatives to Integrating Static and Dynamic Typing}
-
-There are other type systems that bring benefits of the two together.
-Cartwright and Fagan's introduced soft typing, which is a type system
-that programers do not write type annotations but use type inference to
-assign appropriate types to terms, and runtime checks are inserted as needed.
-The drawback of this design is that programmers do not have control over types.
-%TODO probably more drawbacks
-Quasi-static typing is another attempt, with the idea of dynamic type in use,
-it chooses to use a subtyping relation and allows both up-casts and down-casts.
-A second pass of plausibility checking detects incompatible casts and signals the program
-in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
-and it does not statically catch all type errors (TODO: ref)
-in the process of attempting the proof, Siek and Taha finds a better solution, 
-which results in gradual typing that we have seen today.
-%TODO? 
-
-%\subsection{Static type system extensions}
-
-% Liquid type, dependent type
-
-%\subsection{Soft typing}
-
-%\subsection{Like type?}
-
-%\subsection{contracts}
-
-%\subsection{refinement type}
-
-% (TODO) sound gradual typing is nominally alive and well
-
-% TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
-%\renewcommand{\thechapter}{5}
-
-%\chapter{Future Work}
-
-\renewcommand{\thechapter}{5}
-\section{Conclusion}
-
-Gradual typing is an approach that brings benefits of static and dynamic type system
-together in a sound and efficient manner, from which partially typed programs are also supported
-and evolution towards either fully static or fully dynamic programs
-is also open and intended to be smooth.
-In this survey, we visited several extensions that extends existing languages to support such a type system. From aspect of programmers, gradual type extensions makes it possible
-to describe program invariants to be described in a machine-checkable way,
-and allows statically typed program to have parts without type annotations.
-For language designers and implementors, we have seen how gradual typing extensions are implemented
-together with complementary features that makes types expressive and easy to use.
-Challenges are present, despite some of them are still left as open questions,
-we remain confident that gradual typing benefits existing languages in long run.
-
-
-
-
 

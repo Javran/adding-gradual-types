@@ -1,0 +1,50 @@
+\section{Related Work}
+
+Prior to the birth of gradual typing, 
+
+Siek and Taha's work on Gradually Typed Lambda Calculus\cite{siek2006gradual}
+establishes the fundamental theory about gradual typing.
+By the same authors,
+the work is pushed further for object-based languages\cite{siek2007gradual}.
+As the concept of gradual typing gains its popularity and being used vaguely to
+refer to any work regarding integrating of static and dynamic type system,
+Siek, Vitousek, Cimini and Boyland present gradual guarantee\cite{siek2015refined}
+to reiterate the intention behind gradual typing and serves a more clear guideline for
+languages claimed to be gradually typed.
+
+
+% \subsubsection{Alternatives to Integrating Static and Dynamic Typing}
+
+There are other type systems that bring benefits of the two together.
+Cartwright and Fagan's introduced soft typing, which is a type system
+that programers do not write type annotations but use type inference to
+assign appropriate types to terms, and runtime checks are inserted as needed.
+The drawback of this design is that programmers do not have control over types.
+%TODO probably more drawbacks
+Quasi-static typing is another attempt, with the idea of dynamic type in use,
+it chooses to use a subtyping relation and allows both up-casts and down-casts.
+A second pass of plausibility checking detects incompatible casts and signals the program
+in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
+and it does not statically catch all type errors (TODO: ref)
+in the process of attempting the proof, Siek and Taha finds a better solution, 
+which results in gradual typing that we have seen today.
+%TODO? 
+
+%\subsection{Static type system extensions}
+
+
+%\subsection{Soft typing}
+
+%\subsection{Like type?}
+
+%\subsection{contracts}
+
+%\subsection{refinement type}
+
+% (TODO) sound gradual typing is nominally alive and well
+
+% TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
+%\renewcommand{\thechapter}{5}
+
+%\chapter{Future Work}
+

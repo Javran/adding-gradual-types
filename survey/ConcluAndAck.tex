@@ -1,0 +1,31 @@
+\section{Conclusion}
+
+Gradual typing is an approach that brings benefits of static and dynamic type system
+together in a sound and efficient manner.
+From aspect of programmers, gradual type extensions makes it possible
+for dynamically typed languages
+to express program invariants in a unified and machine-checkable way,
+and for statically typed languages,
+programs are allowed to be partially typed to obtain some more flexibility
+for situations like refactoring or fast-prototyping.
+Additionally, the ability of evolving the program towards
+either fully static or fully dynamic programs is also open and intended to be smooth.
+
+In this survey, we motivated gradual typing, visited designs and implementations of Safe TypeScript,
+Typed Scheme, Reticulated Python, Gradualtalk and $\csharp$.
+The way towards gradual typing for an existing language is not unique,
+because there are different language goals, programming idiom and established user community
+to be taken into account.
+However, to create a convincing gradual type extension, the way often involves 
+not just making type system extensions and choosing dynamic semantics wisely,
+but also complementary features that enriches type expressiveness or
+reveals more opportunities for optimization or development tool supports.
+
+There are still open questions present in making and maintaining these language extensions and
+the majority is about performance and keeping up with original languages.
+But this is understandable as many gradual type extensions we have discussed so far
+serve as proof of concept or prioritize correctness over performance.
+There are considerable amount of room for improvement and we remain confident that
+gradual typing extensions are practical and their benefit are significant for existing languages in long run.
+
+\section*{Acknowledgment}

@@ -405,22 +405,44 @@ and a limited set of constructors
 from their names),
 which nonetheless gives us sufficient expressiveness.
 
-%TODO XXX
+% TODO: could put syntactic types here
+
 
 \subsubsection{Function Types}
 
-Python has different ways of calling the same function.
-Suppose we want to use \textbf{distance} defined above,
-we can use positional arguments like \textbf{distance(3,4)},
-or use keywords like \textbf{distance(y=4, x=3)} and the result should be the same.
+Besides conventional function invocation, Python 
+supports named arguments, which allows a function to be invoked
+with explicit argument names. The example below shows 3 valid
+and calls to function \texttt{distance}
+and all these calls are equivalent with
+\texttt{x=10} and \texttt{y=20} upon entering function body.
 
-To support keyword calls, \textbf{Named} constructor is used to give
-\textbf{distance} type \textbf{Function(Named(x: Int, y: Int), Int)}.
-To support traditional positional arguments, \textbf{Pos} is used instead.
-The type system also allows \textbf{Named} to be used as if it is constructed by \textbf{Pos}
-when their length and element types correspond. So functions can be called in both
-ways without problem. Additionally \textbf{Arb} is another constructor
-that allows functions of arbitrary parameters.
+\begin{minted}{python}
+distance(10,20)
+distance(x=10, y=20)
+distance(y=20, x=10)
+\end{minted}
+
+Reticulated supports named arguments as well as conventional 
+function invocations through 3 different ways of constructing
+function parameter types. For example,
+function \texttt{distance}, can be given type \texttt{Function(P, Int)} with 3 possible parameter types \texttt{P}:
+
+
+\begin{itemize}
+	\item \texttt{P = Named(x: Int, y: Int))} This type
+	indicates that the function has two arguments \texttt{x} and \texttt{y} in that order, which can either be called with or without use of named arguments. In other words, \texttt{Named} can be used in any places where \texttt{Pos} is expected.
+	
+	\item \texttt{P = Pos(Int, Int)} This type contains less
+	information than \texttt{Named}, so it has limited support for
+	calls with named arguments. Nonetheless this is a traditional
+	function types used in many other languages.
+	
+	\item \texttt{P = Arb} This type allows functions of arbitrary
+	parameters. This allows typing functions that are otherwise
+	hard to type. But since it contains no useful information
+	about a function, type system enforces no invariant on it.
+\end{itemize}
 
 \subsubsection{Class and Object Types}
 
@@ -429,61 +451,61 @@ Programmers define classes and create objects from them.
 Both classes and objects are runtime values in Python
 and Reticulated provides corresponding types for both.
 
-Consider the following example:
+Consider the following example\footnote{This example is adapted from \cite{vitousek2014design}}:
 
 \begin{minted}{python}
 @fields({'x': Int})
-class 1DPoint:
-  def __init__(self: 1DPoint):
+class Point1D:
+  def __init__(self: Point1D):
     self.x = 0
-  def move(self: 1DPoint, x: Int)->1DPoint:
+  def move(self: Point1D, x: Int)->1DPoint:
     self.x += x
     return self
 
-p = 1DPoint()
+p = Point1D()
 \end{minted}
 
-It defines a class \textbf{1DPoint} with one field \textbf{x} of \textbf{Int} type.
+It defines a class \texttt{Point1D} with one field \texttt{x} of \texttt{Int} type.
 And an object is created from it through the constructor
-and is bound to variable \textbf{p}.
+and is bound to variable \texttt{p}.
 
 Reticulated derives class type from this definition:
 
-\begin{verbatim}
-Class(1DPoint){
-  move: Function(Named(self: 1DPoint, x: Int), 1DPoint)
+\begin{minted}{python}
+Class(Point1D){
+  move: Function(Named(self: Point1D, x: Int), Point1D)
 }
-\end{verbatim}
+\end{minted}
 
 And object types are similar:
 
-\begin{verbatim}
-Object(1DPoint){
-  move: Function(Named(x: Int), 1DPoint)
+\begin{minted}{python}
+Object(Point1D){
+  move: Function(Named(x: Int), Point1D)
 }
-\end{verbatim}
+\end{minted}
 
 While object can access methods of its class, it is also possible
 to assign methods and fields to objects to change its behavior.
 Therefore Reticulated makes object type open with respect to consistency.
 
-\subsubsection{Dynamic Semantics}
-
-Reticulated Python is not only a practical gradual type extension,
-but serves as an experiment of exploring different dynamic semantics
-
 \subsubsection{Other Features}
 
 There are other features of Reticulate.
-In particular, since it is not always possible to know what module would be loaded
-at runtime, static typechecking sometimes occurs right after module is loaded.
+In particular, it is not only a practical gradual type extension,
+but serves as an experiment of exploring
+different dynamic semantics which will have a large impact on
+the performance of a gradually typed language.
+Please refer to \textbf{Objects and Dynamic Semantics} of section
+3.3 for a detailed discussion.
 
-Despite Python syntax supports annotation at function definition,
-it does not provide a way of annotating local variables with tyoe.
-Instead, Reticulated takes a step further and perform dataflow-based type inference.
-
+In addition, despite Python syntax supports annotation at function definition,
+it does not provide a way of annotating local variables with types.
+Instead, Reticulated perform dataflow-based type inference on code blocks, which allows it to infer variable types for programmers.
 
 \subsection{From Smalltalk to Gradualtalk}
+
+% TODO XXX
 
 Smalltalk is a language of highly dynamic nature:
 it supports live programming, which means programs with incomplete

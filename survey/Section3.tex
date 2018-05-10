@@ -52,9 +52,9 @@ but a type system without them does not compromise completeness.
 
 We are looking at research works that falls into type disciplines of two different nature:
 JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages, from which
-much similarity shows up;
-$\csharp$ 3.0, on the other hand, is statically typed,
-which have quite a different story about how the extension is implemented.
+much similarity shows up.
+On the other hand, we have $\csharp$ 3.0, a statically
+typed langauge.
 
 \paragraph{Extension from Dynamically Typed Languages}
 
@@ -63,10 +63,14 @@ is to first perform static typechecking in the presence of dynamic types.
 If it is successful, programs written in extended languages are then translated into original languages.
 The translated program could contain runtime checks with some values instrumented,
 these checks and instruments are either implemented by inserting expressions or statements in place or
-making calls to external libraries (which is called runtime in short) shipped with
-the extended languages.
+making calls to external libraries\footnote{
+	These libraries are also known as ``runtime''s
+	and often shipped
+	with the gradual type extension to support
+	runtime checks.
+}.
 
-This ensures a high compatibility with original languages: source code written in extended language
+This approach grants high compatibility with original languages: source code written in extended language
 can be compiled and then used as if it is written in the original language, and thanks to the fact
 that all existing dynamically typed languages
 we are discussing have decent supports for modern package managers,
@@ -74,11 +78,11 @@ including runtime support is as simple as making a dependency declaration to pac
 Besides, by compiling to the original languages,
 we can to some extent be confident that the language implementations
 are independent of specific implementations of the original languages,
-albeit some language extensions do make assumption about implementations of their original languages.
-
-% Soundness of Typed Scheme?
-% Typed Scheme is implemented using PLT Scheme macro system.
-
+albeit some language extensions do make assumption about implementations of their original languages\footnote{
+	Part of Python is written in C, which does not respect the indirection that
+	Reticulated proxies use and a work around requires removing and re-installing
+	proxies at the boundary of Python and C\cite{vitousek2014design}. 
+}.
 % TODO slight issue: TypeScript has 2 static typechecking passes
 % TODO: gradual type with reference?j
 
@@ -88,33 +92,44 @@ is responsible of performing static typechecks and finally
 a type dictionary for storing type information.
 
 Typed Scheme takes a similar approach: the implementation is a macro
-(a source-to-source transformer) that does typechecking and expands source code.
-This phase either results in static type error being reported,
-or source code translated to PLT scheme with some runtime casts inserted
+that takes source code in Typed Scheme, does static typechecking and 
+inserts casts when needed and translates the result.
+This phase either results in failure in static typechecking, in
+which case the detected type error needs to be addressed,
+or successful translated code in PLT Scheme with casts inserted
 in the form of contracts.
 
 \paragraph{Extension from A Static Type System}
 
 The work on $\csharp$ 4.0 shows us how statically typed language can be extended
 to support gradual typing.
-Similar to Siek's original approach, the compiler assign types to terms using built-in knowledge,
-explicit type annotations and type inference, then programs are translated into another core
-language that consists of less constructions and dynamic types are either turned into
-casts or removed in this process to produce final executables.
-But unlike original work on functional languages, $\csharp$ 4.0 achieves transitivity on subtyping:
-the problem occurs when dynamic types are involved, allowing subtyping relation to be established
-by using the dynamic type as middle ground. This problem is solved by not allowing dynamic types
-to be converted to any other types.
+This approach is novel because $\csharp$ 3.0 uses a bidirectional type system \cite{pierce2000local}
+rather than a standard static type system.
+There are two distinct phase in a bidirectional type system:
+in \textbf{typechecking} phases, we determine whether a particular type can be
+assigned to a given term, whereas in \textbf{type synthesis} phases,
+we are given a term and tasked to determine a type for it.
+As bidirectional type checking is a variant of coercive subtyping\cite{breazu1991inheritance},
+both phases generate translated terms with explicit coercions.
+During the process of checking types for a $\csharp$ program,
+these two phase naturally interleaves each other to progressively
+assign types to terms and turn implicit coercions into explicit ones.
+Upon successful completion of this process, all coercions are made
+explicit and dynamic types are no longer needed and simply replaced by basic object types.
 
-% TODO: more to say?
+As shown in Siek's work in \cite{siek2007gradual},
+making dynamic type the top type in subtyping order allows any two types to
+be coercible. $\csharp$ 4.0 avoids this problem by
+not allowing dynamic types to be implicitly converted to any other types
+during typechecking phases.
+It turns out that this approach is sufficient to achieve
+transitivity of subtyping
+even when dynamic types are present.
 
-% Unlike traditional static type systems, $\csharp$ 3.0 features bidirectional type system.
-% Such a system have two distinct phases: \textbf{type checking} and \textbf{type synthesize}.
-% While a type checking phase determines whether a given term can be assigned a particular type,
-% type synthesize phase works out the expected type from context for a given term. These two phases
-% are intertwined to produce a fully typed program.
-
-(TODO: achieve transitivity)
+The type system of $\csharp$ 4.0 shows that it is possible for a
+static type system to allow transitivity of subtyping when making gradual type extensions.
+But whether this technique is applicable to standard static type system is still remained
+as an open question.
 
 \subsubsection{Complementary Extensions}
 
@@ -135,10 +150,10 @@ assigned returned value to a most general type results in information loss.
 
 Imagine the following code in Typed Scheme:
 
-\begin{verbatim}
-(lambda (x : number)
+\begin{minted}{scheme}
+(lambda (x: number)
   (if (> x 0) x #f))
-\end{verbatim}
+\end{minted}
 
 Depending on the test \texttt{(> x 0)}, we either get a number or the boolean value \texttt{\#t} as result,
 which can be expressed through union type \texttt{($\cup$ Number Boolean)}.
@@ -196,12 +211,12 @@ this feature to further extend their type expressiveness.
 
 The following illustrates this feature in Safe TypeScript:
 
-\begin{verbatim}
+\begin{minted}{scheme}
 interface Pair<A,B> { fst: A; snd: B }
 function pair<A,B>(a: A, b: B}: Pair<A,B> {
   return {fst: a, snd: b};
 }
-\end{verbatim}
+\end{minted}
 
 In this example, \texttt{Pair} is a structure that contains two pieces of data and
 \texttt{pair} a function as its constructor.
@@ -228,23 +243,23 @@ in appropriate places so they can be checked at runtime.
 
 Taking Safe TypeScript as an example:
 
-\begin{verbatim}
+\begin{minted}{typescript}
 function toOrigin(q: {x: number, y: number}) {q.x = 0; q.y = 0;}
 function toOrigin3d(p: {x: number, y: number, z: number}){
   toOrigin(p); p.z = 0;
 }
 toOrigin3d({x: 17, y: 0, z: 42})
-\end{verbatim}
+\end{minted}
 
 The code above is translated into JavaScript:
 
-\begin{verbatim}
+\begin{minted}{javascript}
 function toOrigin(q) { q.x = 0 ; q.y = 0; }
 function toOrigin3d(p) {
   toOrigin(RT.shallowTag(p, {"z": RT.num})); p.z = 0;
 }
 toOrigin3d({x: 17, y: 0, z: 42})
-\end{verbatim}
+\end{minted}
 
 in which \texttt{RT} is Safe TypeScript runtime.
 Notice how argument of \texttt{toOrigin} requires an object that contains
@@ -408,7 +423,7 @@ and \textbf{monotonic}.
 
 For starter, an example in Reticulated is given:
 
-\begin{verbatim}
+\begin{minted}{python}
 class Foo:
   bar = 42
 def g(x):
@@ -417,7 +432,7 @@ def f(x:Object({bar: Int})->Int:
   g(x)
   return x.bar
 f(Foo())
-\end{verbatim}
+\end{minted}
 
 Note that function \texttt{g} mutates the type of \texttt{x.bar} therefore its callee \texttt{f}
 no longer have a \texttt{x} of proper type to return \texttt{Int}.
@@ -435,14 +450,14 @@ of statically and dynamically typed code.
 
 After translation, the relevant functions have casts inserted as following:
 
-\begin{verbatim}
+\begin{minted}{python}
 def g(x):
   cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
 def f(x:Object({bar: Int}))->Int:
   g(cast(x, Object({bar: Int}), Dyn))
   return x.bar
 f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
-\end{verbatim}
+\end{minted}
 
 When the control reach body of function \texttt{g},
 \texttt{g} will have the most precise type \texttt{Object({bar:Int})} inferred from the sequence
@@ -451,9 +466,9 @@ which results in a failure.
 
 Note that this approach have the problem that object identity is not preserved:
 
-\begin{verbatim}
+\begin{minted}{python}
 x is cast(x, Dyn, Object({bar:Int}))
-\end{verbatim}
+\end{minted}
 
 As \texttt{cast} function wrap \texttt{x} in a proxy, it is no longer considered the same object as \texttt{x}
 therefore returns \texttt{False}. However instance tests will still work, as proxies are considered a subclass.
@@ -465,7 +480,7 @@ rather than an instance of the relevant class.
 Instead of using proxies, the transient approach inserts casts at use sites or at sites where
 the value becomes relevant. Under this approach, the same Reticulated function is translated as following:
 
-\begin{verbatim}
+\begin{minted}{python}
 def g(x):
   cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
 def f(x:Object({bar: Int}))->Int:
@@ -473,7 +488,7 @@ def f(x:Object({bar: Int}))->Int:
   g(cast(x, Object({bar: Int}), Dyn))
   return check(x.bar, Int)
 f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
-\end{verbatim}
+\end{minted}
 
 There are two differences: first, despite having the same name, \texttt{cast} is a different
 function that just checks whether cast on object is allowed and then returns it instead
@@ -492,14 +507,14 @@ overtime, its type information gets locked down to always become more precise.
 The translation is the same as that of guarded dynamic semantics, but with \texttt{cast} being a different
 function that applies monotonic approach.
 
-\begin{verbatim}
+\begin{minted}{python}
 def g(x):
   cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
 def f(x:Object({bar: Int}))->Int:
   g(cast(x, Object({bar: Int}), Dyn))
   return x.bar
 f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
-\end{verbatim}
+\end{minted}
 
 Right before call to \texttt{f}, object newly created from \textbf{Foo()} is locked down to
 have a type at least as precise as \texttt{Object({bar:Int})}, this locks down type of \texttt{x.bar}
@@ -535,15 +550,6 @@ a structural type into slices of interest.
 The observation is that, during static typechecking, when subtyping relation is used, there is a potential loss in precision. We can extend subtyping relation to compute the exact set of type information,
 and encode in the form of RTTI instead of keeping types of all fields around therefore improve performance.
 
-% \subsection{Self Types}
-
-% Self types are presence in Gradualtalk, but we believe such 
-
-% The use of self types is seen in Gradualtalk to allow type information to be preserved
-% in chained invocations.
-
-% \subsection{Recursive Data Types}
-
 \subsubsection{Type Inference}
 
 Programs with type inference and those with gradual typing have some similarity in the sense
@@ -557,15 +563,6 @@ and then join these types to determine what type should be assigned to each vari
 A local type inference is also employed in Typed Scheme.
 
 % \section{Blame Tracking}
-
-% \section{Eval function}
-
-% Languages of highly dynamic nature often come with a function \texttt{eval}, which
-% gets a string or abstract syntax tree as input, interprets it as if it is one part of the program
-% and return the result of execution. Such functions cannot be precisely typed and several languages
-% have to treat \texttt{eval} function specially for this reason.
-
-% \section{Other Performance Concerns}
 
 \subsubsection{Type Erasure and Optional Typing}
 
@@ -582,43 +579,79 @@ therefore typing is avoided.
 Of course, without tagging it is impossible to enforce some invariants at runtime,
 which remains as a choice that programmers can do.
 
-% \subsection{Large Arrays}
-% 
-%%For programs that need runtime typechecks on large arrays,
-%% the overhead could be wasteful but significant.
-
-
 \subsection{Challenges}
 
-This section shows challenges and open questions.
+There are still challenges and open questions present when
+making gradual type extensions. This section attempts to
+organize them into common challenges and language-specific ones.
 
 \subsubsection{Common Challenges}
 
-\paragraph{Synchronization}
+\paragraph{Keeping up with the original language}
 One problem of making extensions to an existing language
 lie in the fact that the extended one needs extra maintenance efforts to keep being
 a superset of the original language.
 If the language being extended is actively changing or extending its syntax,
 our gradual typed version will have trouble keeping it up or
 even run into the problem of conflicting syntax.
-This is particular true in case of JavaScript: nowadays language proposals
-are still being reviewed and accepted, which requires Safe TypeScript to bring in these
-new features as well.
+This is particular true in case of JavaScript: nowadays ECMAScript Next
+proposals are still being reviewed and some of them will eventually 
+be accepted into the language,
+which requires Safe TypeScript to bring in these new features
+and careful adjustment might be required so that the syntax for
+optional type annotation do not accidental conflict with the original language.
 
-\paragraph{Libraries Maintenance}
+\paragraph{Libraries maintenance}
 Despite that gradual typed systems claim to provide freedom of making choices
-between statically or dynamically typed.
-For this feature to be useful at all, type signatures must be provided
-and kept up-to-date, which might require maintenance efforts.
+between statically or dynamically typed,
+for this feature to be useful, type signatures must be provided
+and kept up-to-date, which might require extra maintenance effort.
+As an example, DefinitelyTyped\cite{yankov2014definitelytyped}
+is a repository that contains TypeScript type definitions for popular
+JavaScript libraries and it has to be actively maintained to
+match its JavaScript counterpart.
 
-\paragraph{Eval function}
+\paragraph{\texttt{eval} function}
 
 Languages of highly dynamic nature would provide a \texttt{eval} function,
 which when given a string or a abstract syntax tree, evaluates it as
 if it is one part of the program and returns the result.
-These functions are difficult to give a type more precise than that of a function.
-However, the use of \texttt{eval} function is generally considered bad practices and
-might impose threats to security because this might allow arbitrary code to be executed.
+It is difficult to assign types\footnote{To be more precise,
+we cannot determine any information about \texttt{eval} function's return type.
+} to these functions, as
+the resulting type depends on the input and running
+a complete analysis on input is undecidable.
+Despite that \texttt{eval} function is provided
+for almost all languages of dynamic nature, the problem is minor.
+This is because the use of such a function is generally considered
+temporary or bad practice, development tools will give warnings
+regarding any use of \texttt{eval} and ask programmers to try alternative approaches. 
+
+\paragraph{Problems with translation}
+It is a popular approach that an extended language have programs
+written in it translated into its original language.
+In some sense this is a fragile approach as the runtime library
+could be modified to break its runtime checking mechanism,
+and if the original language provides interface for inspecting
+objects, information intended to be hidden could be
+revealed and modified. This brings negative consequence for a tag-based
+gradual type extension.
+
+Sometimes interoperability has an impact on translation.
+CPython implementation of Python relies on calling C functions to
+achieve better performance, which breaks proxies used by Reticulated.
+The workaround is to remove and re-install proxies
+between language boundaries, which is not satisfactory.
+
+In addition,
+despite that we can establish type soundness in the extended language,
+a translated program will still be unnecessarily checked by the original language.
+For instance,
+while Safe TypeScript maintains its own static typechecking phase,
+it is implement as a plugin to TypeScript compiler, 
+which is incapable of turning off TypeScript's own static typechecking.
+A similar situation happens to Reticulated, as it cannot turn off
+runtime checks impose by Python itself.
 
 \subsubsection{JavaScript}
 
@@ -647,15 +680,6 @@ and \texttt{(map f xs ys zs)} can all be valid given \texttt{f} of expected arit
 a similar situation is with \texttt{apply} function, which accepts a function and a list of arguments.
 Typed Scheme has special cases to deal with these cases, but it is more desirable
 if these types can be expressed using the type language.
-
-\subsubsection{Python 3.0}
-
-One problem with Python is that Python does its own runtime checks which cannot be prevented
-even if it can be proved in Reticulated that some particular checks are unnecessary.
-
-Another potential problem with Python is that the annotation syntax is allowed
-in the original language albeit not being used.
-Therefore it is possible that some other library might want to use annotation syntax for other purposes, which is unlikely to be compatible with Reticulated.
 
 \subsubsection{Smalltalk}
 

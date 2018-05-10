@@ -14,6 +14,10 @@
 \usepackage{minted}
 \usepackage{mathpartir}
 
+% https://tex.stackexchange.com/a/2890
+\AtBeginEnvironment{minted}{%
+	\renewcommand{\fcolorbox}[4][]{#4}}
+
 \title{Adding Gradual Types to Existing Languages}
 
 \author{Javran Cheng}

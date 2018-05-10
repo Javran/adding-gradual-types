@@ -1,84 +1,30 @@
-
-
-%\begin{center}
-%\large{{ABSTRACT}}
-
-%\vspace{3em}
-
-%\end{center}
-%\hspace{-.15in}
-
-
-%\vspace{3em}
-%\begin{tabular}{ll}
-%	Title of dissertation:    & {\large  ADDING GRADUAL TYPES }\\
-%	&                     {\large  TO EXISTING LANGUAGES:} \\
-%	&                     {\large  A SURVEY} \\
-%	\ \\
-%\end{tabular}
-
-%\renewcommand{\baselinestretch}{2}
-%\large \normalsize
-
 \begin{abstract}
-% Gradually gradual typed: program that grows
+	There are two kinds of type disciplines of different natures:
+	On the one hand, we know that statically typed languages are reliable and efficient,
+	but it is not very convenient when it comes to program prototyping or refactoring.
+	On the other hand, dynamically typed languages does not prevent programs from execution
+	through ahead-of-time checks, which makes them flexible but at the same time
+	mistakes become harder to spot and programs more difficult to maintain over time.
+	
+	It is only natural that we look into
+	integrating static and dynamic type systems.
+	Among one of the related lines of research is gradual typing, which
+	intends to support not just fully static and full dynamic type systems
+	but also those partially typed programs.
+	By providing control over which part of the program should be checked
+	by the type system, programmers are free to evolve programs
+	towards either static or dynamic typing in a smooth and consistent manner.
 
-Type system defines sets of rules, which is checked against programs to
-prevent certain kind of errors and bugs. Type checking happens either
-statically ahead of execution, or dynamically at runtime.
-Programming languages make different choices regarding type system to
-accommodate their specific needs.
-
-Statically typed languages are reliable and efficient.
-Because type errors are caught ahead of execution,
-programs are free of these errors at runtime.
-In addition, having type information available statically also helps
-development in many other ways beyond the type system, such as
-type-specialized optimization and improved development tools.
-While some believes static type systems assist code evolution in long run,
-a new feature or design change in codebase could introduce
-great effort to not just implementation
-but also adjusting type annotations accordingly, which might not be desirable
-for testing out new ideas on top of an existing large codebase.
-
-Dynamically typed languages stand out when it comes to scripting and fast prototyping:
-executables from external sources can be used directly without worrying about type information
-and programs can be easily modified and executed
-without need of enforcing consistency and correctness throughout the program.
-But a program grows over time to handle more complicated tasks,
-the interaction between different portions of the program becomes harder
-to track and maintain.
-
-It is only natural that we start exploring the spectrum between them:
-type systems that enjoy benefits of both.
-Among one of these is gradual typing, which features a type system
-that provides optional type checking.
-In such a system, programmer can
-give types to only portion of the program.
-For the portion that has type information,
-static and dynamic typechecking will work together
-to ensure type consistency, whereas
-the untyped portion of the program is left unchecked,
-which might be desirable
-when performance or flexibility is concerned.
-By giving programmers control over when and where should typechecking
-occur, one does not commit to either static or dynamic typing
-while losing the benefit of the other.
-
-One crucial advantage of gradual typing is that it can be implemented
-by extending an existing statically or dynamically typed language.
-Syntactically, the extension often results in a superset of the original
-language that allows more expressiveness in types, which means
-the effort of migrating existing code and language users
-to take advantage of gradual typing is minimized.
-Semantically, adding or removing type annotation does not
-change the result of programs aside from type errors,
-which grants gradual and smooth transition between
-static and dynamic type disciplines.
-
-In this survey, we will walk through the relevant research literature on extending
-existing languages to support gradual types,
-discuss challenges and solutions about making these extensions,
-and look into related works and the future of gradual typing.
+	Despite that gradual type systems are well-studied research topics,
+	extending existing languages to support them is far from trivial task:
+	to make a successful gradual typing extension,
+	the type system is needed to be extended, types to be designed,
+	extra features to be introduced and tradeoff to be made, all of which
+	require taking into account the design, programming idiom and user community that
+	the original language has.
+	In this survey, we will walk through the relevant research literature on extending
+	existing languages to support gradual types,
+	discuss challenges and solutions about making these extensions,
+	and look into related works and the future of gradual typing.
 
 \end{abstract}

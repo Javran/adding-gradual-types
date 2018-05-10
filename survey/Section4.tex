@@ -1,50 +1,84 @@
 \section{Related Work}
 
-Prior to the birth of gradual typing, 
-
+\subsection{Gradual Typing}
 Siek and Taha's work on Gradually Typed Lambda Calculus\cite{siek2006gradual}
-establishes the fundamental theory about gradual typing.
+establishes the theoretical foundation for gradual typing.
+It is suggested in the same paper that Cecil\cite{chambers2004cecil}, Boo\cite{de2005boo},
+extensions to Visual Basic.NET and $\csharp$ proposed by Meijer and Drayton\cite{meijer2004static},
+extensions to Java proposed by Gray, Findler and Flatt\cite{gray2005fine}
+and the Bigloo \cite{bres2004compiling}\cite{serrano2002bigloo} dialect of Scheme\cite{abelson1998revised}
+could be formalized using this foundation.
 By the same authors,
-the work is pushed further for object-based languages\cite{siek2007gradual}.
+the idea is pushed further for object-based languages\cite{siek2007gradual}.
 As the concept of gradual typing gains its popularity and being used vaguely to
 refer to any work regarding integrating of static and dynamic type system,
 Siek, Vitousek, Cimini and Boyland present gradual guarantee\cite{siek2015refined}
 to reiterate the intention behind gradual typing and serves a more clear guideline for
 languages claimed to be gradually typed.
 
+\subsection{Soft Typing}
+Cartwright and Fagan's Soft Typing\cite{cartwright1991soft},
+is a type system intended to free programers from writing type annotations.
+Type inference is used instead to assign appropriate types to terms.
+While this design improves performance of dynamically typed languages
+as the inferred information is used to removing some runtime dispatching,
+it does not give programmers control over types.
 
-% \subsubsection{Alternatives to Integrating Static and Dynamic Typing}
+\subsection{Partial Type Systems}
+The idea of allowing partial types in a type system is not new.
+Anderson and Drossopoulou formalized BabyJ\cite{anderson2003babyj}, which has
+nominal type system that allows permissive types.
+This concept is similar to dynamic types in a gradual type system.
+But unlike gradual typing, the type system is nominal and does not takes into account function types.
+Both Thatte's Quasi-Static Typing\cite{thatte1989quasi} relies on subtyping,
+which creates a fundamental problem that prevents type system from catching all type errors even when programs are
+fully type annotated.
+Another type system that relies on subtyping
+is developed by Riely and Hennessy\cite{riely1999trust} on a partial type system for D$\pi$,
+type \textbf{Ibad} is used for untyped parts. However, by treating \textbf{Ibad} as the bottom type,
+it could allow \textbf{Ibad} to be implicitly coercible to arbitrary types.
 
-There are other type systems that bring benefits of the two together.
-Cartwright and Fagan's introduced soft typing, which is a type system
-that programers do not write type annotations but use type inference to
-assign appropriate types to terms, and runtime checks are inserted as needed.
-The drawback of this design is that programmers do not have control over types.
-%TODO probably more drawbacks
-Quasi-static typing is another attempt, with the idea of dynamic type in use,
-it chooses to use a subtyping relation and allows both up-casts and down-casts.
-A second pass of plausibility checking detects incompatible casts and signals the program
-in question as ill-typed. However its typechecking algorithm did not receive a correct proof,
-and it does not statically catch all type errors (TODO: ref)
-in the process of attempting the proof, Siek and Taha finds a better solution, 
-which results in gradual typing that we have seen today.
-%TODO? 
+\subsection{Type Annotation for Performance}
+Some languages includes optional type annotations, but
+the annotation is used for improving performance rather than
+typechecking.
+Common LISP\cite{steele1982overview}
+and Dylan\cite{feinberg1996dylan} \cite{shalit1996dylan} fall into this category.
 
-%\subsection{Static type system extensions}
+\subsection{Type Inference}
+Type inference \cite{damas1982principal}\cite{hindley1969principle}\cite{milner1978theory}
+removes some burden of writing type annotations from programmers
+by using available type information to reconstruct types for terms.
+It is syntactically similar to gradual typing as both approaches
+allow programmer to omit type annotations.
+While type inference simply rejects a program when it
+does not have sufficient information to fill out all missing types,
+a gradual type system allows partial type to present in a program and insert casts
+to enforce invariants at runtime instead.
+Local type inference \cite{pierce2000local} sometimes are used in a gradual type
+system to either free programmers from having to write out all type annotations
+or to accommodate the fact that some languages do not have a way of attaching
+variables to an explicit type.
 
+\subsection{Optional Type System}
 
-%\subsection{Soft typing}
+In an optional type system\cite{bracha2004pluggable},
+type annotations are optional and have no impact on the semantics of the language.
+Example includes Strongtalk\cite{bracha1993strongtalk}.
+While static typechecking is still present, no runtime checks are inserted
+so the language does not receive full benefits of a type system.
+Nonetheless, sometimes it might be desirable to ensure that certain part of the program
+does not have runtime checks inserted by the type system.
+Some gradual type systems like Safe TypeScript\cite{rastogi2015safe} does allow writing
+types in a specific way to effectively switch some part of the program to use an optional type system.
 
-%\subsection{Like type?}
+\subsection{Type System Integrations}
 
-%\subsection{contracts}
+There are other examples of combining different type systems and taking advantage of both.
+Ou, Tan, Mandelbaum and Walker\cite{ou2004dynamic} define a language that combines
+standard static typing with dependent typing.
+Flanagan's Hybrid Type Checking\cite{flanagan2006hybrid} combines standard static typing
+with refinement types. Automated theorem proving technique is employed to try to satisfy predicates
+and runtime checks are inserted when theorem prover yields no conclusive results.
 
-%\subsection{refinement type}
-
-% (TODO) sound gradual typing is nominally alive and well
-
-% TypeScript implements "occurrence typing" (see "Type Guards and Differentiating Types" of advanced types) and Array as tuple 
-%\renewcommand{\thechapter}{5}
-
-%\chapter{Future Work}
 

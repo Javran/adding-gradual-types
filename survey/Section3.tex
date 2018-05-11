@@ -81,7 +81,7 @@ are independent of specific implementations of the original languages,
 albeit some language extensions do make assumption about implementations of their original languages\footnote{
 	Part of Python is written in C, which does not respect the indirection that
 	Reticulated proxies use and a work around requires removing and re-installing
-	proxies at the boundary of Python and C\cite{vitousek2014design}. 
+	proxies at the boundary of Python and C\cite{vitousek2014design}.
 }.
 
 % TODO: gradual type with reference?j
@@ -92,7 +92,7 @@ is responsible of performing static typechecks and finally
 a type dictionary for storing type information.
 
 Typed Scheme takes a similar approach: the implementation is a macro
-that takes source code in Typed Scheme, does static typechecking and 
+that takes source code in Typed Scheme, does static typechecking and
 inserts casts when needed and translates the result.
 This phase either results in failure in static typechecking, in
 which case the detected type error needs to be addressed,
@@ -135,10 +135,10 @@ as an open question.
 
 While essential extensions establish the completeness of gradual type systems,
 complementary extensions are not exactly requirements.
-After all, programmers can always choose not to use explicitly typed terms and 
+After all, programmers can always choose not to use explicitly typed terms and
 leave types of them inferred or defaulted to dynamic types.
 This is however unsatisfactory, as using dynamic types often result in a lost of type information in the process.
-Therefore extra features of type systems are usually introduced to improve type expressiveness and 
+Therefore extra features of type systems are usually introduced to improve type expressiveness and
 in general make language more convenient to use.
 
 \paragraph{Union Type}
@@ -281,7 +281,7 @@ Object-oriented programming is a popular style of programming.
 All languages we have discussed so far supports it to some extent.
 Some have developed intensive support for it,
 among which some even have the language itself designed to embrace its philosophy.
-To have a sound and efficient support for it 
+To have a sound and efficient support for it
 becomes center of topic when it comes to runtime performance of supporting gradual typing.
 
 \subsubsection{Unified Concepts}
@@ -294,7 +294,7 @@ to allow discussing them in an unified way.
 An \textbf{object} $o$ is a single value that contains \textbf{fields} (somethings also called
 \textbf{properties} or \textbf{attributes}) and \textbf{methods}.
 Unique labels $l$s are assigned to all fields and methods. By using notation $o.l$, we can \textbf{access}
-(i.e. \textbf{read} from or \textbf{write} to) fields and methods of object $o$. 
+(i.e. \textbf{read} from or \textbf{write} to) fields and methods of object $o$.
 Fields are values, and methods are functions within whose body gain access to a special variable
 (called \texttt{this} or \texttt{self} by convention) which can be used to refer to the object itself.
 
@@ -339,7 +339,7 @@ class A:
 
 class B(A):
   def bar(self):
-  
+
 class C:
   def foo(self):
     ...
@@ -379,7 +379,7 @@ mustBeTrue({
   move: function(dx,dy) {
     ...
   }
-}); 
+});
 \end{minted}
 
 One might expect calls to function \texttt{mustBeTrue} to always return \texttt{true},
@@ -391,7 +391,7 @@ is inconsistent with TypeScript's type system.
 
 To solve this problem, Safe TypeScript treats class types nominally but allows it to be viewed structurally.
 Taking the same example but assume that we are using Safe TypeScript,
-instances of \texttt{MovablePoint} can still be used in places where type 
+instances of \texttt{MovablePoint} can still be used in places where type
 \texttt{\{x: number, y: number, move(dx: number, dy:number): any\}}
 or \texttt{\{x: number, y: number\}} is expected.
 But in order to typecheck a value against \texttt{MovablePoint},
@@ -435,7 +435,7 @@ f(Foo())
 Note that function \texttt{g} mutates the type of \texttt{x.bar} therefore its callee \texttt{f}
 no longer have a \texttt{x} of proper type to return \texttt{Int}.
 When different dynamic semantics are applied, the result varies as well and in following parts
-we will visit these approaches in order. 
+we will visit these approaches in order.
 
 \paragraph{The Guarded Dynamic Semantics}
 
@@ -606,7 +606,7 @@ If the language being extended is actively changing or extending its syntax,
 our gradual typed version will have trouble keeping it up or
 even run into the problem of conflicting syntax.
 This is particular true in case of JavaScript: nowadays ECMAScript Next
-proposals are still being reviewed and some of them will eventually 
+proposals are still being reviewed and some of them will eventually
 be accepted into the language,
 which requires Safe TypeScript to bring in these new features
 and careful adjustment might be required so that the syntax for
@@ -636,7 +636,7 @@ Despite that \texttt{eval} function is provided
 for almost all languages of dynamic nature, the problem is minor.
 This is because the use of such a function is generally considered
 temporary or bad practice, development tools will give warnings
-regarding any use of \texttt{eval} and ask programmers to try alternative approaches. 
+regarding any use of \texttt{eval} and ask programmers to try alternative approaches.
 
 \paragraph{Problems with translation}
 It is a popular approach that an extended language have programs
@@ -659,7 +659,7 @@ despite that we can establish type soundness in the extended language,
 a translated program will still be unnecessarily checked by the original language.
 For instance,
 while Safe TypeScript maintains its own static typechecking phase,
-it is implement as a plugin to TypeScript compiler, 
+it is implement as a plugin to TypeScript compiler,
 which is incapable of turning off TypeScript's own static typechecking.
 A similar situation happens to Reticulated, as it cannot turn off
 runtime checks impose by Python itself.
@@ -712,4 +712,3 @@ Smalltalk features a live system: developers might modify code, run it and debug
 	this would result in an infinite loop. This is solved by allowing cast insertion
 	to be disabled.
 \end{itemize}
-

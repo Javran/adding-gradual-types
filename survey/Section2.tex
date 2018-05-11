@@ -108,7 +108,7 @@ function g(x) {
 \end{minted}
 
 Here Safe TypeScript is able to tell that:
-calling $\textbf{f}$ with a string literal
+calling $\texttt{f}$ with a string literal
 is safe, and no extra cast is needed; the second call is immediately rejected
 because number literal is clearly not a $\texttt{string}$;
 and for the third case where $\texttt{x}$
@@ -320,8 +320,8 @@ so this part of the code can typecheck successfully.
 
 Here is another example that shows a different kind of reasoning
 that Scheme programmers would rely on:
-suppose we have stored a list of values of various types in \textbf{xs}
-and the following code will compute the sum of all numbers from \textbf{xs}:
+suppose we have stored a list of values of various types in \texttt{xs}
+and the following code will compute the sum of all numbers from \texttt{xs}:
 
 \begin{minted}{scheme}
 (foldl + 0 (filter number? xs))
@@ -538,8 +538,8 @@ Point >> (Number) distanceTo: (Point) p
   ^ (dx squared + dy squared) sqrt
 \end{minted}
 
-Since local variable \textbf{dx} and \textbf{dy} does not explicit type-annotated,
-they receive \textbf{Dyn} as default type.
+Since local variable \texttt{dx} and \texttt{dy} does not explicit type-annotated,
+they receive \texttt{Dyn} as default type.
 
 Blocks are basic features in Smalltalk,
 whose corresponding types are available in Gradualtalk in the form of normal function types.
@@ -549,7 +549,7 @@ Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
   ...
 \end{minted}
 
-This definition expects \textbf{metricBlock} to be block
+This definition expects \texttt{metricBlock} to be block
 that takes as argument two points, and returns a number.
 
 \subsubsection{Self Types}
@@ -563,7 +563,7 @@ Point >> (Point) y: (Number) aNumber
 \end{minted}
 
 Notice that if we want to extend this class in future,
-its setter with be tagged with type \textbf{Point} and some
+its setter with be tagged with type \texttt{Point} and some
 type information will be lost in the way.
 To deal with this problem, Gradualtalk introduces self type:
 
@@ -573,7 +573,7 @@ Point >> (Self) y: (Number) aNumber
 \end{minted}
 
 If any other class inherits from it, the self type will make sure
-to point to that class instead of sticking with \textbf{Point},
+to point to that class instead of sticking with \texttt{Point},
 this allows type information to be preserved.
 
 \subsubsection{Union Types}
@@ -587,7 +587,7 @@ Boolean >> (a | b)
   ifFalse: (-> b) falseBlock
 \end{minted}
 
-Note that \textbf{trueBlock} and \textbf{falseBlock} might return
+Note that \texttt{trueBlock} and \texttt{falseBlock} might return
 different types, allowing this method to have \texttt{a} or \texttt{b}
 will not be satisfactory, and simply using \texttt{Dyn} type
 returns in a lose of information.
@@ -695,7 +695,7 @@ pin.SetTitle(name);
 ...
 \end{minted}
 
-Notice how types are changed to \textbf{dynamic} and methods are called
+Notice how types are changed to \texttt{dynamic} and methods are called
 as if there are regular objects.
 These improvements are more than just syntactic: gradual typing is implemented
 so that typechecking can be involved and this part of code can benefit from it.
@@ -703,7 +703,7 @@ so that typechecking can be involved and this part of code can benefit from it.
 \subsubsection{Using Features Intended For Dynamic Languages}
 
 The extension also makes available some features meant for dynamic languages
-directly in C$^\sharp$, one example is the use of \textbf{ExpandoObject}
+directly in C$^\sharp$, one example is the use of \texttt{ExpandoObject}
 
 \begin{minted}{csharp}
 ...
@@ -717,7 +717,7 @@ contact.Address.State = "WA";
 For a statically typed language, to maintain structured object,
 one either needs to declare a record type with matching structure,
 or use a dictionary in which one key and one value type should be declared.
-However, with the introduction of \textbf{ExpandoObject},
+However, with the introduction of \texttt{ExpandoObject},
 by simply assigning values to properties of it,
 they are brought into existence without boilerplate about type casts.
 This helps in terms of fast prototyping, in which programmers cares more about

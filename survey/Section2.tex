@@ -397,15 +397,29 @@ def distance(x: Int, y: Int)-> Int:
   return abs(x - y)
 \end{minted}
 
-While syntactically Python annotation allows arbitrary expressions,
-Reticulated Python only use few base types (\texttt{Int}, \texttt{String} and \texttt{Float}, to name a few)
-and a limited set of constructors
-(for example, \texttt{List}, \texttt{Dict}, \texttt{Object} and \texttt{Class} whose meanings are clear
-from their names),
-which nonetheless gives us sufficient expressiveness.
+Python allows annotations to be arbitrary expressions, therefore
+Reticulated types are a subset of Python expressions as shown below:
 
-% TODO: could put syntactic types here
+\begin{align*}
+\text{labels} && l & & \\
+\text{type variables} && X & & \\
+\text{base types} && B & ::=&
+  \texttt{Int}\ |\ \texttt{String}\ |\ 
+  \texttt{Float}\ |\ \texttt{Bool}\ |\ \texttt{Byte} \\
+\text{types} && T & ::=\ &
+  \texttt{Dyn}\ |\ B\ |\ X \ |\ 
+   \texttt{List}(T)\ |\ \texttt{Dict}(T,T)\ |\\
+   && & &\texttt{Tuple}(\overline{T})\ |\ \texttt{Set}(T)\ |\\
+   && & &\texttt{Object}(X)\{\overline{l : T}\}\ |\ \texttt{Class}(X)\{\overline{l : T}\}\ |\\
+   && & &\texttt{Function}(P,T)\\
+\text{parameters} && P & ::= & \texttt{Arb}\ |\ \texttt{Pos}(\overline{T})\ 
+  |\ \texttt{Named}(\overline{l : T})
+\end{align*}
 
+Besides the dynamic type \texttt{Dyn}, all basic Python types and structures,
+and user defined objects and classes
+can be expressed using this syntax.
+Also because that all types are actual expressions, we get type synonym for free in Reticulated.
 
 \subsubsection{Function Types}
 
@@ -655,8 +669,8 @@ for structural and nominal types.
 
 While we have seen many examples that a dynamically typed language gets
 gradual type extensions, Bierman, Meijer and Torgersen's work on
-C$^\sharp$ 4.0\cite{meijer2004static} shows us a practical example of statically typed language
-extends towards gradual typing.
+C$^\sharp$ 4.0\cite{meijer2004static} shows us a practical example of
+extending a statically typed language towards gradual typing.
 This extension makes interoperation between statically and dynamically typed code
 more convenient and brings in features meant for dynamically typed languages.
 

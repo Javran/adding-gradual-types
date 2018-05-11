@@ -83,7 +83,7 @@ albeit some language extensions do make assumption about implementations of thei
 	Reticulated proxies use and a work around requires removing and re-installing
 	proxies at the boundary of Python and C\cite{vitousek2014design}. 
 }.
-% TODO slight issue: TypeScript has 2 static typechecking passes
+
 % TODO: gradual type with reference?j
 
 Gradualtalk is an extension to Pharo Smalltalk. It consists of 3 parts:
@@ -177,8 +177,6 @@ this approach results in various issues that goes beyond type system.
 We will have a separated section regarding these issues.
 
 \paragraph{Occurrence Typing}
-
-%TODO: to be clear about what to say in ch2
 
 Supporting gradual typing requires having matching types for values and functions in the languages.
 Most extensions we have discussed have concepts of classes and objects, they are typed either
@@ -562,7 +560,20 @@ using dataflow analysis to compute possible types for each variables
 and then join these types to determine what type should be assigned to each variables.
 A local type inference is also employed in Typed Scheme.
 
-% \section{Blame Tracking}
+\subsubsection{Blame Tracking}
+
+When a cast involves function types, it cannot be checked immediately\cite{findler2002contracts,siek2009exploring}.
+For example, it requires function applications to provide an argument list to check argument types
+of a function type, and checks on return types cannot be done before the function in question
+returns. Since these checks are delayed, it is possible that when a runtime cast fails,
+information necessary to local the actual problem is far way from it.
+
+Gradualtalk uses blame tracking\cite{wadler2009well} to solve this problem:
+when a check is delayed, the type system keeps track of the information,
+which allows blames to be assigned properly when the check fails.
+In Reticulated, guarded dynamic semantics implements blame tracking:
+the static type system provides error messages and line numbers,
+which is kept in the proxies so that actual source of error can be identified properly.
 
 \subsubsection{Type Erasure and Optional Typing}
 

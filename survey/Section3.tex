@@ -53,7 +53,7 @@ but a type system without them does not compromise completeness.
 We are looking at research works that falls into type disciplines of two different nature:
 JavaScript, Scheme, Python 3 and Smalltalk are all dynamically typed languages, from which
 much similarity shows up.
-On the other hand, we have $\csharp$ 3.0, a statically
+On the other hand, we have \csharp\ 3.0, a statically
 typed langauge.
 
 \paragraph{Extension from Dynamically Typed Languages}
@@ -101,9 +101,9 @@ in the form of contracts.
 
 \paragraph{Extension from A Static Type System}
 
-The work on $\csharp$ 4.0 shows us how statically typed language can be extended
+The work on \csharp\ 4.0 shows us how statically typed language can be extended
 to support gradual typing.
-This approach is novel because $\csharp$ 3.0 uses a bidirectional type system \cite{pierce2000local}
+This approach is novel because \csharp\ 3.0 uses a bidirectional type system \cite{pierce2000local}
 rather than a standard static type system.
 There are two distinct phase in a bidirectional type system:
 in \textbf{typechecking} phases, we determine whether a particular type can be
@@ -111,7 +111,7 @@ assigned to a given term, whereas in \textbf{type synthesis} phases,
 we are given a term and tasked to determine a type for it.
 As bidirectional type checking is a variant of coercive subtyping\cite{breazu1991inheritance},
 both phases generate translated terms with explicit coercions.
-During the process of checking types for a $\csharp$ program,
+During the process of checking types for a \csharp\ program,
 these two phase naturally interleaves each other to progressively
 assign types to terms and turn implicit coercions into explicit ones.
 Upon successful completion of this process, all coercions are made
@@ -119,14 +119,14 @@ explicit and dynamic types are no longer needed and simply replaced by basic obj
 
 As shown in Siek's work in \cite{siek2007gradual},
 making dynamic type the top type in subtyping order allows any two types to
-be coercible. $\csharp$ 4.0 avoids this problem by
+be coercible. \csharp\ 4.0 avoids this problem by
 not allowing dynamic types to be implicitly converted to any other types
 during typechecking phases.
 It turns out that this approach is sufficient to achieve
 transitivity of subtyping
 even when dynamic types are present.
 
-The type system of $\csharp$ 4.0 shows that it is possible for a
+The type system of \csharp\ 4.0 shows that it is possible for a
 static type system to allow transitivity of subtyping when making gradual type extensions.
 But whether this technique is applicable to standard static type system is still remained
 as an open question.
@@ -203,7 +203,7 @@ which uses this exact technique to improves its type system.
 The idea behind parametric polymorphism (a.k.a generic programming in some languages)
 is that some functions and structures can
 work uniformly regardless of the value it is operating on.
-Besides its presence in $\csharp$ 3.0,
+Besides its presence in \csharp\ 3.0,
 Safe TypeScript, Typed Scheme, Reticulated Python and Gradualtalk all include
 this feature to further extend their type expressiveness.
 
@@ -712,5 +712,4 @@ Smalltalk features a live system: developers might modify code, run it and debug
 	this would result in an infinite loop. This is solved by allowing cast insertion
 	to be disabled.
 \end{itemize}
-% \subsubsection{$\csharp$ 4.0}
 

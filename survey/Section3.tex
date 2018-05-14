@@ -6,6 +6,7 @@
 %TODO: method & field
 %TODO: Type Erasure, information hiding and performance
 %TODO: "this"
+%TODO: ref
 
 In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
@@ -15,7 +16,7 @@ Despite that we have gradual guarantee\cite{siek2015refined} and other
 theoretical works to serve as guidelines for gradual typing extensions,
 there is no canonical way of supporting gradual typing
 and design choices have to be made
-depending on various facts like original type discipline, common practice and performance.
+depending on various facts like original type discipline, common practice, performance and even user community.
 
 Additionally, adding gradual types to an existing language
 is not just an effort of putting theories of gradual typing into practical use,
@@ -43,7 +44,7 @@ gradual typing itself opens up possibility of some other interesting extensions
 that makes the extended language more convenient to use and more attractive to programmers.
 
 These extensions can be split into two categories:
-\textbf{Essential extensions} are those necessary
+\textbf{essential extensions} are those necessary
 for a complete gradual typing support;
 and \textbf{complementary extensions} are those that improves type expressiveness
 but a type system without them does not compromise completeness.
@@ -60,7 +61,7 @@ typed langauge.
 
 The approach used by Safe TypeScript and Reticulated Python
 is to first perform static typechecking in the presence of dynamic types.
-If it is successful, programs written in extended languages are then translated into original languages.
+If it succeeds, programs written in extended languages are then translated into original languages.
 The translated program could contain runtime checks with some values instrumented,
 these checks and instruments are either implemented by inserting expressions or statements in place or
 making calls to external libraries\footnote{
@@ -74,17 +75,16 @@ This approach grants high compatibility with original languages: source code wri
 can be compiled and then used as if it is written in the original language, and thanks to the fact
 that all existing dynamically typed languages
 we are discussing have decent supports for modern package managers,
-including runtime support is as simple as making a dependency declaration to package metadata.
+including runtime support is as simple as making a dependency declaration
+for the packages using the extension.
 Besides, by compiling to the original languages,
-we can to some extent be confident that the language implementations
-are independent of specific implementations of the original languages,
+we can be confident to some extent that the language implementations
+are independent of any specific implementation of the original languages,
 albeit some language extensions do make assumption about implementations of their original languages\footnote{
 	Part of Python is written in C, which does not respect the indirection that
 	Reticulated proxies use and a work around requires removing and re-installing
 	proxies at the boundary of Python and C\cite{vitousek2014design}.
 }.
-
-% TODO: gradual type with reference?j
 
 Gradualtalk is an extension to Pharo Smalltalk. It consists of 3 parts:
 the core allows representing types in Smalltalk, the typechecker
@@ -195,12 +195,15 @@ will have its two branches with different types of \texttt{v}, one with type \te
 and another with non-\texttt{p} type.
 
 Despite this extension is shown only in Typed Scheme, we believe it can be applied to other languages
-as well: the latest version of TypeScript has implemented \textbf{type guard},
-which uses this exact technique to improves its type system.
+as well: the latest version of TypeScript
+has implemented \textbf{type guard}\cite{ts2018},
+which uses this exact technique to improves
+the expressiveness of its type.
 
 \paragraph{Parametric Polymorphism}
 
-The idea behind parametric polymorphism (a.k.a generic programming in some languages)
+The idea behind parametric polymorphism
+(a.k.a. generic programming in some languages)
 is that some functions and structures can
 work uniformly regardless of the value it is operating on.
 Besides its presence in \csharp\ 3.0,
@@ -279,10 +282,10 @@ researchers have come up with different strategies to balance between type safet
 
 Object-oriented programming is a popular style of programming.
 All languages we have discussed so far supports it to some extent.
-Some have developed intensive support for it,
-among which some even have the language itself designed to embrace its philosophy.
-To have a sound and efficient support for it
-becomes center of topic when it comes to runtime performance of supporting gradual typing.
+Among these languages,
+some even have the language itself designed to embrace its philosophy.
+To have a sound and efficient gradual typing support for it
+becomes center of topic.
 
 \subsubsection{Unified Concepts}
 
@@ -318,19 +321,27 @@ Any object that can resolve all labels list by an interface is considered to
 
 \subsubsection{Nominal Type, Structural Type and Subtyping}
 
-There are two different approaches of typing objects:
-\textbf{nominal types} are derived from class definitions, these types usually have a matching name with its
-corresponding class.  Nominal types follow the traditional sense of inheritance:
-one must explicitly extend from another class to make it a subclass of the other
-(with a commonly assumed exception that topmost class is always a superclass of other classes).
-\textbf{Structural types}, on the other hand, views an object structurally.
-Inheritance, or rather subtyping, in this case is closer to an interface: if one object can resolve all labels of another object, it is considered a subtype of it. This approach is sometimes known as duck typing.
+There are two different approaches of assigning objects with types:
 
-Due to the highly dynamic nature of some languages, these two views can coexist and
-impose differences and difficulties and researchers need clean way to work around this issue.
+\begin{itemize}
+	\item \textbf{Nominal types} are derived from class definitions, these types usually have a matching name with its
+	corresponding class.  Nominal types follow the traditional sense of inheritance:
+	one must explicitly extend from another class to make it a subclass of the other
+	(with a commonly assumed exception that topmost class is always a superclass of other classes).
+	\item \textbf{Structural types}, on the other hand, views an object structurally.
+	Inheritance, or rather subtyping, in this case is closer to an interface: if one object can resolve all labels of another object, it is considered a subtype of it. This approach is sometimes known as duck typing.
+\end{itemize}
+
+Despite that these two approaches coincide with each other in many ways,
+they are not actually compatible.
+And due to the highly dynamic nature of some languages,
+it will not be sufficient to simply having either structural and
+nominal types.
+Therefore researchers often end up with a hybrid approach
+to allow coexistences of these two approaches.
 
 To illustrate the problem, suppose we have the following definitions in Python
-(assume that all methods will return values of the same type):
+(assuming all methods will return values of the same type):
 
 \begin{minted}{python}
 class A:
@@ -505,16 +516,7 @@ overtime, its type information gets locked down to always become more precise.
 The translation is the same as that of guarded dynamic semantics, but with \texttt{cast} being a different
 function that applies monotonic approach.
 
-\begin{minted}{python}
-def g(x):
-  cast(x, Dyn, Object({bar: Dyn})).bar = 'hello'
-def f(x:Object({bar: Int}))->Int:
-  g(cast(x, Object({bar: Int}), Dyn))
-  return x.bar
-f(cast(Foo(), Object({bar:Dyn}), Object({bar:Int})))
-\end{minted}
-
-Right before call to \texttt{f}, object newly created from \textbf{Foo()} is locked down to
+Right before call to \texttt{f}, object newly created from \texttt{Foo()} is locked down to
 have a type at least as precise as \texttt{Object({bar:Int})}, this locks down type of \texttt{x.bar}
 therefore raises an error when the body of \texttt{g} tries to write a mismatching type to it.
 

@@ -372,9 +372,9 @@ In the original work, the following aspects are demonstrated:
 	As for partially typed programs, a gradual type system guarantees that,
 	if the program typechecks statically, runtime type errors only raises from
 	portions with dynamic types.
-	This is in parallel with Wadler and Findler's work\cite{wadler2009well}:
-	when a runtime cast fails, the actual error
-	always come from ``less statically typed'' part of the program.
+	This reflects the idea of Wadler and Findler's work\cite{wadler2009well}:
+	when a runtime cast fails, the error
+	always comes from ``less-typed'' part of the program.
 	\item \textbf{Gradual typing enables gradual evolution}
 	Adding type annotations moves a program in the direction of static typing
 	whereas removing type annotations moves in the direction of dynamic typing.

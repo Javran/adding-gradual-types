@@ -518,20 +518,25 @@ Instead, Reticulated perform dataflow-based type inference on code blocks, which
 
 \subsection{From Smalltalk to Gradualtalk}
 
-% TODO XXX
-
 Smalltalk is a language of highly dynamic nature:
-it supports live programming, which means programs with incomplete
-methods should be accepted, and programmers in Smalltalk relies on
-idioms that are tricky to type properly.
-Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk\cite{allende2014gradual} shows
+every Smalltalk environment can be seen as a live system
+and programmers write their code, run and debug it using
+the same environment. Additionally, Smalltalk programmers 
+rely on idioms that are difficulty to type properly.
+All of this facts makes extending Smalltalk to support gradual
+typing a proper challenge.
+
+In this part, we will visit
+Allende, Callau, Fabry, Tanter and Denker's work on Gradualtalk\cite{allende2014gradual}, which shows
 us a well combination of various features in order to extend Smalltalk
-into a gradual typed language.
+into a gradual typed language that programmers can enjoy.
 
 \subsubsection{Annotating Programs with Types}
 
-In Smalltalk there are objects that receives and processes messages.
-The following example computes euclidean distance for points:
+In Smalltalk there are objects that receive and process messages.
+The following example computes euclidean distance for points\footnote{
+Most examples regarding Gradualtalk is taken and adapted from
+\cite{allende2014gradual}}:
 
 \begin{minted}{smalltalk}
 Point >> distanceTo: p
@@ -541,7 +546,7 @@ Point >> distanceTo: p
   ^ (dx squared + dy squared) sqrt
 \end{minted}
 
-Gradualtalk extends this syntax that allows
+Gradualtalk extends this syntax to allow
 type annotation on parameter, return value and local variables.
 
 \begin{minted}{smalltalk}
@@ -552,14 +557,15 @@ Point >> (Number) distanceTo: (Point) p
   ^ (dx squared + dy squared) sqrt
 \end{minted}
 
-Since local variable \texttt{dx} and \texttt{dy} does not explicit type-annotated,
+Since local variable \texttt{dx} and \texttt{dy} are not explicit type-annotated,
 they receive \texttt{Dyn} as default type.
 
 Blocks are basic features in Smalltalk,
 whose corresponding types are available in Gradualtalk in the form of normal function types.
 
 \begin{minted}{smalltalk}
-Polygon >> (Number) perimeter: (Point Point -> Number) metricBlock
+Polygon >> (Number) perimeter:
+  (Point Point -> Number) metricBlock
   ...
 \end{minted}
 
@@ -568,17 +574,30 @@ that takes as argument two points, and returns a number.
 
 \subsubsection{Self Types}
 
-One practice in Smalltalk is to return object itself for setters
-to allow chained calls:
+One practice in Smalltalk and many object-oriented languages
+is called ``method chaining'': 
+some methods of an object returns the object itself.
+By doing so, method invocations on same object can be
+chained together as a sequence of operations.
+
+The following example shows a setter of an object:
+it accepts a number and assign it to \texttt{y} member of that object.
 
 \begin{minted}{smalltalk}
-Point >> (Point) y: (Number) aNumber
-  y := aNumber.
+Point >> (Point) x: (Number) aNumber
+  x := aNumber.
 \end{minted}
 
-Notice that if we want to extend this class in future,
-its setter with be tagged with type \texttt{Point} and some
-type information will be lost in the way.
+Suppose we have a similar setter for \texttt{y},
+we can write \texttt{obj x: 1 y: 2} to set \texttt{x}
+and \texttt{y} to their new values respectively for an object \texttt{obj},
+and the whole expressive results in the value of the object \texttt{obj},
+which allows the chain to extend further.
+
+Notice that if we want to have this class extended by others,
+its setter with be assigned with type \texttt{Point} rather
+than the extended class.
+Therefore some type information will be lost in the way.
 To deal with this problem, Gradualtalk introduces self type:
 
 \begin{minted}{smalltalk}
@@ -586,14 +605,18 @@ Point >> (Self) y: (Number) aNumber
   y := aNumber.
 \end{minted}
 
-If any other class inherits from it, the self type will make sure
-to point to that class instead of sticking with \texttt{Point},
-this allows type information to be preserved.
+The only different is in its return type, instead of \texttt{Point},
+it is annotated with type \texttt{Self}.
+If any other class inherits from it, using the self type will make sure
+the return type is the same as the extended class
+instead of sticking with \texttt{Point},
+this allows type information to be preserved in a more precise manner.
 
 \subsubsection{Union Types}
 
-Gradualtalk supports union types, which is useful when
-source code contains different branches and each of them might return different types.
+Gradualtalk supports union types, which might be useful when
+source code contains different branches and
+each of them returns different types.
 
 \begin{minted}{smalltalk}
 Boolean >> (a | b)
@@ -602,11 +625,14 @@ Boolean >> (a | b)
 \end{minted}
 
 Note that \texttt{trueBlock} and \texttt{falseBlock} might return
-different types, allowing this method to have \texttt{a} or \texttt{b}
-will not be satisfactory, and simply using \texttt{Dyn} type
-returns in a lose of information.
-Gradualtalk solves this problem by introducing union types: \texttt{a | b}
-is a type by itself, which is compatible with both \texttt{a} and \texttt{b}.
+different types, allowing this method to have either \texttt{a} or \texttt{b}
+as return type will be incorrect, and simply using \texttt{Dyn} type
+results in a lose of information.
+In Gradualtalk, this problem is solved
+by introducing union types:
+type notation \texttt{a | b} is a type by itself constructed from
+\texttt{a} and \texttt{b},
+which can accept all values of either \texttt{a} or \texttt{b}.
 
 \subsubsection{Structural and Nominal Types}
 
@@ -614,19 +640,19 @@ A structural type describes the shape of an object.
 
 \begin{minted}{smalltalk}
 RBParser >> bracketsOfNode: ({
-  left (-> Integer) .
-  right (-> Integer)
+    left (-> Integer) .
+    right (-> Integer)
   }) node
 \end{minted}
 
 The method above defines the argument type of \texttt{node} to have 2 methods:
 \texttt{left} and \texttt{right} and both of them will return an integer when invoked.
 
-A nominal type, on the other hand, is induced by classes
-(for example an instance of \texttt{String} will have \texttt{String} type).
-In addition, subtyping relations of them are formed from existing inheritance relation.
+A nominal type, on the other hand, is introduced by classes:
+for example an instance of \texttt{String} will have \texttt{String} type.
+In addition, subtyping relations of them are formed from existing inheritance relations.
 
-Gradual type managed to unify them in an interesting way.
+Gradualtalk managed to unify them in an interesting way.
 
 \begin{minted}{smalltalk}
 RBParser >> bracketsOfNode: (RBNode {
@@ -653,15 +679,19 @@ Canvas >> (Self) drawPoint: (Dyn {
 \end{minted}
 
 Besides calling \texttt{x} and \texttt{y}, a call to \texttt{z} does not
-raise an error ahead of execution, because \texttt{Dyn} can be casted to allow use of
-\texttt{z}.
+raise an error ahead of execution:
+thanks to the presence of \texttt{Dyn},
+instead of raising a type error because \texttt{z} is not a member
+of the structural part, the type system sees the \texttt{Dyn} part
+and try to cast it to one that has member \texttt{z}.
 
 \subsubsection{Type Aliases}
 
-Gradualtalk supports type aliases. This does not expand expressiveness of type itself,
-but it make reusing existing types convenient.
+Gradualtalk supports type aliases. This does not expand expressiveness of type itself, but this allows programmers to refer to types instead of
+write long types over and over again.
 
-With type aliases comes the concepts of protocols, which are just type aliases
+With type aliases comes the concepts of protocols.
+In Gradualtalk they are just type aliases
 for structural and nominal types.
 
 \newcommand{\csharp}{C$^\sharp$}
@@ -676,7 +706,11 @@ more convenient and brings in features meant for dynamically typed languages.
 
 \subsubsection{Interaction with Dynamic Objects}
 
-The following code snippet shows how \csharp\ 3.0 interact with JavaScript:
+The following code snippet shows how \csharp\ 3.0
+interact with JavaScript\footnote{
+Examples and code snippets in this part are
+adapted from \cite{meijer2004static}
+}:
 
 \begin{minted}{csharp}
 ...
@@ -692,9 +726,9 @@ pin.Invoke("SetTitle", name);
 \end{minted}
 
 In order to interact with JavaScript, method calls
-are made using string-based interface, which is verbose, fragile to maintain.
+are made using string-based interface, which are verbose, fragile to maintain.
 
-With C$^\sharp$ 4.0, the source code can be simplified to:
+With C$^\sharp$ 4.0, the source code can be simplified a little bit:
 
 \begin{minted}{csharp}
 ...
@@ -709,15 +743,26 @@ pin.SetTitle(name);
 ...
 \end{minted}
 
-Notice how types are changed to \texttt{dynamic} and methods are called
-as if there are regular objects.
-These improvements are more than just syntactic: gradual typing is implemented
-so that typechecking can be involved and this part of code can benefit from it.
+Note that \csharp\ 3.0 uses a bidirectional type system:
+such a system allows program to be partially typed,
+and the type system will use type inference techniques
+to assign terms to all remaining un-annotated terms.
+However, when this process fails, \csharp\ 3.0 will abort compilation
+and request programmers to provide more information until
+every term in the program is assigned a type, either by hand or by type inference.
+
+In the example above, notice how types are changed to \texttt{dynamic} and methods are called as if there are regular objects.
+These improvements are more than just syntactic,
+as the extended type system is more permissive about
+partially typed programs:
+instead of standard type inference that gives up when
+the information is insufficient, in the extended system
+dynamic types are used and this allows the compilation to continue.
 
 \subsubsection{Using Features Intended For Dynamic Languages}
 
 The extension also makes available some features meant for dynamic languages
-directly in C$^\sharp$, one example is the use of \texttt{ExpandoObject}
+directly in \csharp, one example is the use of \texttt{ExpandoObject}:
 
 \begin{minted}{csharp}
 ...
@@ -728,12 +773,14 @@ contact.Address.State = "WA";
 ...
 \end{minted}
 
-For a statically typed language, to maintain structured object,
-one either needs to declare a record type with matching structure,
-or use a dictionary in which one key and one value type should be declared.
+It is known that statically typed languages lack some flexibility
+when it comes to structured data:
+we either need to declare a record type that matches actual structure,
+or use a dictionary in which one key and one value type are declared.
 However, with the introduction of \texttt{ExpandoObject},
-by simply assigning values to properties of it,
+by simply assigning values to properties of instance of \texttt{ExpandoObject},
 they are brought into existence without boilerplate about type casts.
-This helps in terms of fast prototyping, in which programmers cares more about
+This not only helps a static language to deal with data
+of dynamic nature, but also helps in terms of fast prototyping,
+in which programmers cares more about
 having a working implementation than maintain type precision.
-

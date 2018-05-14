@@ -2,9 +2,6 @@
 
 \section{The Way Towards Gradual Typing}
 
-%TODO: method & field
-%TODO: "this"
-
 In previous chapter we have explored the benefits gradual typing
 can bring in for existing languages.
 Now we takes a step further to discuss the way towards making these extensions.
@@ -314,11 +311,11 @@ Fields are values, and methods are functions within whose body gain access to a 
 (called \texttt{this} or \texttt{self} by convention) which can be used to refer to the object itself.
 
 A special kind of singleton objects are called \textbf{classes}.
-For a class $c$, we can create (a.k.a. \textbf{instantiate}) objects by calling constructor.
-The created object is considered an \textbf{instance} of class $c$.
+For a class $C$, we can create (a.k.a. \textbf{instantiate}) objects by calling constructor.
+The created object is considered an \textbf{instance} of class $C$.
 
-Classes can form a partial order of subclass relations: if a class $c_0$ \textbf{extends} from
-another class $c_1$, we say $c_0$ is a \textbf{subclass} of $c_1$ and $c_1$ a \textbf{superclass} of $c_0$.
+Classes can form a partial order of subclass relations: if a class $C_0$ \textbf{extends} from
+another class $C_1$, we say $C_0$ is a \textbf{subclass} of $C_1$ and $C_1$ a \textbf{superclass} of $C_0$.
 Methods can be shared through the mechanism of class-instance and inheritance relation:
 when we try to access $o.l$, $l$ is looked up in the order of instance itself (some languages disallow
 objects to have their own methods therefore skipping this step), its class, and superclass of its class,
@@ -561,6 +558,36 @@ it is an extension that not only tells subtyping relations, but also allows spli
 a structural type into slices of interest.
 The observation is that, during static typechecking, when subtyping relation is used, there is a potential loss in precision. We can extend subtyping relation to compute the exact set of type information,
 and encode in the form of RTTI instead of keeping types of all fields around therefore improve performance.
+
+\subsubsection{Reference \texttt{this} or \texttt{self}}
+
+In object-oriented programming, the body of class methods
+have access to a special reference,
+which is usually named \texttt{this}\footnote{Some languages would use \texttt{self} as its name.}.
+This reference allows the method to refer to the instance of the class and its members.
+
+As we have seen in Section 2, simply assigning the class type in which the method is defined
+to \texttt{this} reference
+does not always capture the most precise use of \texttt{this}.
+For example,
+if one class $C_1$ is extended from class $C_0$, calling methods
+defined in $C_0$ will only allow \texttt{this} to be assigned type $C_0$, ignoring
+the fact that the class is extended and $C_1$ should be a more precise type for \texttt{this}.
+
+This problem is recognized and solved in the work of
+Reticulated Python, Gradualtalk and Safe TypeScript, 
+In Reticulated, \texttt{self} is bound separately from all other method arguments\footnote{In Python,
+method types are supposed to use \texttt{self} as the first argument explicitly.}
+to allow it to refer to the most precise class at hand;
+Gradualtalk adapts ``self type'' from the work of Saito and Igarashi\cite{saito2009self}
+and use type system to allow it to be resolved to the current class.
+On the other hand, Safe TypeScript is a prototype-based language and have a different
+semantics for \texttt{this} reference.
+Its type system recognized the fact that \texttt{this} is passed implicitly
+in function calls and keeps track of it.
+In addition, \texttt{this} is also given special treatment
+so that when invoking a method of \texttt{this}, type system is capable of
+searching the prototype chain to find it.
 
 \subsection{Type Inference}
 

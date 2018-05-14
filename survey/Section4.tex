@@ -16,6 +16,16 @@ Siek, Vitousek, Cimini and Boyland present gradual guarantee\cite{siek2015refine
 to reiterate the intention behind gradual typing and serves a more clear guideline for
 languages claimed to be gradually typed.
 
+It is also important that gradual type system can deal with
+mutable references properly.
+Siek and Taha\cite{siek2006gradual} in their original work
+simply disallows implicit casts that change the pointed-to type.
+Herman, Tomb, and Flanagan\cite{herman2010space} come up with
+an improved design that allows implicit casts between reference types
+as long as the pointed-to types are consistent.
+Siek, Vitousek, Cimini, Tobin-Hochstadt and Garcia\cite{siek2015monotonic}
+also proposed a monotonic approach for mutable references.
+
 \subsection{Soft Typing}
 Cartwright and Fagan's Soft Typing\cite{cartwright1991soft},
 is a type system intended to free programers from writing type annotations.
@@ -23,6 +33,18 @@ Type inference is used instead to assign appropriate types to terms.
 While this design improves performance of dynamically typed languages
 as the inferred information is used to removing some runtime dispatching,
 it does not give programmers control over types.
+
+\subsection{Like Types}
+
+Wrigstad, Nardelli, Lebresne, {\"O}stlund and Vitek\cite{wrigstad2010integrating}
+provides an approach that integrates typed and untyped code
+in the language Thorn. They use ``like types'' in the language
+to allow static typechecking as well as dynamic checks when
+values are bound to the variable in question.
+In addition, opportunities for compiler optimization
+is still available for the static region of programs.
+As suggested in \cite{siek2015refined}, this approach
+prioritize on efficiency and does not share goal with gradual typing.
 
 \subsection{Contracts and Blame Tracking}
 

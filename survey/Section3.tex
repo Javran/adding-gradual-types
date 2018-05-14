@@ -275,6 +275,21 @@ For value of primitive types, we can do no better than simple cast insertions,
 but there are still space when it comes to structured data and functions,
 researchers have come up with different strategies to balance between type safety, efficiency or design simplicity. We will explore thees strategies in next section.
 
+\subsection{Blame Tracking}
+
+When a cast involves function types, it cannot be checked immediately\cite{findler2002contracts,siek2009exploring}.
+For example, it requires function applications to provide an argument list to check argument types
+of a function type, and checks on return types cannot be done before the function in question
+returns. Since these checks are delayed, it is possible that when a runtime cast fails,
+information necessary to local the actual problem is far way from it.
+
+Gradualtalk uses blame tracking\cite{wadler2009well} to solve this problem:
+when a check is delayed, the type system keeps track of the information,
+which allows blames to be assigned properly when the check fails.
+In Reticulated, guarded dynamic semantics implements blame tracking:
+the static type system provides error messages and line numbers,
+which is kept in the proxies so that actual source of error can be identified properly.
+
 \subsection{Object-Oriented Programming}
 
 Object-oriented programming is a popular style of programming.
@@ -547,7 +562,7 @@ a structural type into slices of interest.
 The observation is that, during static typechecking, when subtyping relation is used, there is a potential loss in precision. We can extend subtyping relation to compute the exact set of type information,
 and encode in the form of RTTI instead of keeping types of all fields around therefore improve performance.
 
-\subsubsection{Type Inference}
+\subsection{Type Inference}
 
 Programs with type inference and those with gradual typing have some similarity in the sense
 that both allow programmers to write less type annotation themselves.
@@ -559,22 +574,7 @@ using dataflow analysis to compute possible types for each variables
 and then join these types to determine what type should be assigned to each variables.
 A local type inference is also employed in Typed Scheme.
 
-\subsubsection{Blame Tracking}
-
-When a cast involves function types, it cannot be checked immediately\cite{findler2002contracts,siek2009exploring}.
-For example, it requires function applications to provide an argument list to check argument types
-of a function type, and checks on return types cannot be done before the function in question
-returns. Since these checks are delayed, it is possible that when a runtime cast fails,
-information necessary to local the actual problem is far way from it.
-
-Gradualtalk uses blame tracking\cite{wadler2009well} to solve this problem:
-when a check is delayed, the type system keeps track of the information,
-which allows blames to be assigned properly when the check fails.
-In Reticulated, guarded dynamic semantics implements blame tracking:
-the static type system provides error messages and line numbers,
-which is kept in the proxies so that actual source of error can be identified properly.
-
-\subsubsection{Type Erasure and Optional Typing}
+\subsection{Type Erasure and Optional Typing}
 
 Sometimes it is helpful to ensure that no runtime overhead is imposed
 on some values: for a tag-based implementation of gradual typing,

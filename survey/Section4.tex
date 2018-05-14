@@ -1,6 +1,6 @@
 \section{Related Work}
 
-\subsection{Gradual Typing}
+\paragraph{Gradual Typing}
 Siek and Taha's work on Gradually Typed Lambda Calculus\cite{siek2006gradual}
 establishes the theoretical foundation for gradual typing.
 It is suggested in the same paper that Cecil\cite{chambers2004cecil}, Boo\cite{de2005boo},
@@ -26,7 +26,7 @@ as long as the pointed-to types are consistent.
 Siek, Vitousek, Cimini, Tobin-Hochstadt and Garcia\cite{siek2015monotonic}
 also proposed a monotonic approach for mutable references.
 
-\subsection{Soft Typing}
+\paragraph{Soft Typing}
 Cartwright and Fagan's Soft Typing\cite{cartwright1991soft},
 is a type system intended to free programers from writing type annotations.
 Type inference is used instead to assign appropriate types to terms.
@@ -34,7 +34,7 @@ While this design improves performance of dynamically typed languages
 as the inferred information is used to removing some runtime dispatching,
 it does not give programmers control over types.
 
-\subsection{Like Types}
+\paragraph{Like Types}
 
 Wrigstad, Nardelli, Lebresne, {\"O}stlund and Vitek\cite{wrigstad2010integrating}
 provides an approach that integrates typed and untyped code
@@ -46,7 +46,7 @@ is still available for the static region of programs.
 As suggested in \cite{siek2015refined}, this approach
 prioritize on efficiency and does not share goal with gradual typing.
 
-\subsection{Contracts and Blame Tracking}
+\paragraph{Contracts}
 
 Gradual typing draws work on contracts
 by Findler and Felleisen\cite{findler2002contracts,gray2005fine},
@@ -56,11 +56,13 @@ Instead, when the function is applied, the actual arguments are checked
 against argument type. Similarly, when the function returns,
 the return value is checked against the return type.
 
+\paragraph{Blame Tracking}
+
 Wadler and Findler's blame tracking\cite{wadler2009well}
 provides one approach to keep track of related information with type system,
 which allows blames to be assigned properly when the check fails.
 
-\subsection{Partial Type Systems}
+\paragraph{Partial Type Systems}
 The idea of allowing partial types in a type system is not new.
 Anderson and Drossopoulou formalized BabyJ\cite{anderson2003babyj}, which has
 nominal type system that allows permissive types.
@@ -74,14 +76,14 @@ is developed by Riely and Hennessy\cite{riely1999trust} on a partial type system
 type \texttt{Ibad} is used for untyped parts. However, by treating \texttt{Ibad} as the bottom type,
 it could allow \texttt{Ibad} to be implicitly coercible to arbitrary types.
 
-\subsection{Type Annotation for Performance}
+\paragraph{Type Annotation for Performance}
 Some languages includes optional type annotations, but
 the annotation is used for improving performance rather than
 typechecking.
 Common LISP\cite{steele1982overview}
 and Dylan\cite{feinberg1996dylan,shalit1996dylan} fall into this category.
 
-\subsection{Type Inference}
+\paragraph{Type Inference}
 Type inference \cite{damas1982principal,hindley1969principle,milner1978theory}
 removes some burden of writing type annotations from programmers
 by using available type information to reconstruct types for terms.
@@ -96,7 +98,7 @@ system to either free programmers from having to write out all type annotations
 or to accommodate the fact that some languages do not have a way of attaching
 variables to an explicit type.
 
-\subsection{Optional Type System}
+\paragraph{Optional Type System}
 
 In an optional type system\cite{bracha2004pluggable},
 type annotations are optional and have no impact on the semantics of the language.
@@ -108,7 +110,7 @@ does not have runtime checks inserted by the type system.
 Some gradual type systems like Safe TypeScript\cite{rastogi2015safe} does allow writing
 types in a specific way to effectively switch some part of the program to use an optional type system.
 
-\subsection{Type System Integrations}
+\paragraph{Type System Integrations}
 
 There are other examples of combining different type systems and taking advantage of both.
 Ou, Tan, Mandelbaum and Walker\cite{ou2004dynamic} define a language that combines

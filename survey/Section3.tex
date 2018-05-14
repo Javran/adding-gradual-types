@@ -589,6 +589,24 @@ In addition, \texttt{this} is also given special treatment
 so that when invoking a method of \texttt{this}, type system is capable of
 searching the prototype chain to find it.
 
+One more caution is taken in Safe TypeScript: as its \texttt{this} binds
+differently than an object-oriented language, it is necessary to distinguish methods from fields.
+For example\footnote{This example is taken from \cite{rastogi2015safe}.}:
+
+\begin{minted}{javascript}
+var ctr = {inc(): { this.f++; }, f: 0};
+var i = ctr.inc; i();
+\end{minted} 
+
+In JavaScript semantics, while calling \texttt{ctr.inc()} will allow \texttt{this}
+to be bound to \texttt{ctr}
+in the body of the function, but the call \texttt{i()} will cause \texttt{this} to
+be bound to some other objects (depending on the context).
+In order to distinguish between methods and fields, Safe TypeScript uses two different type notations:
+while type \texttt{\{inc(): void; f: number\}} declares \texttt{inc} to be a method,
+type \texttt{\{inc: () => void; f: number\}} declares \texttt{inc} to be a field,
+and the type system will act accordingly.
+
 \subsection{Type Inference}
 
 Programs with type inference and those with gradual typing have some similarity in the sense

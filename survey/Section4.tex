@@ -56,6 +56,14 @@ Instead, when the function is applied, the actual arguments are checked
 against argument type. Similarly, when the function returns,
 the return value is checked against the return type.
 
+\paragraph{Soft Contract Verification}
+
+Nguyen, Tobin-Hochstadt and Van Horn's Soft Contract Verification\cite{nguyen2014soft} is closely related to gradual typing. In their work, they use symbolic execution
+and allow use of external solvers without heavy encoding.
+The system verifies contracts statically but
+when verification cannot draw a conclusion, it falls back to
+runtime checks.
+
 \paragraph{Blame Tracking}
 
 Wadler and Findler's blame tracking\cite{wadler2009well}

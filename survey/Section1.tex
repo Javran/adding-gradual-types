@@ -22,7 +22,7 @@ The most noticeable difference is the process of checking programs again type ru
 which is also known as type checking.
 It occurs either statically ahead of program execution, or dynamically at runtime.
 For a static type system, ill-typed programs are rejected by compiler and
-no executable can be produced until all type errors are fixed.
+prevented from execution until all type errors are fixed.
 For a dynamic type system,
 type information is examined at runtime and type errors result
 in abortion of the program or exceptions being raised
@@ -98,7 +98,7 @@ Besides extra effort of maintaining type annotations,
 the disadvantage of a statically type language often lies in the lack of runtime flexibility.
 If we want to write a program that deals with data whose structure is
 unknown at compile time, runtime inspection must be possible.
-While typical dynamically typed languages allow inspect of types or object properties,
+While typical dynamically typed languages allow inspecting of types or object properties,
 some extra work are required for a statically typed language
 to maintain and check runtime type information.
 
@@ -111,10 +111,8 @@ make frequent changes to structure of variables and functions, but these feature
 
 Dynamic type systems do typechecking at runtime, which is best suited for
 languages designed for scripting and fast prototyping.
-A shell script, for example, runs other executables and feeds one's output to another,
-effectively gluing programs together.
-In such a case, we have little to no knowledge about these executables ahead of time,
-making statically type checking improbable.
+A shell script, for example, runs other executables and feeds one's output to another.
+In such a case, we have little to no knowledge about these executables ahead of time to ask a type system to check it for us.
 And when it comes to prototyping,
 it is usually more important to allow a trial-and-error type of style of programming
 over concerns about robustness and correctness.
@@ -123,7 +121,7 @@ an incomplete or ill-typed program from execution.
 
 However, it is also easy to spot weaknesses of dynamic type systems.
 Despite that dynamically typed languages do not often provide a way of writing type annotations,
-programmers usually have facts about behaviors of programs.
+programmers usually have facts about expected behaviors of programs.
 These facts are often described in comments or through the naming of variables and functions without a systematic way of verifying them.
 As program develops, it is easy to make changes but leaving these descriptions untouched.
 This troubles future maintainers to locate the problem and rediscover new facts,
@@ -264,7 +262,7 @@ We demonstrate this by giving few examples:
 	whose type structures do not match.
 \end{itemize}
 
-Now that we have dynamic types, it is no longer a requirement to require
+Now that we have dynamic types, it is no longer necessary to require
 every term in a program to have a type ahead of execution.
 For any term missing type information, we can simply assigned it with type $\dyn$,
 and type rules will be permissive to accept it as long as type consistency is met.
@@ -282,7 +280,7 @@ allow any pair of types to match and therefore render static typechecking useles
 
 As we can see gradual type system attempts to contain both statically and dynamically typed programs.
 However, because of the presence of dynamic types,
-the type system cannot be sound by only have static typechecking.
+the type system cannot be sound by only having static typechecking.
 Imagine function $f : \tarr{\tnum}{\dyn}$ and variable $v : \dyn$, while function application
 $f(v)$ can pass static typechecking, the runtime value of $t$ might turn out to be a string
 and this violates $f$'s input type $\tnum$.
@@ -325,7 +323,7 @@ as input. There are multiple choices:
 	of making sure that the input type is indeed a string.
 	This is the only available choice in statically typed languages.
 	\item We can do it with our program: right after entering the body of $f$,
-	we write code to inspect type of the argument and react accordingly.
+	we write code to inspect type of the argument and take action accordingly.
 	A JavaScript program would do exactly this by branching
 	on the result of evaluating \texttt{x \&\& typeof x === "string"} (suppose \texttt{x} is the argument).
 	This is often seen in a dynamically typed language, as there could be no other means
@@ -340,7 +338,7 @@ as input. There are multiple choices:
 \end{itemize}
 
 By making typechecking a choice, we have opened up some flexibilities:
-for an originally statically typed program, we can now write terms without giving a type,
+for an originally statically typed program, we can now write terms without giving types,
 this allows easy prototyping; for an originally dynamically typed program,
 some parts of it might already been stable and robust enough, annotating these parts
 with types strengthens it with type error detection ahead of execution, machine-proved correctness,
@@ -406,4 +404,4 @@ In section 2, we will focus on benefits brought by these extensions.
 Section 3 discusses and categorizes common and language-specific
 challenges researchers have to face and solutions to them.
 Related work will be covered in section 4, and
-we draw our conclusion in section 5.
+we draw our conclusion in the last section.

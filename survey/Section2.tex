@@ -274,14 +274,6 @@ return true are \texttt{Number}s, and all values that make predicate \texttt{con
 are pairs, we should be able to encode this complex number representation using types.
 In fact, Typed Scheme version of it begins with such a type definition:
 
-%It is important for the type system to be able to assign same variable with different
-%types depending on the context where the variable appears, this is exactly the notion of
-%occurrence typing.
-%Since these informal reasonings rely on predicates used in control flows,
-%the idea is to use predicates as building block for types.
-
-%The Typed Scheme version begins with definition of complex number:
-
 \begin{minted}[escapeinside=||,mathescape=true]{scheme}
 ;; a Complex is either
 ;; - a number
